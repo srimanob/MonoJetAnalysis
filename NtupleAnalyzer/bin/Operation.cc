@@ -14,7 +14,7 @@
 using namespace std;
 
 
-///-------------------------------------------------------------------------------------------------------------------------------------
+///-----------------------------------------------------------------------------------------------------------------
 
 
 namespace Operation 
@@ -22,8 +22,8 @@ namespace Operation
 
 	vector<double> generate_flat10_weights(TH1D* data_npu_estimated)
 	{
-	  /* 
-		//Array for 1D  reweight 
+	  
+	  /* //Array for 1D  reweight 
 		const double npu_probs[35] = 
 		{
 			1.45346E-01,
@@ -61,36 +61,36 @@ namespace Operation
 			1.81401E-05,
 			1.00201E-05,
 			5.80004E-06
-			};  */
+			}; */
 
-	  //Array for 3D reweight
-	  const double npu_probs[25] = {
-	    0.0698146584,
-	    0.0698146584,
-	    0.0698146584,
-	    0.0698146584,
-	    0.0698146584,
-	    0.0698146584,
-	    0.0698146584,
-	    0.0698146584,
-	    0.0698146584,
-	    0.0698146584,
-	    0.0698146584,
-	    0.0630151648,
-	    0.0526654164,
-	    0.0402754482,
-	    0.0292988928,
-	    0.0194384503,
-	    0.0122016783,
-	    0.007207042,
-	    0.004003637,
-	    0.0020278322,
-	    0.0010739954,
-	    0.0004595759,
-	    0.0002229748,
-	    0.0001028162,
-        4.58337152809607E-05
-	  };
+		//Array for 3D reweight
+		const double npu_probs[25] = {
+			0.0698146584,
+			0.0698146584,
+			0.0698146584,
+			0.0698146584,
+			0.0698146584,
+			0.0698146584,
+			0.0698146584,
+			0.0698146584,
+			0.0698146584,
+			0.0698146584,
+			0.0698146584,
+			0.0630151648,
+			0.0526654164,
+			0.0402754482,
+			0.0292988928,
+			0.0194384503,
+			0.0122016783,
+			0.007207042,
+			0.004003637,
+			0.0020278322,
+			0.0010739954,
+			0.0004595759,
+			0.0002229748,
+			0.0001028162,
+			4.58337152809607E-05 
+			}; 
 
 
 		vector<double> result(25);
@@ -113,7 +113,7 @@ namespace Operation
 
 	///-------------------PF  Lepton selection----------------------------------------------
 
-	bool PFMuonTightCuts(EventData& ev , int i)
+	bool PFMuonTightCuts(EventData& ev , int i, double pt)
 	{
 
 		bool  pass    = false;
@@ -130,7 +130,7 @@ namespace Operation
 		if(Iso <  0.2 ) passIso = true;
 	
 		//if(ev.PFMuonPt(i) > 20. && fabs(ev.PFMuonEta(i)) < 2.4 )
-		if(ev.PFMuonPt(i) > 20. && fabs(ev.PFMuonEta(i)) < 2.1 )  
+		if(ev.PFMuonPt(i) > pt && fabs(ev.PFMuonEta(i)) < 2.1 )  
 		passKin = true;
 
 
@@ -157,28 +157,29 @@ namespace Operation
 
 	///-------------------PF  Lepton selection----------------------------------------------
 
-	bool PFElecTightCuts(EventData& ev , int i)
+	bool PFElecTightCuts(EventData& ev , int i, double pt)
 	{
+
 		// kinematic and fiducial
-		float cutE_pt              = 20.0;
+		float cutE_pt              = pt;
 		float cutE_eta             = 2.5;
 		float cutE_etagap[2]       = {1.4442,1.5666};
 		
-		//ID
-		//float cutE_EB_hadem        = 0.04;
-		//float cutE_EE_hadem        = 0.025;
+		//WP80 ID
+		float cutE_EB_hadem        = 0.04;
+		float cutE_EE_hadem        = 0.025;
 		
 		//float cutE_EB_combiso      = 0.07;
 		//float cutE_EE_combiso      = 0.06;
 		
-		//float cutE_EB_ietaieta     = 0.01;
-		//float cutE_EE_ietaieta     = 0.03;
+		float cutE_EB_ietaieta     = 0.01;
+		float cutE_EE_ietaieta     = 0.03;
 		
-		//float cutE_EB_deta         = 0.004;
-		//float cutE_EE_deta         = 0.007;
+		float cutE_EB_deta         = 0.004;
+		float cutE_EE_deta         = 0.007;
 		
-		//float cutE_EB_dphi         = 0.06;
-		//float cutE_EE_dphi         = 0.03;
+		float cutE_EB_dphi         = 0.06;
+		float cutE_EE_dphi         = 0.03;
 		
 		float cutE_dxy             = 0.02;
 		float cutE_dz              = 1.0;
@@ -189,14 +190,40 @@ namespace Operation
 		float cutE_dist            = 0.02;
 		
 		//PF ID
-		float cutE_EB_combiso_PF   = 0.11;
+		float cutE_EB_combiso_PF   = 0.2;
 		//float cutE_EE_combiso_PF   = 0.11;
 		
-		float cutE_EB_MVA_PF       = 0.34;
-		float cutE_EE_MVA_PF       = 0.32;
-		
-		//float cutE_deltaR_jet      = 0.5;
+		//float cutE_EB_MVA_PF       = 0.34;
+		//float cutE_EE_MVA_PF       = 0.32;
 
+		bool useWP95ID = false;
+
+		/*if(useWP95ID){
+
+			float cutE_EB_hadem        = 0.15;
+			float cutE_EE_hadem        = 0.07;
+			
+			float cutE_EB_ietaieta     = 0.01;
+			float cutE_EE_ietaieta     = 0.03;
+			
+			float cutE_EB_deta         = 0.007;
+			float cutE_EE_deta         = 0.01;
+			
+			float cutE_EB_dphi         = 0.8;
+			float cutE_EE_dphi         = 0.7;
+			
+			float cutE_dxy             = 0.02;
+			float cutE_dz              = 1.0;
+			
+			//conversion rejection
+			int cutE_innerhits         = 1;
+			float cutE_dcot            = 0.02;
+			float cutE_dist            = 0.02;
+			
+			//PF ID
+			float cutE_EB_combiso_PF   = 0.2;
+			//float cutE_EE_combiso_PF   = 0.11;
+		}*/
 
 		bool pass      = false;
 		bool passID    = false;
@@ -209,22 +236,44 @@ namespace Operation
 		float dxy      = ev.PFElecdxy(i);
 		float dz       = ev.PFElecdz(i);
 		int innerhits  = ev.PFElecInnerHits(i);
+		float ietaieta = ev.PFElecietaieta(i);
+		float deltaphi = ev.PFElecDPhiSuTrAtVtx(i);
+		float deltaeta = ev.PFElecDEtaSuTrAtVtx(i);
+		float hadEm    = ev.PFElecHcalOverEcal(i);
 
 
 	
 		Iso = (ev.PFElecNeuHadIso(i) + ev.PFElecCharHadIso(i) + ev.PFElecPhoIso(i) )/ev.PFElecPt(i);
-	
+
 		if(Iso < cutE_EB_combiso_PF) passIso = true;
 	
 		if(ev.PFElecPt(i) > cutE_pt && fabs(ev.PFElecEta(i) ) < cutE_eta && (fabs(ev.PFElecEta(i)) < cutE_etagap[0] || 
 		fabs(ev.PFElecEta(i)) > cutE_etagap[1]))
-	
 		passKin = true;
-		if(ev.PFElecIsEB(i) == 1 && ev.PFElecMva(i) > cutE_EB_MVA_PF) passID =true;
-		if(ev.PFElecIsEB(i) != 1 && ev.PFElecMva(i) > cutE_EE_MVA_PF) passID =true;
-	
-		if(innerhits <= cutE_innerhits && !(fabs(ev.PFElecConvDcot(i)) < cutE_dcot && fabs(ev.PFElecConvDist(i) ) < cutE_dist))
-		passCR = true;
+
+		//		if(ev.PFElecIsEB(i) == 1 && ev.PFElecMva(i) > cutE_EB_MVA_PF) passID =true;
+		//		if(ev.PFElecIsEB(i) != 1 && ev.PFElecMva(i) > cutE_EE_MVA_PF) passID =true;
+
+		if((ev.PFElecIsEB(i) == 1 && 
+		    ietaieta < cutE_EB_ietaieta && 
+		    fabs(deltaphi) <  cutE_EB_dphi &&
+		    fabs(deltaeta) < cutE_EB_deta && 
+		    hadEm < cutE_EB_hadem) ||
+		   (ev.PFElecIsEB(i) != 1 && 
+		    ietaieta < cutE_EE_ietaieta && 
+		    fabs(deltaphi) < cutE_EE_dphi &&
+		    fabs(deltaeta) <  cutE_EE_deta && 
+		    hadEm <  cutE_EE_hadem))
+		  passID = true;
+
+		if(!useWP95ID){
+		  if(innerhits <= cutE_innerhits && !(fabs(ev.PFElecConvDcot(i)) < cutE_dcot && fabs(ev.PFElecConvDist(i) ) < cutE_dist))
+		    passCR = true;
+		}
+		else{
+		  if(innerhits <= cutE_innerhits)
+		    passCR = true;
+		}
 	
 		if(fabs(dxy) < cutE_dxy && fabs(dz) < cutE_dz)
 		passVtx = true;
@@ -238,34 +287,26 @@ namespace Operation
 
 	///-------------------PF  Lepton selection----------------------------------------------
 
-	bool PFLepTightCuts(EventData& ev , int i)
+	bool PFLepTightCuts(EventData& ev , int i, double pt)
 	{
 		bool send=false;
 
 		if(ev.LepType()=="m" )
 		{
-			send = PFMuonTightCuts( ev , i);
+			send = PFMuonTightCuts( ev , i, pt);
 	
 		}
 		else if(ev.LepType()=="e")
 		{
 			
-			send = PFElecTightCuts( ev , i);
+			send = PFElecTightCuts( ev , i, pt);
 
 		}
-		else if(ev.LepType()=="t")
-		{
-
-			//float discrByIso  = (ev.PFTauLeadTrackPtCut(i) > 0.5 ) ?  ev.PFTauByIso(i) : 0.;
-			//float discrByTaNC = ( ev.PFTauLeadTrackPtCut(i) > 0.5 ) ? ev.PFTauByTaNCfrHalfPercent(i) : 0.;
-
-			//if(discrByIso>0.5 ) send=true; 
-		}
-
-
 		return send;
-	
 	}	
+
+
+
 
 	///-------------------isolated  muon selection----------------------------------------------
 
@@ -307,11 +348,18 @@ namespace Operation
 	{
 		bool send=false;
 
-		for(int i=0; i<ev.NPFLep(); i++ )
+		for(int i=0; i<ev.NPFMuon(); i++ )
 		{
-			if( PFLepTightCuts(ev ,i) &&  deltaR( JetEta , JetPhi , ev.PFLepEta(i) , ev.PFLepPhi(i) ) < 0.15)
+			if( PFMuonTightCuts(ev ,i) &&  deltaR( JetEta , JetPhi , ev.PFMuonEta(i) , ev.PFMuonPhi(i) ) < 0.3)
 			{	
 				send= true;  // this jet has iso muon
+			}
+		}
+		for(int i=0; i<ev.NPFElec(); i++ )
+		{
+			if( PFElecTightCuts(ev ,i) &&  deltaR( JetEta , JetPhi , ev.PFElecEta(i) , ev.PFElecPhi(i) ) < 0.3)
+			{	
+				send= true;  // this jet has iso elec
 			}
 		}
 
@@ -493,9 +541,9 @@ namespace Operation
 
 
 
-			int flg_trg80=0;
-			string strtrg = ev.HLTNames();
-                        if (strtrg.find("HLT_CentralJet80_MET80")!=string::npos ) flg_trg80=1;
+// 			int flg_trg80=0;
+// 			string strtrg = ev.HLTNames();
+//             if (strtrg.find("HLT_CentralJet80_MET80")!=string::npos ) flg_trg80=1;
 
 
 			
@@ -517,7 +565,9 @@ namespace Operation
 
 
 			//cout <<  ev.PDFWeight() <<  "  " <<   endl;
+
 			
+			//cout << ev.PFLepPt(0)  <<  "  " <<  ev.LepType()  <<  "  " <<   PFElecTightCuts(ev , 0)  << endl;
 			
 		}
 
@@ -579,7 +629,7 @@ namespace Operation
 
 	bool CutAbnormalEvents::Process(EventData & ev) 
 	{
-	    if ( ev.run() < 178390 )
+	    if ( ev.NPV()  < 8 )
 		{
 			return true;
 		} 
@@ -628,15 +678,15 @@ namespace Operation
 
 ///--------------------------MET Cut-------------------------------------------------------------------------
 
-
-	CutMet::CutMet(double cut) : mCut(cut) {} 
+	CutMet::CutMet(double cut, bool nolep = 0) : mCut(cut), mNoLep(nolep) {} 
 	CutMet::~CutMet() {}
 
 	bool CutMet::Process(EventData & ev) 
 	{
-	    if ( MetLepPt( ev.MetPx(ev.MetType()) , ev.MetPy(ev.MetType()) , ev )  > mCut )
-		  //if ( ev.MetPt(6) > mCut )
+		if( (mNoLep == 0 && MetLepPt( ev.MetPx(ev.MetType()) , ev.MetPy(ev.MetType()) , ev )  > mCut ) || 
+			(mNoLep == 1 && ev.MetPt( ev.MetType() ) > mCut) )
 		{
+			
 			return true;
 		} 
 		else 
@@ -646,10 +696,9 @@ namespace Operation
 	}
 	std::ostream& CutMet::Description(std::ostream &ostrm) 
 	{
-	        ostrm << "  Met"   << "Cut met >" << mCut << " GeV :............";
+		ostrm << "  Met"   << "Cut met >" << mCut << " GeV :............";
 		return ostrm;
 	}
-	
 
 ///--------------------------NOISE CLEAN Cut---------------------------------------------------------------
 
@@ -699,7 +748,7 @@ namespace Operation
 		return ostrm;
 	}	
 
-///--------------------------NJet Cut-------------------------------------------------------------------------------------
+///--------------------------NJet Cut------------------------------------------------------------------
 
 
 	CutNJet::CutNJet(int cut) : mCut(cut) {} 
@@ -746,7 +795,7 @@ namespace Operation
 	
 	
 
-///--------------------------JET1 CUT----------------------------------------------------------------------------------------
+///--------------------------JET1 CUT--------------------------------------------------------------------
 
 
 	CutJet1::CutJet1(double JetPt , double JetEta, double  JetIDEmfMin, double JetIDEmfMax ) : 
@@ -784,7 +833,7 @@ namespace Operation
 		return ostrm;
 	}	
 
-///--------------------------DeltaPhi-1 Cut----------------------------------------------------------------------------------
+///--------------------------DeltaPhi-1 Cut----------------------------------------------------------
 
 
 	CutDeltaPhi1::CutDeltaPhi1(double cut1) : 
@@ -822,7 +871,7 @@ namespace Operation
 	}
 
 
-///--------------------------DeltaPhi-2 Cut---------------------------------------------------------------------------------
+///--------------------------DeltaPhi-2 Cut----------------------------------------------------------------
 
 
 	CutDeltaPhi2::CutDeltaPhi2(double cut1) : 
@@ -1055,7 +1104,9 @@ namespace Operation
 				}	
 			} 
 
-			if( WmunuMT>50. && WmunuMT<100. && LepCharge == mCharge ) send =true;
+			//if( WmunuMT>50. && WmunuMT<100. && LepCharge == mCharge ) send =true;
+
+			if( WmunuMT>50. && WmunuMT<100. ) send =true;
 		}
 				
 		
@@ -1108,7 +1159,7 @@ namespace Operation
 		}
 
 		if( isoLepPnum==1 && isoLepMnum==1)
-		{  
+		{
 
 			double dimuPhi =0;
 			double ZmumuMT=0;
@@ -1150,7 +1201,7 @@ namespace Operation
 	}
 
 
-///---------------------------PF Muon Iso--------------------------------------------------
+///---------------------------PF Lep Iso--------------------------------------------------
 
 	PFLepIso::PFLepIso(double cut) :mCut(cut) {} 
 	PFLepIso::~PFLepIso() {}
@@ -1162,7 +1213,7 @@ namespace Operation
 		
 		for(int i=0; i<ev.NPFLep(); i++ )
 		{
-			if(  PFLepTightCuts(ev , i)  ) send =true ;
+			if(  PFLepTightCuts(ev , i, mCut)  ) send =true ;
 
 		}
 
@@ -1176,54 +1227,54 @@ namespace Operation
 	}
 
 
-	///--------------------------No PF  Muon for monojet -----------------------------------------------
+///--------------------------No PF  Muon for monojet -----------------------------------------------
 
 
-	NoPFLep::NoPFLep(double pt) : mPt(pt) {} 
-	NoPFLep::~NoPFLep() {}
+	NoPFMuon::NoPFMuon(double pt) : mPt(pt) {} 
+	NoPFMuon::~NoPFMuon() {}
 
-	bool NoPFLep::Process(EventData & ev) 
+	bool NoPFMuon::Process(EventData & ev) 
 	{
 		bool  send=true;
 
-		for(int i=0; i<ev.NPFLep(); i++ )
+		for(int i=0; i<ev.NPFMuon(); i++ )
 		{
-			if(  PFLepTightCuts(ev , i) == true ) send =false ;
+			if(  PFMuonTightCuts(ev , i,  mPt) == true ) send =false ;
 
 		}
 
 		return send;
 	}
-	std::ostream& NoPFLep::Description(std::ostream &ostrm) 
+	std::ostream& NoPFMuon::Description(std::ostream &ostrm) 
 	{
-		ostrm << "  No PFLepton  Leptons pt>" <<  mPt << " GeV :............";
+		ostrm << "  No PFMuon   pt>" <<  mPt << " GeV :............";
 		return ostrm;
-	}	
+	}
 
-///-------------------------Electron & Muon Veto----------------------------------------------------------
+///--------------------------No PF  Electron for monojet ------------------------------------------
 
-	CutElecMuon::CutElecMuon(double cut) : mCut(cut){} 
-	CutElecMuon::~CutElecMuon() {}
 
-	bool CutElecMuon::Process(EventData & ev) 
+	NoPFElec::NoPFElec(double pt) : mPt(pt) {} 
+	NoPFElec::~NoPFElec() {}
+
+	bool NoPFElec::Process(EventData & ev) 
 	{
-		bool send = true;
-		if ( ev.NPFMuon()>0 && ev.PFMuonPt(0) >  mCut )
+		bool  send=true;
+
+		for(int i=0; i<ev.NPFElec(); i++ )
 		{
-			send = false;
-		} 
-		if( ev.NPFElec()>0 && ev.PFElecPt(0) >  mCut  ) 
-		{
-			send =false;
+			if(  PFElecTightCuts(ev , i,  mPt) == true ) send =false ;
+
 		}
 
 		return send;
 	}
-	std::ostream& CutElecMuon::Description(std::ostream &ostrm) 
+	std::ostream& NoPFElec::Description(std::ostream &ostrm) 
 	{
-		ostrm << "  Electron & Muon Veto " << "  e or mu pt<" << mCut << " :.................";
+		ostrm << "  No PFElectron   pt>" <<  mPt << " GeV :............";
 		return ostrm;
-	}
+	}		
+
 
 
 }

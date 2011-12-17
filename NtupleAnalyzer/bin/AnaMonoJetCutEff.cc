@@ -72,18 +72,16 @@ int main(int argc, char ** argv)
 	vector<int> abevt;
 	
 	
-	
 	//CutAbnormalEvents  CAbnormalEvents(abrun , abevt);            
 	CutNoiseClean      CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99); 
-	CutJet1            CJet1( 150 , 2.4,  0.02, 0.98); 
+	CutJet1            CJet1( 110 , 2.4,  0.02, 0.98); 
 	CutNJet            CNJet(3);
 	CutDeltaPhi3       CDeltaPhi3(2.5); 
-	CutMet             CMet(200);
+	CutMet             CMet(350,1);
 	CutTIV             CTIV(0.01);
-	CutElecMuon        CElecMuon(10.);
-	NoPFLep            CNoPFLep(20.);
-	//NoIsoMuon          CNoIsoMuon(20);
-	
+	NoPFMuon           CNoPFMuon(10.);
+	NoPFElec           CNoPFElec(10.);
+
 	//manager.Add(&CAbnormalEvents);
 	if(sel!=1) manager.Add(&CNoiseClean);
 	if(sel!=2) manager.Add(&CJet1);
@@ -91,9 +89,9 @@ int main(int argc, char ** argv)
 	if(sel!=4) manager.Add(&CDeltaPhi3);
 	if(sel!=5) manager.Add(&CMet );
 	if(sel!=6) manager.Add(&CTIV );
-	if(sel!=7) manager.Add(&CElecMuon );
-	if(sel!=8) manager.Add(&CNoPFLep  );
-	//if(sel!=8) manager.Add(&CNoIsoMuon );   
+	if(sel!=7) manager.Add(&CNoPFMuon );
+	if(sel!=8) manager.Add(&CNoPFElec  );
+
       
 	
 	hDataMcMatching  DataMcMatching(histFile+"_AnaMonoJetCutEff_" +selName + ".root");   manager.Add(&DataMcMatching);

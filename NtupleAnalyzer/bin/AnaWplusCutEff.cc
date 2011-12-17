@@ -75,10 +75,10 @@ int main(int argc, char ** argv)
 	
 	//CutAbnormalEvents  CAbnormalEvents(abrun , abevt);            
 	CutNoiseClean      CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99); 
-	CutJet1            CJet1( 150 , 2.4,  0.02, 0.98); 
+	CutJet1            CJet1( 110 , 2.4,  0.02, 0.98); 
 	CutNJet            CNJet(3);
 	CutDeltaPhi3       CDeltaPhi3(2.5); 
-	CutMet             CMet(200);
+	CutMet             CMet(350);
 	WsignSelection     CWsignSelection(1.0);
 
 	//manager.Add(&CAbnormalEvents);

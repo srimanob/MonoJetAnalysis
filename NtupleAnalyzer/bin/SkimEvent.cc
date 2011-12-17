@@ -95,9 +95,6 @@ int main(int argc, char ** argv)
 	}
 	file11.close();
 
-
-
-	
 				   
  	file2 << "     ) \n"; 
 	file2 << " ) \n";

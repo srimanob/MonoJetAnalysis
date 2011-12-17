@@ -328,6 +328,13 @@ class EventData
 		Double_t        PFElecInnerHits(UInt_t id);    
 		Double_t        PFElecConvDist(UInt_t id);    
 		Double_t        PFElecConvDcot(UInt_t id);    
+		Double_t        PFElecDEtaSuTrAtVtx(UInt_t id);    
+		Double_t        PFElecDPhiSuTrAtVtx(UInt_t id);    
+		Double_t        PFElecHadronicOverEm(UInt_t id);    
+		Double_t        PFElecHcalOverEcal(UInt_t id);    
+		Double_t        PFElecetaeta(UInt_t id);    
+		Double_t        PFElecietaieta(UInt_t id);    
+
 
 		Int_t           NTau();
 		Double_t        TauE(UInt_t id);    
@@ -357,7 +364,7 @@ class EventData
 		Double_t        PFTauPz(UInt_t id);    
 		Double_t        PFTauEta(UInt_t id);    
 		Double_t        PFTauPhi(UInt_t id);    
-		Double_t        PFTauCharge(UInt_t id);    
+		Int_t           PFTauCharge(UInt_t id);    
 		Double_t        PFTauEtaEtaMoment(UInt_t id);    
 		Double_t        PFTauPhiPhiMoment(UInt_t id);    
 		Double_t        PFTauEtaPhiMoment(UInt_t id);    
@@ -785,6 +792,12 @@ class EventData
 		Double_t        mPFElecInnerHits[MAXELEC];    
 		Double_t        mPFElecConvDist[MAXELEC];    
 		Double_t        mPFElecConvDcot[MAXELEC];    
+		Double_t        mPFElecDEtaSuTrAtVtx[MAXELEC];    
+		Double_t        mPFElecDPhiSuTrAtVtx[MAXELEC];    
+		Double_t        mPFElecHadronicOverEm[MAXELEC];    
+		Double_t        mPFElecHcalOverEcal[MAXELEC];    
+		Double_t        mPFElecetaeta[MAXELEC];    
+		Double_t        mPFElecietaieta[MAXELEC];    
 
 		Int_t           mNTau;
 		Double_t        mTauE[MAXTAU];    
@@ -814,7 +827,7 @@ class EventData
 		Double_t        mPFTauPz[MAXTAU];    
 		Double_t        mPFTauEta[MAXTAU];    
 		Double_t        mPFTauPhi[MAXTAU];    
-		Double_t        mPFTauCharge[MAXTAU];    
+		Int_t           mPFTauCharge[MAXTAU];    
 		Double_t        mPFTauEtaEtaMoment[MAXTAU];    
 		Double_t        mPFTauPhiPhiMoment[MAXTAU];    
 		Double_t        mPFTauEtaPhiMoment[MAXTAU];    

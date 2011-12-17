@@ -37,12 +37,17 @@
 <bin   name="Merge"  file="Merge.cc"></bin>
 <bin   name="Merge2" file="Merge2.cc"></bin>
 <bin   name="Table"  file="Table.cc"></bin>
+<bin   name="TableLep"  file="TableLep.cc"></bin>
+
+
 <bin   name="TransferFile" file="TransferFile.cc"></bin>
 
 
 <bin   name="SubmitCondor" file="SubmitCondor.cc"> </bin>
 <bin   name="SkimEvent" file="SkimEvent.cc"> </bin>
 
+<bin   name="ProducePyFile" file="ProducePyFile.cc"> </bin>
+<bin   name="SubmitCondor2" file="SubmitCondor2.cc"> </bin>
 
 
 

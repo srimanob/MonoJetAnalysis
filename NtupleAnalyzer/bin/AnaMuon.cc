@@ -78,11 +78,9 @@ int main(int argc, char ** argv)
 	CutNoiseClean CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99); manager.Add(&CNoiseClean);
 	hDataMcMatching  DataMcMatching2(histFile+"_AnaMuon_2.root"); manager.Add(&DataMcMatching2);
 
-
 	hWZAnalysis      WZAnalysis1(histFile+"_WZAnalysis_1.root"); manager.Add(&WZAnalysis1); ///-------------
 
-
-	CutJet1 CJet1( 150 , 2.4,  0.02, 0.98); manager.Add(&CJet1);
+	CutJet1 CJet1( 110 , 2.4,  0.02, 0.98); manager.Add(&CJet1);
 	hDataMcMatching  DataMcMatching3(histFile+"_AnaMuon_3.root"); manager.Add(&DataMcMatching3);
 
 
@@ -105,22 +103,34 @@ int main(int argc, char ** argv)
 
 	hDataMcMatching  DataMcMatching6(histFile+"_AnaMuon_6.root"); manager.Add(&DataMcMatching6);
 
-	hWZAnalysis      WZAnalysis3(histFile+"_WZAnalysis_3.root"); manager.Add(&WZAnalysis3);///-------------
+	//hWZAnalysis      WZAnalysis3(histFile+"_WZAnalysis_3.root"); manager.Add(&WZAnalysis3);///-------------
 
-
+	
 	CutMet CMet2(250); manager.Add(&CMet2);
 	hDataMcMatching  DataMcMatching7(histFile+"_AnaMuon_7.root"); manager.Add(&DataMcMatching7);
+
+
+	hWZAnalysis      WZAnalysis3(histFile+"_WZAnalysis_3.root"); manager.Add(&WZAnalysis3);///-------------
+
 
 	CutMet CMet3(300); manager.Add(&CMet3);
 	hDataMcMatching  DataMcMatching8(histFile+"_AnaMuon_8.root"); manager.Add(&DataMcMatching8);
 
+
+	hWZAnalysis      WZAnalysis4(histFile+"_WZAnalysis_4.root"); manager.Add(&WZAnalysis4);///-------------
+
+
 	CutMet CMet4(350); manager.Add(&CMet4);
 	hDataMcMatching  DataMcMatching9(histFile+"_AnaMuon_9.root"); manager.Add(&DataMcMatching9);
+
+	hWZAnalysis      WZAnalysis5(histFile+"_WZAnalysis_5.root"); manager.Add(&WZAnalysis5);///-------------
+
 
 	CutMet CMet5(400); manager.Add(&CMet5);
  	hDataMcMatching  DataMcMatching10(histFile+"_AnaMuon_10.root"); manager.Add(&DataMcMatching10);
 
-	
+	hWZAnalysis      WZAnalysis6(histFile+"_WZAnalysis_6.root"); manager.Add(&WZAnalysis6);///-------------
+
 
 
 //-------------------------------------------------------------------------------------------------------------------------

@@ -93,8 +93,7 @@ int main(int argc, char ** argv)
 			file1 << "Error      =" <<  conout  << argv[1]  << "_$(Cluster)_$(Process).err"<< endl;
 			file1 << "Log        =" <<  conout  << argv[1]  << "_$(Cluster)_$(Process).log"<< endl;
 			file1 << "notify_user = "<< endl;
-			file1 << "Queue 1"<< endl;
-			
+			file1 << "Queue 1"<< endl;	
 		
 			file1.close();
 		

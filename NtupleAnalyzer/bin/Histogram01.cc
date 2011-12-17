@@ -42,39 +42,34 @@ namespace Histogram01
 	{
 		fileOut = new TFile(mFileName.c_str(),"recreate");
 		
-		histo1D["MET80"]         = new TH1D("MET80"        , "MET80"           , 50, 0, 1000);
-		histo1D["MET80All"]      = new TH1D("MET80All"     , "MET80All"        , 50, 0, 1000);
-		histo1D["MET80_2"]       = new TH1D("MET80_2"      , "MET80"           , 50, 0, 1000);
-		histo1D["MET80All_2"]    = new TH1D("MET80All_2"   , "MET80All"        , 50, 0, 1000);
+		histo1D["MET80"]         = new TH1D("MET80"        , "MET80"           , 100, 0, 1000);
+		histo1D["MET80All"]      = new TH1D("MET80All"     , "MET80All"        , 100, 0, 1000);
+		histo1D["MET80_2"]       = new TH1D("MET80_2"      , "MET80"           , 100, 0, 1000);
+		histo1D["MET80All_2"]    = new TH1D("MET80All_2"   , "MET80All"        , 100, 0, 1000);
+		
+		histo1D["MET80_3"]       = new TH1D("MET80_3"      , "MET80"           , 100, 0, 1000);
+		histo1D["MET80All_3"]    = new TH1D("MET80All_3"   , "MET80All"        , 100, 0, 1000);
+		
+		histo1D["MET95"]         = new TH1D("MET95"        , "MET95"           , 100, 0, 1000);
+		histo1D["MET95All"]      = new TH1D("MET95All"     , "MET95All"        , 100, 0, 1000);
+		histo1D["MET95_2"]       = new TH1D("MET95_2"      , "MET95"           , 100, 0, 1000);
+		histo1D["MET95All_2"]    = new TH1D("MET95All_2"   , "MET95All"        , 100, 0, 1000);
+		
+		histo1D["MET95_3"]       = new TH1D("MET95_3"      , "MET95"           , 100, 0, 1000);
+		histo1D["MET95All_3"]    = new TH1D("MET95All_3"   , "MET95All"        , 100, 0, 1000);
 
-		histo1D["MET80_3"]       = new TH1D("MET80_3"      , "MET80"           , 50, 0, 1000);
-		histo1D["MET80All_3"]    = new TH1D("MET80All_3"   , "MET80All"        , 50, 0, 1000);
-
-
-
-		histo1D["MET95"]         = new TH1D("MET95"        , "MET95"           , 50, 0, 1000);
-		histo1D["MET95All"]      = new TH1D("MET95All"     , "MET95All"        , 50, 0, 1000);
-		histo1D["MET95_2"]       = new TH1D("MET95_2"      , "MET95"           , 50, 0, 1000);
-		histo1D["MET95All_2"]    = new TH1D("MET95All_2"   , "MET95All"        , 50, 0, 1000);
-
-		histo1D["MET95_3"]       = new TH1D("MET95_3"      , "MET95"           , 50, 0, 1000);
-		histo1D["MET95All_3"]    = new TH1D("MET95All_3"   , "MET95All"        , 50, 0, 1000);
-
-
-
-
-		histo1D["MET80Eff"]      = new TH1D("MET80Eff"     , "MET80Eff"        , 50, 0, 1000);
-		histo1D["MET95Eff"]      = new TH1D("MET95Eff"     , "MET95Eff"        , 50, 0, 1000);
-		histo1D["MET80Eff_2"]    = new TH1D("MET80Eff_2"   , "MET80Eff"        , 50, 0, 1000);
-		histo1D["MET95Eff_2"]    = new TH1D("MET95Eff_2"   , "MET95Eff"        , 50, 0, 1000);
-
-		histo1D["MET80Eff_3"]    = new TH1D("MET80Eff_3"   , "MET80Eff"        , 50, 0, 1000);
-		histo1D["MET95Eff_3"]    = new TH1D("MET95Eff_3"   , "MET95Eff"        , 50, 0, 1000);
-
-		histo1D["run"]           = new TH1D("run"          , "Run"             , 160000, 180000, 20000);
-                histo1D["JetPhi"]        = new TH1D("JetPhi"       , "JetPhi"          , 100, -4, 4);
+		histo1D["MET80Eff"]      = new TH1D("MET80Eff"     , "MET80Eff"        , 100, 0, 1000);
+		histo1D["MET95Eff"]      = new TH1D("MET95Eff"     , "MET95Eff"        , 100, 0, 1000);
+		histo1D["MET80Eff_2"]    = new TH1D("MET80Eff_2"   , "MET80Eff"        , 100, 0, 1000);
+		histo1D["MET95Eff_2"]    = new TH1D("MET95Eff_2"   , "MET95Eff"        , 100, 0, 1000);
+		
+		histo1D["MET80Eff_3"]    = new TH1D("MET80Eff_3"   , "MET80Eff"        , 100, 0, 1000);
+		histo1D["MET95Eff_3"]    = new TH1D("MET95Eff_3"   , "MET95Eff"        , 100, 0, 1000);
+		
+		histo1D["run"]           = new TH1D("run"          , "Run"             , 19000, 160000, 179000);
+		histo1D["JetPhi"]        = new TH1D("JetPhi"       , "JetPhi"          , 100, -4, 4);
 		histo1D["JetEta"]        = new TH1D("JetEta"       , "JetEta"          , 100, -5, 5);
-                histo2D["JetEtavsPhi"]   = new TH2D("JetEtavsPhi"  , "JetEtavsPhi"     , 100, -5, 5, 100,-4,4);
+		histo2D["JetEtavsPhi"]   = new TH2D("JetEtavsPhi"  , "JetEtavsPhi"     , 100, -5, 5, 100,-4,4);
 
 	}
 
@@ -83,7 +78,7 @@ namespace Histogram01
 
 	bool hHLTEff::Process(EventData & ev) 
 	{
-		int t = ev.MetType();
+		//int t = ev.MetType();
 		//int njets = JetNumber(ev);
 		int ixjet1= JetIndex(0, ev);
 		//int ixjet2= JetIndex(1, ev);	
@@ -97,7 +92,7 @@ namespace Histogram01
 	
 			
 
-			if( flg_trg80==0 && ev.PFAK5JetPtCor(ixjet1)>110 && ev.PFAK5JetPtCor(ixjet1)<160 )  
+			if( flg_trg80==0 )  
 			{
 			    histo1D["run"]->Fill(ev.run());
 
@@ -108,32 +103,34 @@ namespace Histogram01
 			}
 
 
-
+			//if( abs( ev.PFAK5JetEta(ixjet1) ) >1.0 ) {
 			if(flg_trg80==1) histo1D["MET80"]->Fill( ev.PFAK5JetPtCor( ixjet1)  );
 			histo1D["MET80All"]->Fill( ev.PFAK5JetPtCor(ixjet1)  );
-
+			//}
 		}
-		else
-		{
 
-			int flg_trg95=0;
-			string strtrg = ev.HLTNames();
-			if (strtrg.find("HLT_CentralJet80_MET95")!=string::npos ) flg_trg95=1;
+			/*			//}
+			//	else
+			//	{
+
+			//int flg_trg95=0;
+			//	string strtrg = ev.HLTNames();
+			//	if (strtrg.find("HLT_CentralJet80_MET95")!=string::npos ) flg_trg95=1;
 	
 			
-			if(flg_trg95==1) histo1D["MET95"]->Fill( MetLepPt( ev.MetPx(t) , ev.MetPy(t) , ev ) );
-			histo1D["MET95All"]->Fill( MetLepPt( ev.MetPx(t) , ev.MetPy(t) , ev ) );
+			//if(flg_trg95==1) histo1D["MET95"]->Fill( MetLepPt( ev.MetPx(t) , ev.MetPy(t) , ev ) );
+			//histo1D["MET95All"]->Fill( MetLepPt( ev.MetPx(t) , ev.MetPy(t) , ev ) );
 
-		}
+			//}
 
 
-		int flg_trg80=0;
-		string strtrg = ev.HLTNames();
-		if (strtrg.find("HLT_CentralJet80_MET80")!=string::npos ) flg_trg80=1;
+			//int flg_trg80=0;
+			//string strtrg = ev.HLTNames();
+			//if (strtrg.find("HLT_CentralJet80_MET80")!=string::npos ) flg_trg80=1;
 	
 
-		if( flg_trg80==1 )
-		{
+		//if( flg_trg80==1 )
+		//	{
 			
 			int flg_trg95=0;
 			string strtrg = ev.HLTNames();
@@ -144,12 +141,7 @@ namespace Histogram01
 			histo1D["MET95All_2"]->Fill( MetLepPt( ev.MetPx(t) , ev.MetPy(t) , ev ) );
 		
 		
-		}
-
-
-
-
-		
+			//}  */
 
 
 		return true;
@@ -172,7 +164,7 @@ namespace Histogram01
 
 		double a1=0, a2=0;
 		double b1=0, b2=0;
-	  	for(int i=51; i>0; i--)
+	  	for(int i=101; i>0; i--)
 		{		
 			a1=a1+histo1D["MET80"]->GetBinContent(i);
 			histo1D["MET80_3"]->SetBinContent( i , a1 );
@@ -253,21 +245,49 @@ namespace Histogram01
 		
 
 		//jet1 
-		histo1D["Jet1Pt"]           = new TH1D("Jet1Pt"         , "Jet1Pt "             , 28, 0, 700);
-		histo1D["Jet1PtThrs"]       = new TH1D("Jet1PtThrs"     , "Jet1Pt "             , 28, 0, 700);
+		histo1D["Jet1Pt"]           = new TH1D("Jet1Pt"         , "Jet1Pt "             , 40, 0, 1000);
+		histo1D["Jet1PtThrs"]       = new TH1D("Jet1PtThrs"     , "Jet1Pt "             , 40, 0, 1000);
 		histo1D["Jet1Emf"]          = new TH1D("Jet1Emf"        , "Jet1Emf"             , 300,-1, 2);
+
+		histo1D["Jet1Pt_1"]           = new TH1D("Jet1Pt_1"         , "Jet1Pt "             , 40, 0, 1000);
+		histo1D["Jet1Pt_2"]           = new TH1D("Jet1Pt_2"         , "Jet1Pt "             , 40, 0, 1000);
+		histo1D["Jet1Pt_3"]           = new TH1D("Jet1Pt_3"         , "Jet1Pt "             , 40, 0, 1000);
+
+		histo1D["Jet1Eta_1"]          = new TH1D("Jet1Eta_1"        , "Jet1Eta "            , 36, -3.6, 3.6);
+		histo1D["Jet1Eta_2"]          = new TH1D("Jet1Eta_2"        , "Jet1Eta "            , 36, -3.6, 3.6);
+		histo1D["Jet1Eta_3"]          = new TH1D("Jet1Eta_3"        , "Jet1Eta "            , 36, -3.6, 3.6);
+
 
 
 		// for overflow
-		histo1D["Jet1Pt2"]          = new TH1D("Jet1Pt2"        , "Jet1Pt "             , 28, 0, 700);
-		histo1D["Jet1Pt3"]          = new TH1D("Jet1Pt3"        , "Jet1Pt "             , 27, 0, 675);
+		histo1D["Jet1Pt2"]          = new TH1D("Jet1Pt2"        , "Jet1Pt "             , 40, 0, 1000);
+		histo1D["Jet1Pt3"]          = new TH1D("Jet1Pt3"        , "Jet1Pt "             , 39, 0, 975);
 
 	
 		histo1D["Jet1Eta"]          = new TH1D("Jet1Eta"        , "Jet1Eta "            , 36, -3.6, 3.6);
-		
+		histo1D["Jet1Phi"]          = new TH1D("Jet1Phi"        , "Jet1Phi "            , 80, -4, 4);
+	
+		//histo1D["Jet1Eta_uncor"]    = new TH1D("Jet1Eta_uncor"        , "Jet1Eta "            , 36, -3.6, 3.6);
+		histo1D["Jet1Phi_uncor"]    = new TH1D("Jet1Phi_uncor"        , "Jet1Phi "            , 80, -4, 4);
+		histo1D["Jet1Pt_uncor"]     = new TH1D("Jet1Pt_uncor"         , "Jet1Pt "             , 28, 0, 700);
+
+
+
+		histo2D["Jet1PhivsEta"]     = new TH2D("Jet1PhivsEta"   , "Jet1Phi vs Eta"      , 40, -4, 4 , 40, -4,4);
+
+
+		histo1D["CaloJet1Emf_1"]     = new TH1D("CaloJet1Emf_1"   , "CaloJet1Emf_1"      , 60, -1, 2 );
+		histo1D["CaloJet1Emf_2"]     = new TH1D("CaloJet1Emf_2"   , "CaloJet1Emf_2"      , 60, -1, 2 );
+		histo1D["CaloJet1Emf_3"]     = new TH1D("CaloJet1Emf_3"   , "CaloJet1Emf_3"      , 60, -1, 2 );
+
+
+
+		histo1D["CaloJet1Eta"]      = new TH1D("CaloJet1Eta"    , "CaloJet1Eta "        , 36, -3.6, 3.6);	
+
+
 		histo1D["Jet2Pt"]           = new TH1D("Jet2Pt"         , "Jet2Pt "             , 24, 0, 600);
 		histo1D["Jet2Eta"]          = new TH1D("Jet2Eta"        , "Jet2Eta "            , 52, -5.2, 5.2);
-
+		histo1D["Jet2Phi"]          = new TH1D("Jet2Phi"        , "Jet2Phi "            , 80, -4, 4);
 
 		//Njet
 		histo1D["NJet"]             = new TH1D("NJet"           , "NJet "               , 10, 0, 10);
@@ -282,21 +302,23 @@ namespace Histogram01
 		histo1D["dPhi_Jet1_Jet2"]   = new TH1D("dPhi_Jet1_Jet2"  , "dPhi Jet1 Jet2 "     , 35, 0, 3.5);
 		
 		//Met
-		histo1D["Met"]              = new TH1D("Met"             , "MET "                , 32, 0, 800);
-		histo1D["MetLep1"]          = new TH1D("MetLep1"         , "MET+Lep"              , 32, 0, 800);
-		histo1D["MetLep2"]          = new TH1D("MetLep2"         , "MET+Lep"              , 24, 200, 800);
+		histo1D["Met"]              = new TH1D("Met"             , "MET "                ,  40, 0, 1000);
+		histo1D["MetLep1"]          = new TH1D("MetLep1"         , "MET+Lep"              , 40, 0, 1000);
+		histo1D["MetLep2"]          = new TH1D("MetLep2"         , "MET+Lep"              , 32, 200, 1000);
 
 		//for overflow 
-		histo1D["MetLep3"]          = new TH1D("MetLep3"         , "MET+Lep"             , 24, 200, 800); 
-		histo1D["MetLep4"]          = new TH1D("MetLep4"         , "MET+Lep"             , 23, 200, 775); 
+		histo1D["MetLep3"]          = new TH1D("MetLep3"         , "MET+Lep"             , 32, 200, 1000); 
+		histo1D["MetLep4"]          = new TH1D("MetLep4"         , "MET+Lep"             , 31, 200, 975); 
 
 
-		histo1D["MetLepPhi"]        = new TH1D("MetLepPhi"       , "MET+Lep Phi "        , 40, 0, 4);
-		histo1D["MetPhi"]           = new TH1D("MetPhi"          , "MET Phi "            , 40, 0, 4);
+		histo1D["MetLepPhi"]        = new TH1D("MetLepPhi"       , "MET+Lep Phi "        , 80, -4, 4);
+		histo1D["MetPhi"]           = new TH1D("MetPhi"          , "MET Phi "            , 80, -4, 4);
 
-		histo1D["MetLepThrs1"]      = new TH1D("MetLepThrs1"     , "METLep Threshold"    , 32, 0, 800  );
-		histo1D["MetLepThrs2"]      = new TH1D("MetLepThrs2"     , "METLep Threshold"    , 24, 200, 800);
+		histo1D["MetLepThrs1"]      = new TH1D("MetLepThrs1"     , "METLep Threshold"    , 40, 0, 1000  );
+		histo1D["MetLepThrs2"]      = new TH1D("MetLepThrs2"     , "METLep Threshold"    , 32, 200, 1000);
 		
+
+		histo1D["MetSumEt"]         = new TH1D("MetSumEt"        , "SumEt"               , 150, 0, 1500);
 
 		//TIV
 		histo1D["TIV"]              = new TH1D("TIV"             , "TIV "                , 70, -0.05, 0.3);
@@ -398,7 +420,7 @@ namespace Histogram01
 
 
 
-		histo1D["MetLep1_cm"]       = new TH1D("MetLep1_cm"      , "MET+Lep"              , 32, 0, 800);
+		histo1D["MetLep1_cm"]       = new TH1D("MetLep1_cm"      , "MET+Lep"              , 40, 0, 1000);
 		histo1D["MetLep1_eff"]      = new TH1D("MetLep1_eff"     , "MET+Lep"              , 32, 0, 800);
 
 
@@ -408,10 +430,11 @@ namespace Histogram01
 		histo1D["GravitonPt_qq"]      = new TH1D("GravitonPt_qq"     , "GravitonPt_qq"              , 50, 0, 1000);
 
 
-		histo2D["SumETvsNPV"]         = new TH2D("SumETvsNPV"       , "SumETvsNPV"        ,1000,0,1000, 30, 0, 30);
-		profile1D["SumETprNPV"]       = new TProfile("SumETprNPV"   , "<SumET> vs NPV"    ,20,0,20,0,1000);
+		histo2D["SumETvsNPV"]         = new TH2D("SumETvsNPV"       , "SumETvsNPV"        ,1500,0,1500, 30, 0, 30);
+		profile1D["SumETprNPV"]       = new TProfile("SumETprNPV"   , "<SumET> vs NPV"    ,30,0,30,0,1500);
 
-
+        histo2D["PileUpETvsNPV"]      = new TH2D("PileUpETvsNPV"    , "SumETvsNPV"        ,1500,0,1500, 30, 0, 30);
+		profile1D["PileUpETprNPV"]    = new TProfile("PileUpETprNPV", "<PileUpET> vs NPV"    ,30,0,30,0,1500);
 
 
 		for(int i=0; i<45; i++ )
@@ -438,12 +461,30 @@ namespace Histogram01
 		double w= ev.Weight();
 
 
-		histo2D["SumETvsNPV"]->Fill( ev.MetSumEt(0), ev.NPV(), w );
-		profile1D["SumETprNPV"]->Fill( ev.NPV() , ev.MetSumEt(0) );
+		histo2D["SumETvsNPV"]->Fill( ev.MetSumEt(t), ev.NPV(), w );
+		profile1D["SumETprNPV"]->Fill( ev.NPV() , ev.MetSumEt(t) );
+
+
+
 		
 		int njets = JetNumber(ev);
 		int ixjet1= JetIndex(0, ev);
 		int ixjet2= JetIndex(1, ev);	
+
+
+		double  pileupET = ev.MetSumEt(t) - (ev.PFAK5JetPtCor(ixjet1)+ ev.PFAK5JetPtCor(ixjet2) );  
+
+		histo2D["PileUpETvsNPV"]->Fill(  pileupET , ev.NPV() , w );
+
+		profile1D["PileUpETprNPV"]->Fill( ev.NPV() , pileupET );
+
+		histo2D["Jet1PhivsEta"]->Fill(  ev.PFAK5JetEta(ixjet1) ,ev.PFAK5JetPhi(ixjet1), w);
+
+   
+		histo1D["Jet1Phi_uncor"]->Fill( atan2( ev.PFAK5JetPy(ixjet1) ,  ev.PFAK5JetPx(ixjet1)  )  , w);
+		histo1D["Jet1Pt_uncor"]->Fill(  ev.PFAK5JetPt(ixjet1) , w);
+
+
 
 
 		histo1D["NPFTau"]->Fill(ev.NPFTau() );       
@@ -538,6 +579,32 @@ namespace Histogram01
 		histo1D["Jet1Eta"]->Fill( ev.PFAK5JetEta( ixjet1 ) , w ); 
 		histo1D["Jet1Emf"]->Fill( ev.CaloAK5JetEmf(0) , w );  
 
+		histo1D["Jet1Phi"]->Fill( ev.PFAK5JetPhi(ixjet1) , w ); 
+
+		histo1D["CaloJet1Eta"]->Fill( ev.CaloAK5JetEta(0) , w );  
+
+
+		if( ev.PFAK5JetPhi(ixjet1)< -1.5 )
+		{  
+			histo1D["Jet1Pt_1"]->Fill( ev.PFAK5JetPtCor( ixjet1  ) , w ); 
+			histo1D["Jet1Eta_1"]->Fill( ev.PFAK5JetEta( ixjet1  ) , w ); 
+
+			histo1D["CaloJet1Emf_1"]->Fill( ev.CaloAK5JetEmf( ixjet1  ) , w );
+		}
+
+		else if( ev.PFAK5JetPhi(ixjet1) > -1.5  && ev.PFAK5JetPhi(ixjet1)< 0.5)
+		{
+			histo1D["Jet1Pt_2"]->Fill( ev.PFAK5JetPtCor( ixjet1  ) , w ); 
+			histo1D["Jet1Eta_2"]->Fill( ev.PFAK5JetEta( ixjet1  ) , w ); 
+			histo1D["CaloJet1Emf_2"]->Fill( ev.CaloAK5JetEmf( ixjet1  ) , w );
+		}
+        else if( ev.PFAK5JetPhi(ixjet1) > 0.5 )  
+		{
+			histo1D["Jet1Pt_3"]->Fill( ev.PFAK5JetPtCor( ixjet1  ) , w );
+			histo1D["Jet1Eta_3"]->Fill( ev.PFAK5JetEta( ixjet1  ) , w ); 
+			histo1D["CaloJet1Emf_3"]->Fill( ev.CaloAK5JetEmf( ixjet1  ) , w );
+		}
+
 		//njet
 		histo1D["NJet"]->Fill( njets , w );
 		
@@ -555,6 +622,8 @@ namespace Histogram01
 
 			histo1D["Jet2Pt"]->Fill( ev.PFAK5JetPtCor(ixjet2) , w ); 
 			histo1D["Jet2Eta"]->Fill( ev.PFAK5JetEta(ixjet2) , w ); 
+			histo1D["Jet2Phi"]->Fill( ev.PFAK5JetPhi(ixjet2) , w ); 
+
 		}
 		
 		//Met
@@ -567,9 +636,9 @@ namespace Histogram01
 
 
 		histo1D["MetLepPhi"]->Fill( fabs( MetLepPhi( ev.MetPx(t) , ev.MetPy(t) , ev) ), w );
-		histo1D["MetPhi"]->Fill(  fabs( ev.MetPhi(t) ) , w ); 
+		histo1D["MetPhi"]->Fill(   ev.MetPhi(t)  , w ); 
 
-
+		histo1D["MetSumEt"]->Fill(   ev.MetSumEt(t)  , w ); 
 		
 		//TIV
 		histo1D["TIV"]->Fill( ev.LowTIV()  , w );
@@ -711,14 +780,9 @@ namespace Histogram01
 	std::ostream& hDataMcMatching::Description(std::ostream &ostrm) 
 	{
 	  
-
-
-		//histo1D["MetLep1_eff"]->Divide( histo1D["MetLep1_cm"] , histo1D["MetLep1"] );
-
-
-	  	for(int i=33; i>0; i--)
+		double a1=0, a2=0;
+	  	for(int i=41; i>0; i--)
 		{		
-			double a1=0, a2=0;
 
 			a1=a1+histo1D["MetLep1"]->GetBinContent(i);
 			histo1D["MetLepThrs1"]->SetBinContent( i , a1 );
@@ -727,29 +791,28 @@ namespace Histogram01
 			histo1D["Jet1PtThrs"]->SetBinContent( i , a2 );
 		}
 
-
-		for(int i=25; i>0; i--)
+		double a5=0;
+		for(int i=33; i>0; i--)
 		{
-			double a5=0;
 			a5=a5+histo1D["MetLep2"]->GetBinContent(i);
 			histo1D["MetLepThrs2"]->SetBinContent( i , a5 );
 
 		}
-		for(int i=1; i<25 ; i++)
-		{	
-			double a1= histo1D["MetLep4"]->GetBinContent(i);
-		    histo1D["MetLep3"]->SetBinContent( i , a1 );
-		}
-
 		for(int i=1; i<33 ; i++)
 		{	
-			double a1= histo1D["Jet1Pt3"]->GetBinContent(i);
-		    histo1D["Jet1Pt2"]->SetBinContent( i , a1 );
+			double a6= histo1D["MetLep4"]->GetBinContent(i);
+		    histo1D["MetLep3"]->SetBinContent( i , a6 );
+		}
+
+		for(int i=1; i<41 ; i++)
+		{	
+			double a7= histo1D["Jet1Pt3"]->GetBinContent(i);
+		    histo1D["Jet1Pt2"]->SetBinContent( i , a7 );
 		}
 		
 
 
-		histo1D["MetLep1_eff"]->Divide( histo1D["MetLep1_cm"], histo1D["MetLep1"] , 1.0, 1.0 ); 
+		//histo1D["MetLep1_eff"]->Divide( histo1D["MetLep1_cm"], histo1D["MetLep1"] , 1.0, 1.0 ); 
 
 
 		ostrm << "  DataMcMatching (output in " << mFileName << "):";

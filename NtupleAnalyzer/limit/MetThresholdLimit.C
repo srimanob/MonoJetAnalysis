@@ -11,66 +11,66 @@
 
 	
 	TFile f1("rootfiles/data_limit.root");
-	TH1D*  data = (TH1D*) f1.Get("MetMuThrs1")->Clone();
+	TH1D*  data = (TH1D*) f1.Get("MetLepThrs1")->Clone();
 
 
 	TFile f21("rootfiles/ttbar_limit.root");
-	TH1D*  ttbar = (TH1D*) f21.Get("MetMuThrs1")->Clone();
+	TH1D*  ttbar = (TH1D*) f21.Get("MetLepThrs1")->Clone();
 
 	TFile f22("rootfiles/zjets_limit.root");
-	TH1D*  zjets = (TH1D*) f22.Get("MetMuThrs1")->Clone();
+	TH1D*  zjets = (TH1D*) f22.Get("MetLepThrs1")->Clone();
 
 	TFile f23("rootfiles/tsingle_limit.root");
-	TH1D*  tsingle = (TH1D*) f23.Get("MetMuThrs1")->Clone();
+	TH1D*  tsingle = (TH1D*) f23.Get("MetLepThrs1")->Clone();
 
 	TFile f24("rootfiles/qcd_limit.root");
-	TH1D*  qcd  = (TH1D*) f24.Get("MetMuThrs1")->Clone();
+	TH1D*  qcd  = (TH1D*) f24.Get("MetLepThrs1")->Clone();
 
 
 	TFile f31("rootfiles/signal_limit_0.root");
-	TH1D*  signal0 = (TH1D*) f31.Get("MetMu1")->Clone();
+	TH1D*  signal0 = (TH1D*) f31.Get("MetLep1")->Clone();
 
 	TFile f32("rootfiles/signal_limit_8.root");
-	TH1D*  signal8 = (TH1D*) f32.Get("MetMuThrs1")->Clone();
+	TH1D*  signal8 = (TH1D*) f32.Get("MetLepThrs1")->Clone();
 
 
 
 	///Zinv
 
 	TFile f4("rootfiles/zinv_limit.root");
-	TH1D*  zinv = (TH1D*) f4.Get("MetMuThrs1")->Clone();
+	TH1D*  zinv = (TH1D*) f4.Get("MetLepThrs1")->Clone();
 
 	TFile f41("rootfiles/AnaZDATA.root");
-	TH1D*  zmumuDATA = (TH1D*) f41.Get("MetMuThrs1")->Clone();
+	TH1D*  zmumuDATA = (TH1D*) f41.Get("MetLepThrs1")->Clone();
 
 	TFile f42("rootfiles/AnaZMC.root");
-	TH1D*  zmumuMC    = (TH1D*) f42.Get("MetMuThrs1")->Clone();
-	TH1D*  zmumuMCmet = (TH1D*) f42.Get("MetMu1")->Clone();
+	TH1D*  zmumuMC    = (TH1D*) f42.Get("MetLepThrs1")->Clone();
+	TH1D*  zmumuMCmet = (TH1D*) f42.Get("MetLep1")->Clone();
 
 	TFile f43("rootfiles/AnaZMC_ttbar.root");
-	TH1D*  zmumu_ttbar = (TH1D*) f43.Get("MetMuThrs1")->Clone();
+	TH1D*  zmumu_ttbar = (TH1D*) f43.Get("MetLepThrs1")->Clone();
 
 	TFile f44("rootfiles/AnaZMC_tsingle.root");
-	TH1D*  zmumu_tsingle = (TH1D*) f44.Get("MetMuThrs1")->Clone();
+	TH1D*  zmumu_tsingle = (TH1D*) f44.Get("MetLepThrs1")->Clone();
 
 
 	///Wjets
 
 	TFile f5("rootfiles/wjets_limit.root");
-	TH1D*  wjets = (TH1D*) f5.Get("MetMuThrs1")->Clone();
+	TH1D*  wjets = (TH1D*) f5.Get("MetLepThrs1")->Clone();
 
 	TFile f51("rootfiles/AnaWDATA.root");
-	TH1D*  wmunuDATA = (TH1D*) f51.Get("MetMuThrs1")->Clone();
+	TH1D*  wmunuDATA = (TH1D*) f51.Get("MetLepThrs1")->Clone();
 
 	TFile f52("rootfiles/AnaWMC.root");
-	TH1D*  wmunuMC    = (TH1D*) f52.Get("MetMuThrs1")->Clone();
-	TH1D*  wmunuMCmet = (TH1D*) f52.Get("MetMu1")->Clone();
+	TH1D*  wmunuMC    = (TH1D*) f52.Get("MetLepThrs1")->Clone();
+	TH1D*  wmunuMCmet = (TH1D*) f52.Get("MetLep1")->Clone();
 
 	TFile f53("rootfiles/AnaWMC_ttbar.root");
-	TH1D*  wmunu_ttbar = (TH1D*) f53.Get("MetMuThrs1")->Clone();
+	TH1D*  wmunu_ttbar = (TH1D*) f53.Get("MetLepThrs1")->Clone();
 
 	TFile f54("rootfiles/AnaWMC_tsingle.root");
-	TH1D*  wmunu_tsingle = (TH1D*) f54.Get("MetMuThrs1")->Clone();
+	TH1D*  wmunu_tsingle = (TH1D*) f54.Get("MetLepThrs1")->Clone();
 
 
 	Int_t nbins = data->GetNbinsX()+1 ;
@@ -110,8 +110,14 @@
 		double  Zacc = 0.03;
 		
 		Zerr[i] = sqrt( ZstatData*ZstatData + ZstatMC*ZstatMC + Zacc*Zacc + Zstat_ttbar*Zstat_ttbar + Zstat_tsingle*Zstat_tsingle ); 
+
+
+
  		
 		ZBin[i] = zinv->GetBinContent(i);  
+
+
+		//cout <<  Zerr[i] <<   "   " << ZBin[i]  <<  endl; 
 
 
 	}
@@ -198,7 +204,7 @@
 
 
 
-	double  lumi = 1146.; 
+	double  lumi = 4657.; 
 	double  lumierr = 4.5;  //percentage
 	double deneme[40];
 	double BckErr[40];
@@ -210,20 +216,18 @@
 								 
 		//deneme = roostats_clm(1092, 66, 0.04847, 0.004847,  1724, 73, 1 ,1 ); 
 
-		BckErr[i] = sqrt(   pow(Zerr[1]*ZBin[i], 2)    +  pow(Werr[1]*WBin[i],2) 
-						   +pow( zjetsBin[i], 2) + pow( tsingleBin[i], 2) + pow( ttbarBin[i], 2) + pow( qcdBin[i], 2)    );
+		BckErr[i] = sqrt(   pow(Zerr[1]*ZBin[i], 2)    +  pow(Werr[1]*WBin[i],2) +pow( zjetsBin[i], 2) + pow( tsingleBin[i], 2) + pow( ttbarBin[i], 2) + pow( qcdBin[i], 2)    );
 
 	
-			//deneme[i] = roostats_cl95(lumi, lumi*lumierr/100. , signalBin[i]/signalTot, signalBin[i]/signalTot/10., mcBin[i],
-			//sqrt(pow(BckErr[i],2) + dataBin[i] + pow(mcBin[i]*0.042 ,2) )  , mcBin[i], gauss=false, nuisanceModel=1, "bayesian" , "");
+	      deneme[i] = roostats_cl95(lumi, lumi*lumierr/100. , signalBin[i]/signalTot, signalBin[i]/signalTot/10., mcBin[i],sqrt(pow(BckErr[i],2) + dataBin[i] + pow(mcBin[i]*0.042 ,2) )  , mcBin[i], gauss=false, nuisanceModel=1, "bayesian" , "");
 		
 
 			//deneme[i] = roostats_cl95(lumi, lumi*lumierr/100. , signalBin[i]/signalTot, signalBin[i]/signalTot/7.5, mcBin[i],
 			//sqrt(pow(BckErr[i],2) + dataBin[i] + mcBin[i]*0.03 )  , mcBin[i], gauss=false, nuisanceModel=1, "bayesian" , "");
 		
 
-		cout <<  signalBin[i]  << endl ;
-		cout <<  mcBin[i]  << endl ;
+		//cout <<  signalBin[i]  << endl ;
+		//cout <<  mcBin[i]  << endl ;
 
 		METThreshold[i] = i*25. -25. ;
 

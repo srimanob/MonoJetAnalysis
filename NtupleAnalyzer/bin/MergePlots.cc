@@ -187,7 +187,7 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 		
 
 		((TH1D*)(*tfileIt)->Get(histname))->SetMinimum(0.2);
-		((TH1D*)(*tfileIt)->Get(histname))->SetMaximum(ent[0]*20000 );
+		((TH1D*)(*tfileIt)->Get(histname))->SetMaximum(ent[0]*1500 );
 		
 		//cout  << ent[0] << "................" <<  endl;
 		

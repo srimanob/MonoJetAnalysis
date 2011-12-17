@@ -44,7 +44,7 @@ int main(int argc, char ** argv)
 
 	char line1[255], line2[255], myhadd[255];
 
-        while (!file.eof())
+	while (!file.eof())
 	{
 		file >> line1;
 		

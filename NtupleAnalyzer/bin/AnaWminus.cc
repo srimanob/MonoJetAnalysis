@@ -81,7 +81,7 @@ int main(int argc, char ** argv)
 	hWZAnalysis      WZAnalysis1(histFile+"_WZAnalysis_1.root"); manager.Add(&WZAnalysis1); ///-------------
 
 
-	CutJet1 CJet1( 150 , 2.4,  0.02, 0.98); manager.Add(&CJet1);
+	CutJet1 CJet1( 110 , 2.4,  0.02, 0.98); manager.Add(&CJet1);
 	hDataMcMatching  DataMcMatching3(histFile+"_AnaMuon_3.root"); manager.Add(&DataMcMatching3);
 
 

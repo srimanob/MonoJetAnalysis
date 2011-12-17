@@ -28,10 +28,9 @@ namespace Operation
 	int     JetIndex(int ind , EventData & eventData);
 	int     JetNumber(EventData & eventData);
 
-	bool    PFLepTightCuts(EventData& ev , int i);
-
-	bool    PFMuonTightCuts(EventData& ev , int i);
-	bool    PFElecTightCuts(EventData& ev , int i);
+	bool    PFLepTightCuts(EventData&  ev , int i, double pt=20.);
+	bool    PFMuonTightCuts(EventData& ev , int i, double pt=20.);
+	bool    PFElecTightCuts(EventData& ev , int i, double pt=20.);
 
 
 
@@ -128,12 +127,13 @@ namespace Operation
 	class CutMet : public Operation::_Base 
 	{
 		public:
-			CutMet(double cut);
+			CutMet(double cut, bool nolep);
 			~CutMet();
 			bool Process(EventData & eventData);
 			std::ostream& Description(std::ostream& ostrm);
 		private:
 			double mCut;
+			bool mNoLep;
 	};
 	
 //-----------------------Met Cut-----------------------------------------------------------
@@ -354,26 +354,15 @@ namespace Operation
 		private:
 			double mCut;
 	};	
-//-----------------------PF Electron Selection---------------------------------------------
 
-	class PFElecIso : public Operation::_Base 
-	{
-		public:
-			PFElecIso(double cut);
-			~PFElecIso();
-			bool Process(EventData & eventData);
-			std::ostream& Description(std::ostream& ostrm);
-		private:
-			double mCut;
-	};	
 
 //----------------------No PF Muon Cut------------------------------------------------------
 
-	class NoPFLep : public Operation::_Base 
+	class NoPFMuon : public Operation::_Base 
 	{
 		public:
-			NoPFLep(double pt);
-			~NoPFLep();
+			NoPFMuon(double pt);
+			~NoPFMuon();
 			bool Process(EventData & eventData);
 			std::ostream& Description(std::ostream& ostrm);
 		private:

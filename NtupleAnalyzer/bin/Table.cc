@@ -163,7 +163,7 @@ int main(int argc, char ** argv)
 
 		//cout <<  "  0"   <<  "  "  << a1[0] <<  "  "  <<  a2[0]  <<    "  "  <<  a2[0]/a1[0]  <<  endl;
 
-		for(size_t i=1; i<42; i+=2 )
+		for(size_t i=1; i<40; i+=2 )
 		{
 
 

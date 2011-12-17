@@ -81,18 +81,18 @@ int main(int argc, char ** argv)
 
  	hDataMcMatching  DataMcMatching0(histFile+"_AnaMonoJet_0.root"); manager.Add(&DataMcMatching0);
   
-	CutMet CMet(200); manager.Add(&CMet);
+	CutMet CMet(200 , 1); manager.Add(&CMet);
  	hDataMcMatching  DataMcMatching1(histFile+"_AnaMonoJet_1.root"); manager.Add(&DataMcMatching1);
  
 
  	CutNoiseClean CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99); manager.Add(&CNoiseClean);
  	hDataMcMatching  DataMcMatching2(histFile+"_AnaMonoJet_2.root"); manager.Add(&DataMcMatching2);
 
-	CutJet1 CJet1( 150 , 2.4,  0.02, 0.98); manager.Add(&CJet1);
+	CutJet1 CJet1( 110 , 2.4,  0.02, 0.98); manager.Add(&CJet1);
  	hDataMcMatching  DataMcMatching3(histFile+"_AnaMonoJet_3.root"); manager.Add(&DataMcMatching3);
  
  	
- 	hHLTEff  HLTEff(histFile+"_HLTEff.root"); manager.Add(&HLTEff);
+	hHLTEff  HLTEff1(histFile+"_HLTEff1.root"); manager.Add(&HLTEff1);
  	
  
 	CutNJet  CNJet(3); manager.Add(&CNJet);
@@ -102,16 +102,17 @@ int main(int argc, char ** argv)
  	CutDeltaPhi3  CDeltaPhi3(2.5);  manager.Add(&CDeltaPhi3);
  	hDataMcMatching  DataMcMatching5(histFile+"_AnaMonoJet_5.root"); manager.Add(&DataMcMatching5);
  
- 
- 	//NoIsoMuon   CNoIsoMuon(20);  manager.Add( &CNoIsoMuon );
- 	NoPFLep        CNoPFLep(20.);  manager.Add(&CNoPFLep);
- 	//NoPFElec      CNoPFElec(10);  manager.Add(&CNoPFElec);
- 	hDataMcMatching  DataMcMatching6(histFile+"_AnaMonoJet_6.root"); manager.Add(&DataMcMatching6);
-     
 
- 	CutElecMuon  CElecMuon(10.);  manager.Add(&CElecMuon);
+	hHLTEff  HLTEff2(histFile+"_HLTEff2.root"); manager.Add(&HLTEff2);
+
+
+ 	NoPFMuon        CNoPFMuon(10.);  manager.Add(&CNoPFMuon);
+ 	hDataMcMatching  DataMcMatching6(histFile+"_AnaMonoJet_6.root"); manager.Add(&DataMcMatching6);
+
+ 	NoPFElec         CNoPFElec(10.);  manager.Add(&CNoPFElec);
  	hDataMcMatching  DataMcMatching7(histFile+"_AnaMonoJet_7.root"); manager.Add(&DataMcMatching7);
  	
+
  	CutTIV CTIV(0.01); manager.Add(&CTIV);	
  	hDataMcMatching  DataMcMatching8(histFile+"_AnaMonoJet_8.root"); manager.Add(&DataMcMatching8);
 
