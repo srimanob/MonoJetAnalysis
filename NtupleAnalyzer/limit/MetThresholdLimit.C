@@ -1,12 +1,12 @@
 {
 	//Settings:
 	gROOT->Reset();
-	gROOT->ProcessLine(".L ../bin/tdrStyle.C");
-	gROOT->ProcessLine("setTDRStyle()");
+	//gROOT->ProcessLine(".L ../bin/tdrStyle.C");
+	//gROOT->ProcessLine("setTDRStyle()");
 	
-	TLatex l; l.SetTextSize(0.05);
-	TCanvas *c1 = new TCanvas("Expected Limits", "Expected Limits");
-	c1->SetGrid();
+	//TLatex l; l.SetTextSize(0.05);
+	//TCanvas *c1 = new TCanvas("Expected Limits", "Expected Limits");
+	//c1->SetGrid();
 
 
 	
@@ -213,38 +213,61 @@
 	for(int i=8; i<nbins-16; i++)
 	{
 
-								 
+		if(i== 15)
+		{
+	 		ZBin[15] = ZBin[15]/	1.056504728;
+			WBin[15] = WBin[15]/ 1.067484479;
+		}			 
 		//deneme = roostats_clm(1092, 66, 0.04847, 0.004847,  1724, 73, 1 ,1 ); 
 
-		BckErr[i] = sqrt(   pow(Zerr[1]*ZBin[i], 2)    +  pow(Werr[1]*WBin[i],2) +pow( zjetsBin[i], 2) + pow( tsingleBin[i], 2) + pow( ttbarBin[i], 2) + pow( qcdBin[i], 2)    );
+	    BckErr[i] = sqrt(  pow(Zerr[i]*ZBin[i],2)     +  pow(Werr[i]*WBin[i],2) +pow( zjetsBin[i], 2) + pow( tsingleBin[i], 2) + pow( ttbarBin[i], 2) + pow( qcdBin[i], 2)    );
 
 	
-	      deneme[i] = roostats_cl95(lumi, lumi*lumierr/100. , signalBin[i]/signalTot, signalBin[i]/signalTot/10., mcBin[i],sqrt(pow(BckErr[i],2) + dataBin[i] + pow(mcBin[i]*0.042 ,2) )  , mcBin[i], gauss=false, nuisanceModel=1, "bayesian" , "");
+	     deneme[i] = roostats_cl95(lumi, lumi*lumierr/100. , signalBin[i]/signalTot, signalBin[i]/signalTot/10., mcBin[i], BckErr[i] , mcBin[i], gauss=false, nuisanceModel=1, "bayesian" , "");
 		
 
 			//deneme[i] = roostats_cl95(lumi, lumi*lumierr/100. , signalBin[i]/signalTot, signalBin[i]/signalTot/7.5, mcBin[i],
 			//sqrt(pow(BckErr[i],2) + dataBin[i] + mcBin[i]*0.03 )  , mcBin[i], gauss=false, nuisanceModel=1, "bayesian" , "");
 		
 
-		//cout <<  signalBin[i]  << endl ;
-		//cout <<  mcBin[i]  << endl ;
-
-		METThreshold[i] = i*25. -25. ;
+	     cout << lumi*lumierr/100. << endl ;
+	     cout <<  signalBin[i]/signalTot  << endl ;
+	     cout <<  mcBin[i]  << endl ;
+	     cout  <<  BckErr[i]  << endl ;
+	     
 
 	
 	}
 
+	TGraph *bestLimit = new TGraph(nbins,METThreshold , deneme);
+	
 	for(int i=8; i<nbins-16; i++)
 	{
 
-        cout << i*25.-25. << " WErr:" << WBin[i]*Werr[i]  <<  "  ZErr: " << ZBin[i]*Zerr[i]  <<  "  bck Err: " <<  sqrt(pow(BckErr[i],2) + dataBin[i] + pow(mcBin[i]*0.042,2) )  <<   "  my limit....................." <<deneme[i] << endl; 
+        //cout << i*25.-25. << " WErr:" << WBin[i]*Werr[i]  <<  "  ZErr: " << ZBin[i]*Zerr[i]  <<  "  bck Err: " <<  sqrt(pow(BckErr[i],2) )  <<   "  my limit....................." <<deneme[i] << endl; 
 
-		
+        double  totalBck = ZBin[i] + WBin[i] + zjetsBin[i] + ttbarBin[i] + tsingleBin[i] + qcdBin[i] ;
+
+		METThreshold[i] = i*25. -25. ;
+
+
+		printf( "%3.0d ",  i*25. -25. );
+		printf( " Zinv :%7.1f  -/+ %7.1f ",  ZBin[i] ,  Zerr[i]*ZBin[i] ); 
+		printf( " WJets:%7.1f  -/+ %7.1f ",  WBin[i] ,  Werr[i]*WBin[i] ); 
+		printf( " Zjets:%7.1f ", zjetsBin[i]  ); 
+		printf( " ttbar:%7.1f ", ttbarBin[i]  ); 
+		printf( " tsing:%7.1f ", tsingleBin[i]  ); 
+		printf( " qcd  :%7.1f ", qcdBin[i]  ); 
+		printf( " total:%7.1f  -/+ %7.1f ", mcBin[i] , BckErr[i]); 
+
+		printf( " signal:%7.1f  acc:%7.3f ", signalBin[i], signalBin[i]/signalTot ); 
+
+		printf( " limit:  %5.2f \n", deneme[i] );
 	
 	}
 
 
-
+	//bestLimit->Draw("L");
 
 
 }
