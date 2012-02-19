@@ -78,8 +78,9 @@ int main(int argc, char ** argv)
 	CutJet1            CJet1( 110 , 2.4,  0.02, 0.98); 
 	CutNJet            CNJet(3);
 	CutDeltaPhi3       CDeltaPhi3(2.5); 
-	CutMet             CMet(200);
-	PFLepIso           CPFLepIso(10.);  
+	CutMet             CMet(350);
+	//PFLepIso           CPFLepIso(10.);  
+	WsignSelection     CWsignSelection(1.0);
 
 	//manager.Add(&CAbnormalEvents);
 	if(sel!=1) manager.Add(&CNoiseClean); 
@@ -87,7 +88,9 @@ int main(int argc, char ** argv)
 	if(sel!=3) manager.Add(&CNJet);         
 	if(sel!=4) manager.Add(&CDeltaPhi3);  
 	if(sel!=5) manager.Add(&CMet);        
-	if(sel!=6) manager.Add( &CPFLepIso );	
+	//if(sel!=6) manager.Add( &CPFLepIso );	
+	if(sel!=6) manager.Add( &CWsignSelection );
+
 
 	hDataMcMatching  DataMcMatching(histFile+"_AnaMuonCutEff_" +selName + ".root");  manager.Add(&DataMcMatching);
 

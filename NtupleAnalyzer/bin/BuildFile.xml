@@ -47,7 +47,7 @@
 <bin   name="SkimEvent" file="SkimEvent.cc"> </bin>
 
 <bin   name="ProducePyFile" file="ProducePyFile.cc"> </bin>
-<bin   name="SubmitCondor2" file="SubmitCondor2.cc"> </bin>
+#<bin   name="SubmitCondor2" file="SubmitCondor2.cc"> </bin>
 
 
 

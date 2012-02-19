@@ -168,6 +168,11 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
  	//	((TH1D*)(*tfileIt)->Get("NofMuon"))->GetXaxis()->CenterLabels(kTRUE);
  	//	((TH1D*)(*tfileIt)->Get("NofMuon"))->SetNdivisions(10);
 
+	//        ((TH1D*)(*tfileIt)->Get("WlepnuPT_50_100"))->GetXaxis()->SetNdivisions(11,2,0, kFALSE);
+	//	((TH1D*)(*tfileIt)->Get("ZleplepPT_60_120"))->GetXaxis()->SetNdivisions(4,5,0, kFALSE);
+
+
+
 		//((TH1D*)(*tfileIt)->Get("WmunuMT"))->GetXaxis()->SetNdivisions(5,10,0, kFALSE);
 		//((TH1D*)(*tfileIt)->Get("ZmumuMT"))->GetXaxis()->SetNdivisions(10,10,0, kFALSE);
 		//((TH1D*)(*tfileIt)->Get("ZmumuMT_2"))->GetXaxis()->SetNdivisions(5,10,0, kFALSE);
@@ -187,7 +192,7 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 		
 
 		((TH1D*)(*tfileIt)->Get(histname))->SetMinimum(0.2);
-		((TH1D*)(*tfileIt)->Get(histname))->SetMaximum(ent[0]*1500 );
+		((TH1D*)(*tfileIt)->Get(histname))->SetMaximum(ent[0]*1100 );
 		
 		//cout  << ent[0] << "................" <<  endl;
 		

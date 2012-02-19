@@ -1,4 +1,9 @@
-// ROOT includes
+//////////////////////////////////////////
+//                                      //
+//        Mehmet Vergili Nov 2011       //
+//      CMS data Skim Event             //
+//////////////////////////////////////////
+
 #include <TStyle.h>
 #include <TROOT.h>
 
@@ -35,7 +40,10 @@ int main(int argc, char ** argv)
 		
 		cout  << "run:"  << run <<  "  lumi:"<< lumi <<  "  evt:" << event  <<  endl; 
 
-		string  line1 = " dbs search --query \"find file  where dataset=/MET/Run2011B-PromptReco-v1/RECO  and run=";
+		string  line1 = " dbs search --query \"find file  where dataset=";
+		line1 += argv[1];
+		line1 +=  " and run=";
+
 		line1 += run; 
  		line1 += " and lumi=";
 	  	line1 += lumi; 

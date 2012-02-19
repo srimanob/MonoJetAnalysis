@@ -44,7 +44,7 @@ class EventData
 		float  SecJetCut();
 		
 		Double_t       PDFWeights(UInt_t id);
-		Double_t       PDFWeight();
+		Double_t       PDFWeight(UInt_t id);
 
 		Int_t           run();
 		Long64_t        event();
@@ -507,6 +507,8 @@ class EventData
     
 		float mEnergyScale;
 		float mSecJetCut;
+
+		double mCaloTowerdEx , mCaloTowerdEy; 
 	
 		Double_t        mPDFWeights[45];
 

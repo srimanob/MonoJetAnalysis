@@ -68,7 +68,7 @@ int main(int argc, char ** argv)
 		
 		if(i==4)
 		{
-			for(int k=0; k<45; k++ )
+			for(int k=0; k<41; k++ )
 			{
 				char his[100];
 
@@ -89,7 +89,7 @@ int main(int argc, char ** argv)
 		if(i==7)
 		{
 			
-			for(int k=0; k<45; k++ )
+			for(int k=0; k<41; k++ )
 			{
 				char his[100];
 
@@ -163,7 +163,7 @@ int main(int argc, char ** argv)
 
 		//cout <<  "  0"   <<  "  "  << a1[0] <<  "  "  <<  a2[0]  <<    "  "  <<  a2[0]/a1[0]  <<  endl;
 
-		for(size_t i=1; i<40; i+=2 )
+		for(size_t i=1; i<41; i+=2 )
 		{
 
 
@@ -179,8 +179,8 @@ int main(int argc, char ** argv)
 			tdsm = tdsm +  (dsm*dsm);
 
 
-			//cout <<  "  +" << (i+1)/2  <<  "  "   << a1[i] <<  "  "  <<  a2[i]     <<  "  " <<  a2[i]/a1[i]   <<  "  ..." <<   a2[0]/a1[0] << endl;
-			//cout <<  "  -" << (i+1)/2  <<  "  "   << a1[i+1] <<  "  "  <<  a2[i+1]  <<  "  " <<  a2[i+1]/a1[i+1]   <<endl;
+			cout <<  "  +" << (i+1)/2  <<  "  "   << a1[i] <<  "  "  <<  a2[i]     <<  "  " <<  a2[i]/a1[i]   <<  "  ..." <<   a2[0]/a1[0] << endl;
+			cout <<  "  -" << (i+1)/2  <<  "  "   << a1[i+1] <<  "  "  <<  a2[i+1]  <<  "  " <<  a2[i+1]/a1[i+1]   <<endl;
 			
 			//cout <<  "" << i <<  "  " <<  ds <<  "  "<< dsp   <<  "  "  <<  dsm  << endl<< endl;
 		
@@ -192,7 +192,7 @@ int main(int argc, char ** argv)
 		double  acc = t[4]*100/t[1];
 		
 		double  jesm = (t[4]- t[3])*100 / t[4];
-		double  jesp = (t[5] - t[4])*100 / t[4];
+		double  jesp = (t[4] - t[5])*100 / t[4];
 		
 		double  pdfm = sqrt(tdsm)*100 / ( t[4]/t[1])  ; 
 		double  pdfp = sqrt(tdsp)*100 / ( t[4]/t[1])  ; 
@@ -201,7 +201,7 @@ int main(int argc, char ** argv)
 		double  totp = sqrt( jesp*jesp + pdfp*pdfp );
 		
 		
-		printf( "| %6.3f | -%6.3f / +%6.3f | -%6.3f / +%6.3f | -%6.3f / +%6.3f |",  acc , jesm, jesp , pdfm ,pdfp  , totm, totp  );      
+		printf( "| %6.3f | %6.3f / %6.3f | -%6.3f / +%6.3f | -%6.3f / +%6.3f |",  acc , jesm, jesp , pdfm ,pdfp  , totm, totp  );      
 		
 	}
 }

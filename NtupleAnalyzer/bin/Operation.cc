@@ -23,7 +23,7 @@ namespace Operation
 	vector<double> generate_flat10_weights(TH1D* data_npu_estimated)
 	{
 	  
-	  /* //Array for 1D  reweight 
+	  /*    //Array for 1D  reweight 
 		const double npu_probs[35] = 
 		{
 			1.45346E-01,
@@ -63,7 +63,7 @@ namespace Operation
 			5.80004E-06
 			}; */
 
-		//Array for 3D reweight
+			//Array for 3D reweight
 		const double npu_probs[25] = {
 			0.0698146584,
 			0.0698146584,
@@ -90,7 +90,9 @@ namespace Operation
 			0.0002229748,
 			0.0001028162,
 			4.58337152809607E-05 
-			}; 
+			};  
+
+
 
 
 		vector<double> result(25);
@@ -563,10 +565,11 @@ namespace Operation
 
 			//cout << ev.PFLepPy(1) << " " << ev.PFMuonPy(1) <<  " "  <<  ev.NPFLep() <<  " " <<  ev.NPFMuon() <<   endl; 
 
-
-			//cout <<  ev.PDFWeight() <<  "  " <<   endl;
-
-			
+			//for(int i=0; i<41; i++){
+			//cout <<  ev.PDFWeight(i) * ev.PDFWeights(0) /ev.PDFWeight(0)  <<  "  " << ev.PDFWeights(i) <<  endl;
+			  // cout << "----------------------------" <<  endl;
+			//}
+			//cout << "----------------------------" <<  endl;
 			//cout << ev.PFLepPt(0)  <<  "  " <<  ev.LepType()  <<  "  " <<   PFElecTightCuts(ev , 0)  << endl;
 			
 		}
@@ -629,7 +632,7 @@ namespace Operation
 
 	bool CutAbnormalEvents::Process(EventData & ev) 
 	{
-	    if ( ev.NPV()  < 8 )
+	        if( ev.NPV()  > 10 )
 		{
 			return true;
 		} 
@@ -724,13 +727,16 @@ namespace Operation
 		  	int ixjet1= JetIndex(0, ev);
 			int ixjet2= JetIndex(1, ev);
 
-			if( JetNumber(ev)==1 && ev.PFAK5JetChaHadEngFrac(ixjet1)>0.2 &&  ev.PFAK5JetNeuHadEngFrac(ixjet1)<0.7 &&
+			//if( JetNumber(ev)==1 && ev.PFAK5JetChaHadEngFrac(ixjet1)>0.2 &&  ev.PFAK5JetNeuHadEngFrac(ixjet1)<0.7 &&
+			//  ev.PFAK5JetChaEmEngFrac(ixjet1)<0.7  && ev.PFAK5JetNeuEmEngFrac(ixjet1)<0.7  )
+			  
+		        if( JetNumber(ev)==1 &&  ev.PFAK5JetChaHadEngFrac(ixjet1)>0.2 && ev.PFAK5JetNeuHadEngFrac(ixjet1)<0.7 &&
 			    ev.PFAK5JetChaEmEngFrac(ixjet1)<0.7  && ev.PFAK5JetNeuEmEngFrac(ixjet1)<0.7  )
 			{
 				send=true;
 			} 
-			if(ixjet2<99 && ixjet1<99 &&  JetNumber(ev)>1 && ev.PFAK5JetChaHadEngFrac(ixjet1)>0.2 &&  ev.PFAK5JetNeuHadEngFrac(ixjet1)<0.7 &&
-			    ev.PFAK5JetChaEmEngFrac(ixjet1)<0.7  && ev.PFAK5JetNeuEmEngFrac(ixjet1)<0.7 && ev.PFAK5JetNeuHadEngFrac(ixjet2)<0.7  )
+			if(ixjet2<99 && ixjet1<99 &&  JetNumber(ev)>1 && ev.PFAK5JetChaHadEngFrac(ixjet1)>0.2 && ev.PFAK5JetNeuHadEngFrac(ixjet1)<0.7 &&
+			   ev.PFAK5JetChaEmEngFrac(ixjet1)<0.7 && ev.PFAK5JetNeuEmEngFrac(ixjet1)<0.7  && ev.PFAK5JetNeuHadEngFrac(ixjet2)<0.7  )
 			{
 				send=true;
 			}
@@ -807,7 +813,7 @@ namespace Operation
 		bool send=false;
 	  	if( ev.JetType()=="calo")
 		{
-			if( ev.CaloAK5JetPtCor(0)>mJetPt && abs(ev.CaloAK5JetEta(0))<mJetEta )
+			if( ev.CaloAK5JetPtCor(0)>mJetPt &&  abs(ev.CaloAK5JetEta(0))<mJetEta )
 			{
 				send=true;
 			}

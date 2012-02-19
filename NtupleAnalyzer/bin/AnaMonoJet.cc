@@ -81,7 +81,7 @@ int main(int argc, char ** argv)
 
  	hDataMcMatching  DataMcMatching0(histFile+"_AnaMonoJet_0.root"); manager.Add(&DataMcMatching0);
   
-	CutMet CMet(200 , 1); manager.Add(&CMet);
+	CutMet CMet(200); manager.Add(&CMet);
  	hDataMcMatching  DataMcMatching1(histFile+"_AnaMonoJet_1.root"); manager.Add(&DataMcMatching1);
  
 
@@ -104,6 +104,15 @@ int main(int argc, char ** argv)
  
 
 	hHLTEff  HLTEff2(histFile+"_HLTEff2.root"); manager.Add(&HLTEff2);
+
+
+	//CutTIV CTIV(0.01); manager.Add(&CTIV);
+	//hDataMcMatching  DataMcMatching8(histFile+"_AnaMonoJet_8.root"); manager.Add(&DataMcMatching8);
+
+
+	//NoPFElec         CNoPFElec(10.);  manager.Add(&CNoPFElec);
+        //hDataMcMatching  DataMcMatching7(histFile+"_AnaMonoJet_7.root"); manager.Add(&DataMcMatching7);
+
 
 
  	NoPFMuon        CNoPFMuon(10.);  manager.Add(&CNoPFMuon);
