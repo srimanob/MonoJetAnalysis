@@ -35,9 +35,8 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mydataset["try1"] =  "/uscms_data/d2/vergili/jan/CMSSW_4_2_8_patch7/src/MonoJetAnalysis/NtupleAnalyzer/test/md2d4_cteq.root";
 	mydataset["try2"] =  "/uscms_data/d2/vergili/jan/CMSSW_4_2_8_patch7/src/MonoJetAnalysis/NtupleAnalyzer/test/md2d2.root";
 
-	
-	
-/*      //Fall-11
+		
+/*  //Fall-11
 	mydataset["wjets"] =  "/uscms_data/d1/lpcjm/DATA/Fall11/Fall11_WJets_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_2571pb_04jan.root"; 
 	mydataset["wjets"] =  "/uscms_data/d1/lpcjm/DATA/Fall11/Fall11_WJetsPt100_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_38057pb_04jan.root"; 
 	mydataset["ttbar"] =  "/uscms_data/d1/lpcjm/DATA/Fall11/Fall11_TTJets_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_18117pb_04jan.root"; 
@@ -107,70 +106,68 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mydataset["md3d6"]    = "/uscms_data/d1/lpcjm/DATA/ADD_summer11/md3d6.root";
 	mydataset["md4d6"]    = "/uscms_data/d1/lpcjm/DATA/ADD_summer11/md4d6.root";
 
+
+	mydataset["dmavd1"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass1GeV_M40TeV_madgraph.root";
+	mydataset["dmavd10"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass10GeV_M40TeV_madgraph.root";
+	mydataset["dmavd100"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass100GeV_M40TeV_madgraph.root";
+	mydataset["dmavd200"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass200GeV_M40TeV_madgraph.root";
+	mydataset["dmavd300"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass300GeV_M40TeV_madgraph.root";
+	mydataset["dmavd400"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass400GeV_M40TeV_madgraph.root";
+	mydataset["dmavd700"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass700GeV_M40TeV_madgraph.root";
+	mydataset["dmavd1000"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass1000GeV_M40TeV_madgraph.root";
 	
-	//DarkMatter Samples
-	//mydataset["dmavd1"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_AVd_1GeVMass.root";
-
-	mydataset["dmavd1"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/New_darkdmatter_madgraph_AVd_1GeVMass.root";
-	mydataset["dmavd10"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_AVd_10GeVMass.root";
-	mydataset["dmavd100"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_AVd_100GeVMass.root";
-	mydataset["dmavd400"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_AVd_400GeVMass.root";
-	mydataset["dmavd700"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_AVd_700GeVMass.root";
-	mydataset["dmavd1000"] = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_AVd_1000GeVMass.root";
-
-
-	mydataset["dmavu1"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_AVu_1GeVMass.root";
-	mydataset["dmavu10"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_AVu_10GeVMass.root";
-	mydataset["dmavu100"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_AVu_100GeVMass.root";
-	mydataset["dmavu400"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_AVu_400GeVMass.root";
-	mydataset["dmavu700"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_AVu_700GeVMass.root";
-	mydataset["dmavu1000"] = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_AVu_1000GeVMass.root";
-
-
-	mydataset["dmvd1"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_Vd_1GeVMass.root";
-	mydataset["dmvd10"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_Vd_10GeVMass.root";
-	mydataset["dmvd100"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_Vd_100GeVMass.root";
-	mydataset["dmvd400"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_Vd_400GeVMass.root";
-	mydataset["dmvd700"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_Vd_700GeVMass.root";
-	mydataset["dmvd1000"] = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_Vd_1000GeVMass.root";
-
-
-	mydataset["dmvu1"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_Vu_1GeVMass.root";
-	mydataset["dmvu10"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_Vu_10GeVMass.root";
-	mydataset["dmvu100"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_Vu_100GeVMass.root";
-	mydataset["dmvu400"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_Vu_400GeVMass.root";
-	mydataset["dmvu700"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_Vu_700GeVMass.root";
-	mydataset["dmvu1000"] = "/uscms_data/d1/lpcjm/DATA/DarkMatter/darkdmatter_madgraph_Vu_1000GeVMass.root";
-
-
-	mydataset["dmeff"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/madgraph_EFFDM_chid.root";
-
-
+	mydataset["dmavu1"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass1GeV_M40TeV_madgraph.root";
+	mydataset["dmavu10"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass10GeV_M40TeV_madgraph.root";
+	mydataset["dmavu100"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass100GeV_M40TeV_madgraph.root";
+	mydataset["dmavu200"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass200GeV_M40TeV_madgraph.root";
+	mydataset["dmavu300"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass300GeV_M40TeV_madgraph.root";
+	mydataset["dmavu400"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass400GeV_M40TeV_madgraph.root";
+	mydataset["dmavu700"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass700GeV_M40TeV_madgraph.root";
+	mydataset["dmavu1000"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass1000GeV_M40TeV_madgraph.root";
+	
+	mydataset["dmvd1"]      = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass1GeV_M40TeV_madgraph.root";
+	mydataset["dmvd10"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass10GeV_M40TeV_madgraph.root";
+	mydataset["dmvd100"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass100GeV_M40TeV_madgraph.root";
+	mydataset["dmvd200"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass200GeV_M40TeV_madgraph.root";
+	mydataset["dmvd300"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass300GeV_M40TeV_madgraph.root";
+	mydataset["dmvd400"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass400GeV_M40TeV_madgraph.root";
+	mydataset["dmvd700"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass700GeV_M40TeV_madgraph.root";
+	mydataset["dmvd1000"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass1000GeV_M40TeV_madgraph.root";
+	
+	mydataset["dmvu1"]      = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass1GeV_M40TeV_madgraph.root";
+	mydataset["dmvu10"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass10GeV_M40TeV_madgraph.root";
+	mydataset["dmvu100"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass100GeV_M40TeV_madgraph.root";
+	mydataset["dmvu200"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass200GeV_M40TeV_madgraph.root";
+	mydataset["dmvu300"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass300GeV_M40TeV_madgraph.root";
+	mydataset["dmvu400"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass400GeV_M40TeV_madgraph.root";
+	mydataset["dmvu700"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass700GeV_M40TeV_madgraph.root";
+	mydataset["dmvu1000"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass1000GeV_M40TeV_madgraph.root";
+	
 
 	//3D Reweight
-	mydataset["pileup"]    = "/uscms_data/d2/lpcjm/DATA/pileup/Cert_160404-180252_7TeV_Collisions11_JSON.pileupTruth_v2_finebin.root";
+	//mydataset["pileup"]    = "/uscms_data/d2/lpcjm/DATA/pileup/Cert_160404-180252_7TeV_Collisions11_JSON.pileupTruth_v2_finebin.root";
 	//1D Reweight
-	//mydataset["pileup"]    = "/uscms_data/d2/lpcjm/DATA/pileup/Cert_160404-180252_7TeV_Collisions11_JSON.pileup_v2.root";
+	mydataset["pileup"]    = "/uscms_data/d2/lpcjm/DATA/pileup/Cert_160404-180252_7TeV_Collisions11_JSON.pileup_v2.root";
 	//mydataset["pileup"]      = "/uscms_data/d2/vergili/nov/CMSSW_4_2_8_patch7/src/MonoJetAnalysis/NtupleAnalyzer/data/pileup/deneme.root";
 
 
-	mylumi["met1"]     = 4657.;
-	mylumi["met2"]     = 4657.;
-	mylumi["met3"]     = 4657.;
-	mylumi["met4"]     = 4657.;
-	mylumi["met5"]     = 4657.;
-	mylumi["met6"]     = 4657.;
+	mylumi["met1"]     = 4980.;
+	mylumi["met2"]     = 4980.;
+	mylumi["met3"]     = 4980.;
+	mylumi["met4"]     = 4980.;
+	mylumi["met5"]     = 4980.;
+	mylumi["met6"]     = 4980.;
 
-	mylumi["sinmu1"]   = 4657.;
-	mylumi["sinmu2"]   = 4657.;
-	mylumi["sinmu3"]   = 4657.;
-	mylumi["sinmu4"]   = 4657.;
-	mylumi["sinmu5"]   = 4657.;
-	mylumi["sinmu6"]   = 4657.;
+	mylumi["sinmu1"]   = 4980.;
+	mylumi["sinmu2"]   = 4980.;
+	mylumi["sinmu3"]   = 4980.;
+	mylumi["sinmu4"]   = 4980.;
+	mylumi["sinmu5"]   = 4980.;
+	mylumi["sinmu6"]   = 4980.;
 
 
-	mylumi["try1"]     = 4657.;
-	mylumi["try2"]     = 4657.;
+	mylumi["try1"]     = 4980.;
+	mylumi["try2"]     = 4980.;
 
 
 /*	//fall 11
@@ -187,7 +184,7 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 */	
 
 /*
-    //Summer 11-2 
+        //Summer 11-2 
 	mylumi["ttbar"]    = 3635320.  /203.;
 	mylumi["wjets"]    = (79162744. /31634.);
 	//mylumi["wjets"]    = (7988303. / 212.5);
@@ -203,15 +200,17 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	//mylumi["wjets"]    = 2531.;
 	//mylumi["wjets"]    = (7955699. / 212.5);
 
-	mylumi["wjets"]    = (7988303. / 212.5) / 0.922675934 ;
+
+	mylumi["wjets"]    = (7988303. / 212.5) / 0.983255814;
+
 	mylumi["zjets"]    = 11468.;
 
-	mylumi["znunu50"]  = 19948. / 0.736264615;
-	mylumi["znunu100"] = 23246. / 0.736264615;
-	mylumi["znunu200"] = 68915. / 0.736264615;
 
+	mylumi["znunu50"]  = 19948./0.738741298 ;
+	mylumi["znunu100"] = 23246./0.738741298 ;
+	mylumi["znunu200"] = 68915./0.738741298 ;
 
-
+	  
 
 	mylumi["qcd170"]   = 255.;
 	mylumi["qcd300"]   = 5495.;
@@ -256,37 +255,42 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mylumi["md4d6"] = 14616. / 0.01778 ;
 
 
-	//DarkMatter Samples  fake lumi
-
-	mylumi["dmavd1"]    = 4657.; 
-	mylumi["dmavd10"]   = 4657.;
-	mylumi["dmavd100"]  = 4657.;
-	mylumi["dmavd400"]  = 4657.;
-	mylumi["dmavd700"]  = 4657.;
-	mylumi["dmavd1000"] = 4657.;
+	//DarkMatter Samples  
+	mylumi["dmavd1"]    = 4980.; 
+	mylumi["dmavd10"]   = 4980.;
+	mylumi["dmavd100"]  = 4980.;
+	mylumi["dmavd200"]  = 4980.;
+	mylumi["dmavd300"]  = 4980.;
+	mylumi["dmavd400"]  = 4980.;
+	mylumi["dmavd700"]  = 4980.;
+	mylumi["dmavd1000"] = 4980.;
 	
-	mylumi["dmavu1"]    = 4657.;
-	mylumi["dmavu10"]   = 4657.;
-	mylumi["dmavu100"]  = 4657.;
-	mylumi["dmavu400"]  = 4657.;
-	mylumi["dmavu700"]  = 4657.;
-	mylumi["dmavu1000"] = 4657.;
+	mylumi["dmavu1"]    = 4980.;
+	mylumi["dmavu10"]   = 4980.;
+	mylumi["dmavu100"]  = 4980.;
+	mylumi["dmavu200"]  = 4980.;
+	mylumi["dmavu300"]  = 4980.;
+	mylumi["dmavu400"]  = 4980.;
+	mylumi["dmavu700"]  = 4980.;
+	mylumi["dmavu1000"] = 4980.;
 	
-	mylumi["dmvd1"]    =  4657.;
-	mylumi["dmvd10"]   =  4657.;
-	mylumi["dmvd100"]  =  4657.;
-	mylumi["dmvd400"]  =  4657.;
-	mylumi["dmvd700"]  =  4657.;
-	mylumi["dmvd1000"] =  4657.;
+	mylumi["dmvd1"]    =  4980.;
+	mylumi["dmvd10"]   =  4980.;
+	mylumi["dmvd100"]  =  4980.;
+	mylumi["dmvd200"]  =  4980.;
+	mylumi["dmvd300"]  =  4980.;
+	mylumi["dmvd400"]  =  4980.;
+	mylumi["dmvd700"]  =  4980.;
+	mylumi["dmvd1000"] =  4980.;
 	
-	mylumi["dmvu1"]    =  4657.;
-	mylumi["dmvu10"]   =  4657.;
-	mylumi["dmvu100"]  =  4657.;
-	mylumi["dmvu400"]  =  4657.;
-	mylumi["dmvu700"]  =  4657.;
-	mylumi["dmvu1000"] =  4657.;
-
-	mylumi["dmeff"]     = 4657.;
+	mylumi["dmvu1"]    =  4980.;
+	mylumi["dmvu10"]   =  4980.;
+	mylumi["dmvu100"]  =  4980.;
+	mylumi["dmvu200"]  =  4980.;
+	mylumi["dmvu300"]  =  4980.;
+	mylumi["dmvu400"]  =  4980.;
+	mylumi["dmvu700"]  =  4980.;
+	mylumi["dmvu1000"] =  4980.;
 
 
 	
@@ -313,11 +317,17 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	    
 	mPileUpWeights = generate_flat10_weights(his);
 
-
 	//setPDFPath("/uscmst1/prod/sw/cms/slc5_amd64_gcc434/external/lhapdf/5.6.0-cms4/share/lhapdf/PDFsets");
 	//initPDFSet(1, "cteq66.LHgrid");
+	//initPDFSet(2, "cteq66alphas.LHgrid"); //  alphaS uncert +/-
 
-	initPDFSet(1, "MSTW2008nnlo68cl.LHgrid");
+	//initPDFSet(2, "MSTW2008nlo68cl.LHgrid");
+	//initPDFSet(2, "MSTW2008nlo68cl_asmz-68cl.LHgrid"); // alphaS uncert +
+	//initPDFSet(3, "MSTW2008nlo68cl_asmz+68cl.LHgrid");  // alphaS uncert -
+
+	//initPDFSet(1, "NNPDF20_100.LHgrid");
+	//initPDFSet(2, "NNPDF20_100.LHgrid");
+	//initPDFSet(3, "NNPDF20_100.LHgrid");
 
 
 	///-------------Ntuple Variables --------------------------------------------------------------------------
@@ -326,16 +336,14 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	TDirectory* myDir = (TDirectory*)file->Get("NtupleAnalyzer");
 	mDataTree = (TTree*) myDir->Get("ntuple");
 
-	mDataTree->SetBranchAddress("PDFWeights", &mPDFWeights);
-
-	
+	mDataTree->SetBranchAddress("PDFWeights1", &mPDFWeights);
 
 	mDataTree->SetBranchAddress("run"                                   ,&mrun                        );
 	mDataTree->SetBranchAddress("event"                                 ,&mevent                      );
 	mDataTree->SetBranchAddress("lumi"                                  ,&mlumi                       );
 	mDataTree->SetBranchAddress("bx"                                    ,&mbx                         );
 	mDataTree->SetBranchAddress("npvm1"                                 ,&mnpvm1                      );
-	mDataTree->SetBranchAddress("npv0"                                  ,&mnpv0                       );
+	mDataTree->SetBranchAddress("npv"                                  ,&mnpv0                       );
 	mDataTree->SetBranchAddress("npvp1"                                 ,&mnpvp1                      );
 	mDataTree->SetBranchAddress("ptHat"                                 ,&mptHat                      );
 	
@@ -715,7 +723,7 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mDataTree->SetBranchAddress("BeamHaloTight"                         ,&mBeamHaloTight                        ); 
 	mDataTree->SetBranchAddress("BeamHaloLoose"                         ,&mBeamHaloLoose                        ); 
 	
-	
+	mDataTree->SetBranchAddress("TIV_N"                                 ,&mTIV_N                                 ); 
 	mDataTree->SetBranchAddress("TIV"                                   ,mTIV                                   ); 
 	mDataTree->SetBranchAddress("TIV_pt"                                ,mTIV_pt                                ); 
 	mDataTree->SetBranchAddress("TIV_px"                                ,mTIV_px                                ); 
@@ -750,6 +758,9 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mDataTree->SetBranchAddress("GenParMass"                            ,mGenParMass                            );
 	mDataTree->SetBranchAddress("GenParMother1"                         ,mGenParMother1                         );
 	mDataTree->SetBranchAddress("GenParMother2"                         ,mGenParMother2                         );
+	mDataTree->SetBranchAddress("GenParDoughterOf"                      ,mGenParDoughterOf                      );
+
+
 
 	mDataTree->SetBranchAddress(  "GenAK5JetE"                          ,mGenAK5JetE                            );
 	mDataTree->SetBranchAddress(  "GenAK5JetPt"                         ,mGenAK5JetPt                           );
@@ -787,7 +798,7 @@ bool EventData::GetNextEvent()
   time ( &rawtime );
 
   
-        if ( mEvent % 10000 == 0 ) cout << mEvent << "   time:"<< ctime (&rawtime)  << endl;
+        if ( mEvent % 1000000 == 0 ) cout << mEvent << "   time:"<< ctime (&rawtime)  << endl;
 	if ( mEvent == mMaxEvents ) return false;
 	if ( !mDataTree->GetEntry(mEvent) ) return false;
 	mEvent++;
@@ -809,11 +820,11 @@ double EventData::Weight()
 	if(misMC==1)
 	{
 	        int mnpv=0;
-		if(mbx ==-1) mnpv= mnpvm1;
-		else if(mbx ==0) mnpv= mnpv0;
-		else if(mbx ==1) mnpv= mnpvp1;
+		//if(mbx ==-1) mnpv= mnpvm1;
+		//else if(mbx ==0) mnpv= mnpv0;
+		//else if(mbx ==1) mnpv= mnpvp1;
 
-		//   mnpv = mnpv0;
+		mnpv = mnpv0;
 	
 		size_t dd = mnpv;
 	
@@ -836,27 +847,64 @@ double EventData::Weight()
 	return www;
 }
 
-
+/*
 Double_t  EventData::PDFWeight( UInt_t id )
 {	
 	
-                double  w1;
+	double  w1;
 	
-		LHAPDF::usePDFMember(1,id ); 
-
-		double basepdf1 = LHAPDF::xfx(1, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
-		double basepdf2 = LHAPDF::xfx(1, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
-		w1 = basepdf1*basepdf2;
+	LHAPDF::usePDFMember(1,0 ); 
 	
+	double basepdf1 = LHAPDF::xfx(1, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
+	double basepdf2 = LHAPDF::xfx(1, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
+	w1 = basepdf1*basepdf2;
+	
+	
+// 	LHAPDF::usePDFMember(2,id );
+// 	
+// 	double basepdf1_ = LHAPDF::xfx(2, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
+// 	double basepdf2_ = LHAPDF::xfx(2, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
+// 	w2 = basepdf1_*basepdf2_;
 
-		//LHAPDF::usePDFMember(2,0);
-		//double basepdf1_ = LHAPDF::xfx(2, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
-                //double basepdf2_ = LHAPDF::xfx(2, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
-		//w2 = basepdf1_*basepdf2_;
-
+	
 	return w1 ;
 
 } 
+
+
+Double_t  EventData::PDFWeightAlphaS( UInt_t id )
+{
+
+        double  w1;
+
+        LHAPDF::usePDFMember(2,id );
+
+        double basepdf1 = LHAPDF::xfx(2, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
+        double basepdf2 = LHAPDF::xfx(2, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
+        w1 = basepdf1*basepdf2;
+
+	return w1;
+}
+
+
+Double_t  EventData::PDFWeightAlphaSmstw( UInt_t id )
+{
+
+        double  w1;
+		int usemem =0;
+
+		if(id==0) usemem=2;
+		else if(id==1) usemem=3;
+
+        LHAPDF::usePDFMember(usemem,0 );
+        double basepdf1 = LHAPDF::xfx(usemem, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
+        double basepdf2 = LHAPDF::xfx(usemem, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
+
+        w1 = basepdf1*basepdf2;
+
+		return w1;
+} 
+*/
 
 
 Int_t           EventData::IsMC()                                            {   return misMC;                                    }
@@ -1388,6 +1436,9 @@ Int_t           EventData::L1TArray(UInt_t id)                               {  
 Int_t           EventData::BeamHaloTight()                                   {   return  mBeamHaloTight;                           }
 Int_t           EventData::BeamHaloLoose()                                   {   return  mBeamHaloLoose;                           }
 						
+
+
+Int_t           EventData::TIV_N()                                           {   return  mTIV_N;                                   }
 Float_t         EventData::TIV(UInt_t id)                                    {   return  mTIV[id];                                 }
 Float_t         EventData::TIV_pt(UInt_t id)                                 {   return  mTIV_pt[id];                              }
 Float_t         EventData::TIV_px(UInt_t id)                                 {   return  mTIV_px[id];                              }
@@ -1421,6 +1472,10 @@ Double_t        EventData::GenParPt    (UInt_t id)                           {  
 Double_t        EventData::GenParMass  (UInt_t id)                           {    return  mGenParMass  [id];                       }
 Int_t           EventData::GenParMother1(UInt_t id)                          {    return  mGenParMother1[id];                      }
 Int_t           EventData::GenParMother2(UInt_t id)                          {    return  mGenParMother2[id];                      }
+Int_t           EventData::GenParDoughterOf(UInt_t id)                       {    return  mGenParDoughterOf[id];                   }
+
+
+
 
 Double_t        EventData::GenAK5JetE         (UInt_t id)                    {    return mGenAK5JetE          [id];                } 
 Double_t        EventData::GenAK5JetPt        (UInt_t id)                    {    return mGenAK5JetPt         [id];                } 

@@ -34,6 +34,17 @@ DrawOptions::DrawOptions(TString dataSet_)
       drawOpt="ttbar";
       search=-1;
     }
+
+  else if(dataSet_ == "t")
+    {
+      reweight=1;
+      color=107;
+      linewidth=1;
+      fillcolor=kOrange-3;
+      linestyle=1;
+      drawOpt="t";
+      search=-1;
+    }
   else if(dataSet_ == "W#rightarrowl#nu")
     {
       reweight=1;

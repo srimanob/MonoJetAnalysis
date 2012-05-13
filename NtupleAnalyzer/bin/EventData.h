@@ -45,7 +45,9 @@ class EventData
 		
 		Double_t       PDFWeights(UInt_t id);
 		Double_t       PDFWeight(UInt_t id);
-
+		Double_t       PDFWeightAlphaS( UInt_t id );
+		Double_t       PDFWeightAlphaSmstw(UInt_t id );
+		
 		Int_t           run();
 		Long64_t        event();
 		Int_t           lumi();
@@ -429,6 +431,7 @@ class EventData
 		Int_t           BeamHaloTight();
 		Int_t           BeamHaloLoose();
 
+		Int_t			TIV_N();
 		Float_t         TIV(UInt_t id);    
 		Float_t         TIV_pt(UInt_t id);    
 		Float_t         TIV_px(UInt_t id);    
@@ -463,6 +466,10 @@ class EventData
 		Double_t      GenParMass  (UInt_t id); 
 		Int_t         GenParMother1  (UInt_t id); 
 		Int_t         GenParMother2  (UInt_t id); 
+                Int_t         GenParDoughterOf(UInt_t id);
+
+
+
 
 		Double_t      GenAK5JetE         (UInt_t id);
 		Double_t      GenAK5JetPt        (UInt_t id);
@@ -930,7 +937,11 @@ class EventData
 		Double_t        mGenParMass[MAXGENPAR];  
 		Int_t           mGenParMother1[MAXGENPAR];  
 		Int_t           mGenParMother2[MAXGENPAR];  
+                Int_t           mGenParDoughterOf[MAXGENPAR];
 		
+
+
+
 		Double_t        mGenAK5JetE          [MAXJET]; 
 		Double_t        mGenAK5JetPt         [MAXJET]; 
 		Double_t        mGenAK5JetPx         [MAXJET]; 

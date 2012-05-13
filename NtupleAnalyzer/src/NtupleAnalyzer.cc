@@ -1,4 +1,4 @@
-// C++ 
+// C++
 //
 // Package:    NtupleAnalyzer
 // Class:      NtupleAnalyzer
@@ -103,11 +103,11 @@ class NtupleAnalyzer : public edm::EDAnalyzer
 		double  mPdfx2; 
 		double  mPdfpdf1;
 		double  mPdfpdf2; 
-		double  mPdfWeights[150];
+  double  mPdfWeights[150] , mPdfWeights1[150];
 
 		int     mPdff1; 
 		int     mPdff2;	
-		int     mNPdfWeights;
+  int     mNPdfWeights, mNPdfWeights1;
 
 		
 		///------------------------Jet Algos------------------------------------------------------
@@ -549,6 +549,10 @@ class NtupleAnalyzer : public edm::EDAnalyzer
 		
 		int DEBUG;
 
+		///Calo Tower
+		//double CaloTowerEt[30]  CaloTowerPhi[30]; 
+		double mCaloTowerdEx, mCaloTowerdEy;
+
 };
 
 
@@ -607,6 +611,77 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 	mEvent = iEvent.id().event();
 	mLumi  = iEvent.luminosityBlock();
 	mBX    = iEvent.bunchCrossing();
+
+
+
+	///--------------------Shuichi's correction Method for PFMET Phi----------------
+
+	//calo towers
+	Handle<CaloTowerCollection> calo_h;
+	iEvent.getByLabel("towerMaker", calo_h);
+	const CaloTowerCollection *towers = calo_h.failedToGet () ? 0 :&*calo_h;
+
+	//if (towers) { // object is available 
+	
+		reco::Particle::Point  vertex_=reco::Jet::Point(-0.4,0.5,0); 
+
+		// double sum_et = 0.0;
+		// double sum_ex = 0.0;
+		// double sum_ey = 0.0;
+		// double sum_ez = 0.0;
+		double dEx=0.0;
+		double dEy=0.0;
+
+		int cti=0;
+	
+		for (CaloTowerCollection::const_iterator kal=towers->begin(); kal!=towers->end(); kal++)
+		{	
+			// double eta   = kal->eta();
+			double phi   = kal->phi();
+			double theta = kal->theta();
+			double e     = kal->energy();
+			double et    = e*sin(theta);
+
+			// double etEM    = (kal->emEnergy())*sin(theta);
+			// double etHad   = (kal->hadEnergy())*sin(theta);
+
+			math::PtEtaPhiMLorentzVector ct(kal->p4(vertex_));
+			if(et>0.3) 
+			{
+				// sum_ez += e*cos(theta);
+				// sum_et += et;
+				// sum_ex += et*cos(phi);
+				// sum_ey += et*sin(phi);
+		
+				// sum_ex += ct.px();
+				// sum_ey += ct.py();
+		
+				dEx=dEx+(ct.px()-et*cos(phi));
+				dEy=dEy+(ct.py()-et*sin(phi));
+		
+			}
+			cti++;
+		}   // loop over calo towers.
+	
+		//    double metPt=sqrt(sum_ex*sum_ex+sum_ey*sum_ey);
+		//    double metPhi=atan2(-sum_ey,-sum_ex);
+	
+		// correct pfMET
+		//double ptx=(pfmet->pt())*cos(pfmet->phi()) - dEx;
+		//double pty=(pfmet->pt())*sin(pfmet->phi()) - dEy;
+
+		//double newPfMetPt=sqrt(ptx*ptx+pty*pty);
+		//double phi=atan2(pty,ptx);
+
+		//histo1D["newPfMetPhi"]->Fill(phi);
+		//histo1D["newPfMetPt"]->Fill(newPfMetPt);
+
+		mCaloTowerdEx = dEx;
+		mCaloTowerdEy = dEy;
+	
+	//}
+
+
 
 
 	//cout  <<  mRun  <<  "   " << mLumi  <<  "   " <<   mEvent  << endl; 
@@ -831,7 +906,7 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 			//edm::FileInPath fip(JEC_PATH+"Spring10_Uncertainty_AK5Calo.txt");
 			//edm::FileInPath fip(JEC_PATH+"Spring10_Uncertainty_AK5PF.txt");
 			// edm::FileInPath fip(JEC_PATH+"Spring10_Uncertainty_AK5JPT.txt");
-			JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty( "/uscms_data/d2/vergili/nov/CMSSW_4_2_8_patch7/src/MonoJetAnalysis/NtupleAnalyzer/data/GR_R_42_V19_AK5PF_Uncertainty.txt" );
+			JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty( "/uscms_data/d2/vergili/april/CMSSW_4_2_8_patch7/src/MonoJetAnalysis/NtupleAnalyzer/data/GR_R_42_V19_AK5PF_Uncertainty.txt" );
 			jecUnc->setJetEta(jet2.eta() ); // Give rapidity of jet you want tainty on
 			jecUnc->setJetPt( jet2.pt() );// Also give the corrected pt of the jet you want the uncertainty on
 			// The following function gives the relative uncertainty in the jet Pt.
@@ -1697,10 +1772,16 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 			int id = p.pdgId();
 	
 
+			printf("%2d   %10d    %6.1f   %6.1f   %6.1f  %6.1f   %6.1f  %3d  %6.2f  %6.2f \n", 
+			  p.status() ,  p.pdgId(), p.pt() , p.px(), p.py(), p.pz(), p.mass(),p.charge(),  p.eta(), p.phi());
+
+
+			  //cout << p.pdgId()  << " " << p.pt() << " " << p.px()<<  " "  << p.py()<< " "  <<   p.pz()<< " " << p.charge()<< " "  << p.eta()<< " " <<  p.mass()<< " " << p.phi() <<  endl;
+
 			//cout  << id  << endl; 
 
-			if( p.status() ==3 || abs( p.status() ) ==23 || abs(id) == 23 || abs(id) == 24 || abs(id) == 39 || abs(id)==5 || abs(id)==6
-			    || abs(id) == 11 || abs(id) == 12 || abs(id)==13 || abs(id) == 14 || abs(id) == 15 || abs(id)==16 || abs(id)==5000039 )  
+			//if( p.status() ==3 || abs( p.status() ) ==23 || abs(id) == 23 || abs(id) == 24 || abs(id) == 39 || abs(id)==5 || abs(id)==6
+			//    || abs(id) == 11 || abs(id) == 12 || abs(id)==13 || abs(id) == 14 || abs(id) == 15 || abs(id)==16 || abs(id)==5000039 )  
 
 			//if(  abs( p.status() ) ==23 && abs(id)==5000039 )  
 			{
@@ -1720,13 +1801,28 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 				
 				//  get pid of parent particle...
 				mGenParDoughterOf[igcount] = 0;
+
+				
+				int n = p.numberOfMothers();
+				if(n>0) 
+			        {
+				    const reco::Candidate *pa = p.mother();
+				    int parentID = pa->pdgId();
+				    mGenParDoughterOf[igcount]=parentID;
+
+
+
+
+				    //cout<< "--" << pa->pdgId()<< " "  << pa->pt()<< " "  << pa->px()<< " " << pa->py()<< " " <<   pa->pz()<< " " << pa->charge()<< " "  << pa->eta()<< " "  <<  pa->mass()<< " " << pa->phi() <<  endl;
+
+				} 
 				
 				
-				if( p.numberOfMothers() >1 ) 
+				/*if( p.numberOfMothers() >1 ) 
 				{
 					mGenParMother1[igcount] =  p.mother(0)->pdgId() ; 
 					mGenParMother2[igcount] =  p.mother(1)->pdgId() ; 
-				} 
+					}*/ 
 
 				igcount++;
 			}
@@ -1770,10 +1866,10 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 		for (unsigned int j=0; j<nmembers; j++)
 		{
 
-		      mPdfWeights[j] =  weights[j];
+		      mPdfWeights1[j] =  weights[j];
 		}
 		
-		mNPdfWeights = nmembers;  
+		mNPdfWeights1 = nmembers;  
 
 	}
 		
@@ -2190,7 +2286,7 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 
 
 	
-     	for(int tl=0; tl<tivN; tl++)
+    for(int tl=0; tl<tivN; tl++)
 	{
 		ILV_isoPT = 100.;
 
@@ -2249,6 +2345,10 @@ void NtupleAnalyzer::beginJob()
 	mtree->Branch("npv0"     ,&mnpv0      , "npv0/I");
 	mtree->Branch("npvp1"    ,&mnpvp1     , "npvp1/I");
 	mtree->Branch("ptHat"    ,&WeightTag  , "ptHat/D");	
+
+	mtree->Branch("CaloTowerdEx"    ,&mCaloTowerdEx  , "CaloTowerdEx/D");	
+	mtree->Branch("CaloTowerdEy"    ,&mCaloTowerdEy  , "CaloTowerdEy/D");	
+	
 	
 
 	/// Calo AK5 Jets
@@ -2737,10 +2837,10 @@ void NtupleAnalyzer::beginJob()
 		
 	}
 
-	if(isSignalTag==1.)
+	if(isSignalTag==2.)
 	{
-		mtree->Branch("NPDFWeights", &mNPdfWeights, "NPDFWeights/I");
-		mtree->Branch("PDFWeights",  mPdfWeights,   "PDFWeights[NPDFWeights]/D");
+		mtree->Branch("NPDFWeights1", &mNPdfWeights1, "NPDFWeights1/I");
+		mtree->Branch("PDFWeights1",  mPdfWeights1,   "PDFWeights1[NPDFWeights1]/D");
 	}
 	if(isSignalTag==2.)
 	{

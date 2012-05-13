@@ -72,7 +72,7 @@ int main(int argc, char ** argv)
 
 	hDataMcMatching  DataMcMatching0(histFile+"_AnaMuon_0.root"); manager.Add(&DataMcMatching0);
 
-	CutMet CMet(200); manager.Add(&CMet);
+	CutMet CMet(350); manager.Add(&CMet);
 	hDataMcMatching  DataMcMatching1(histFile+"_AnaMuon_1.root"); manager.Add(&DataMcMatching1);
 
 	CutNoiseClean CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99); manager.Add(&CNoiseClean);
@@ -101,16 +101,23 @@ int main(int argc, char ** argv)
 	hDataMcMatching  DataMcMatching6(histFile+"_AnaMuon_6.root"); manager.Add(&DataMcMatching6);
 
 	hWZAnalysis      WZAnalysis3(histFile+"_WZAnalysis_3.root"); manager.Add(&WZAnalysis3);///-------------
+	CutTIV CTIV(0.01); manager.Add(&CTIV);
+
+
+	hDataMcMatching  DataMcMatching7(histFile+"_AnaMuon_7.root"); manager.Add(&DataMcMatching7);
+
 
 
 	CutMet CMet2(250); manager.Add(&CMet2);
-	hDataMcMatching  DataMcMatching7(histFile+"_AnaMuon_7.root"); manager.Add(&DataMcMatching7);
+	//hDataMcMatching  DataMcMatching7(histFile+"_AnaMuon_7.root"); manager.Add(&DataMcMatching7);
 
 	CutMet CMet3(300); manager.Add(&CMet3);
 	hDataMcMatching  DataMcMatching8(histFile+"_AnaMuon_8.root"); manager.Add(&DataMcMatching8);
 
 	CutMet CMet4(350); manager.Add(&CMet4);
 	hDataMcMatching  DataMcMatching9(histFile+"_AnaMuon_9.root"); manager.Add(&DataMcMatching9);
+
+	
 
 	CutMet CMet5(400); manager.Add(&CMet5);
  	hDataMcMatching  DataMcMatching10(histFile+"_AnaMuon_10.root"); manager.Add(&DataMcMatching10);

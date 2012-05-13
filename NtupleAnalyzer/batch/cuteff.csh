@@ -16,20 +16,22 @@ SubmitCondor   znunu50         AnaMonoJetCutEff  1 cuteff
 SubmitCondor   znunu100        AnaMonoJetCutEff  1 cuteff
 SubmitCondor   znunu200        AnaMonoJetCutEff  1 cuteff
 
-SubmitCondor   md2d2           AnaMonoJetCutEff  0 cuteff
-SubmitCondor   qcd170          AnaMonoJetCutEff  0 cuteff
-SubmitCondor   qcd300          AnaMonoJetCutEff  0 cuteff
-SubmitCondor   qcd470          AnaMonoJetCutEff  0 cuteff
-SubmitCondor   qcd600          AnaMonoJetCutEff  0 cuteff
-SubmitCondor   qcd800          AnaMonoJetCutEff  0 cuteff
-SubmitCondor   qcd1000         AnaMonoJetCutEff  0 cuteff
-SubmitCondor   qcd1400         AnaMonoJetCutEff  0 cuteff
-SubmitCondor   qcd1800         AnaMonoJetCutEff  0 cuteff
-SubmitCondor   sintbars        AnaMonoJetCutEff  0 cuteff
-SubmitCondor   sintbart        AnaMonoJetCutEff  0 cuteff
-SubmitCondor   sintbartw       AnaMonoJetCutEff  0 cuteff
-SubmitCondor   sintt           AnaMonoJetCutEff  0 cuteff
-SubmitCondor   sinttw          AnaMonoJetCutEff  0 cuteff
+SubmitCondor   md2d3           AnaMonoJetCutEff  1 cuteff
+SubmitCondor   dmavd1          AnaMonoJetCutEff  1 cuteff
+
+SubmitCondor   qcd170          AnaMonoJetCutEff  1 cuteff
+SubmitCondor   qcd300          AnaMonoJetCutEff  1 cuteff
+SubmitCondor   qcd470          AnaMonoJetCutEff  1 cuteff
+SubmitCondor   qcd600          AnaMonoJetCutEff  1 cuteff
+SubmitCondor   qcd800          AnaMonoJetCutEff  1 cuteff
+SubmitCondor   qcd1000         AnaMonoJetCutEff  1 cuteff
+SubmitCondor   qcd1400         AnaMonoJetCutEff  1 cuteff
+SubmitCondor   qcd1800         AnaMonoJetCutEff  1 cuteff
+SubmitCondor   sintbars        AnaMonoJetCutEff  1 cuteff
+SubmitCondor   sintbart        AnaMonoJetCutEff  1 cuteff
+SubmitCondor   sintbartw       AnaMonoJetCutEff  1 cuteff
+SubmitCondor   sintt           AnaMonoJetCutEff  1 cuteff
+SubmitCondor   sinttw          AnaMonoJetCutEff  1 cuteff
 
 
 

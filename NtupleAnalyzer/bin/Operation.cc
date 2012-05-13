@@ -8,6 +8,8 @@
 #include <math.h>
 #include <TLorentzVector.h>
 
+#include <memory>
+
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
 
@@ -23,7 +25,7 @@ namespace Operation
 	vector<double> generate_flat10_weights(TH1D* data_npu_estimated)
 	{
 	  
-	  /*    //Array for 1D  reweight 
+	       //Array for 1D  reweight 
 		const double npu_probs[35] = 
 		{
 			1.45346E-01,
@@ -61,9 +63,9 @@ namespace Operation
 			1.81401E-05,
 			1.00201E-05,
 			5.80004E-06
-			}; */
+			}; 
 
-			//Array for 3D reweight
+		/*	//Array for 3D reweight
 		const double npu_probs[25] = {
 			0.0698146584,
 			0.0698146584,
@@ -90,22 +92,22 @@ namespace Operation
 			0.0002229748,
 			0.0001028162,
 			4.58337152809607E-05 
-			};  
+			}; */
 
 
 
 
-		vector<double> result(25);
+		vector<double> result(35);
 
 		double s = 0.0;
-		for(int npu=0; npu<25; ++npu)
+		for(int npu=0; npu<35; ++npu)
 		{
 			double npu_estimated = data_npu_estimated->GetBinContent(data_npu_estimated->GetXaxis()->FindBin(npu));
 			result[npu] = npu_estimated / npu_probs[npu];
 			s += npu_estimated;
 		}
 		// normalize weights such that the total sum of weights over thw whole sample is 1.0, i.e., sum_i  result[i] * npu_probs[i] should be 1.0 (!)
-		for(int npu=0; npu<25; ++npu)
+		for(int npu=0; npu<35; ++npu)
 		{
 			result[npu] /= s;
 		}
@@ -515,7 +517,7 @@ namespace Operation
 
 		// Main event loop
 		// Just keep going until max events is hit or we finish the file
-		while ( ev.GetNextEvent() ) 
+		while ( ev.GetNextEvent() )
 		{
 			// Sum the total event weight
 			ng_all += ev.Weight();
@@ -545,7 +547,7 @@ namespace Operation
 
 // 			int flg_trg80=0;
 // 			string strtrg = ev.HLTNames();
-//             if (strtrg.find("HLT_CentralJet80_MET80")!=string::npos ) flg_trg80=1;
+//			if (strtrg.find("HLT_CentralJet80_MET80")!=string::npos ) flg_trg80=1;
 
 
 			
@@ -565,12 +567,34 @@ namespace Operation
 
 			//cout << ev.PFLepPy(1) << " " << ev.PFMuonPy(1) <<  " "  <<  ev.NPFLep() <<  " " <<  ev.NPFMuon() <<   endl; 
 
-			//for(int i=0; i<41; i++){
-			//cout <<  ev.PDFWeight(i) * ev.PDFWeights(0) /ev.PDFWeight(0)  <<  "  " << ev.PDFWeights(i) <<  endl;
-			  // cout << "----------------------------" <<  endl;
-			//}
-			//cout << "----------------------------" <<  endl;
+			/*for(int i=0; i<100; i++){
+
+			   double w = ev.PDFWeight(i) * ev.PDFWeights(0) /ev.PDFWeight(0);
+
+			   //double w = ev.PDFWeightAlphaS(i) * ev.PDFWeights(0) / ev.PDFWeightAlphaS(0);
+
+			  //cout <<  w <<  "   " << ev.PDFWeight(i)  <<  "   " << ev.PDFWeight(i) <<  "   ..."  << ev.PDFWeights(i)  <<  endl;
+
+			   
+			  //cout << "----------------------------" <<  endl;
+			}
+			cout << "----------------------------" <<  endl;  
+			*/
+
+
 			//cout << ev.PFLepPt(0)  <<  "  " <<  ev.LepType()  <<  "  " <<   PFElecTightCuts(ev , 0)  << endl;
+
+
+			/*for(int i=0; i<ev.NGenPar(); i++)
+			{
+
+	   
+			  //if( ( abs(ev.GenParId(i) )>10 || abs(ev.GenParId(i) ) <17 ) && ev.GenParStatus(i)==1  )
+		            {
+			      cout <<   ev.GenParId(i)  << "   mother:" <<  ev.GenParDoughterOf(i)  <<  "  pt:" << ev.GenParPt(i) << endl;
+
+		            }
+		        }*/
 			
 		}
 
@@ -660,7 +684,7 @@ namespace Operation
 
 	  int flg_trg=0;
 	  string strtrg = ev.HLTNames();
-	  if (strtrg.find("HLT_CentralJet80_MET80")!=string::npos ) flg_trg=1;
+	  if (strtrg.find("HLT_CentralPFJet80_CaloMET50_dPhi1_PFMHT80")!=string::npos ) flg_trg=1;
 
 
 		if ( flg_trg==1 )  
@@ -1029,13 +1053,68 @@ namespace Operation
 
 	bool CutTIV::Process(EventData & ev) 
 	{
+
+		double LowTIV=0;
+
+		float Lower_TIV = 100;
+		float ILV_isoPT;
+		
+		float TIV_pt_l_thr = 10;
+		float TIV_pt_s_thr = 1;
+		//float TIV_dxy_thr = 100;
+		//float TIV_dz_thr = 100;
+		float TIV_dR_inner_thr = 0.02;
+		float TIV_dR_outer_thr = 0.3;
+	
+
+		for(int tl=0; tl<ev.TIV_N(); tl++)
+		{
+			ILV_isoPT = 100.;
+
+
+			bool isMuon=false;
+			for(int mu=0; mu<ev.NMuon(); mu++)
+			  {
+			    
+			    if( ev.MuonPt(mu) > 20 )   
+			      {
+				if( ev.MuonSumPtDR03(mu) >= 0 && ev.MuonSumPtDR03(mu) < 100)
+				  {
+				    float dPhi = deltaPhi( ev.MuonPhi(mu), ev.TIV_phi(tl) );
+				    float dEta = ev.MuonEta(mu) - ev.TIV_eta(tl);
+				    if( sqrt(dPhi*dPhi + dEta*dEta) < 0.3) {isMuon=true; break;}
+				  }
+			      }
+			  }
+			if(isMuon) continue;
+
+	
+			if( ev.TIV_lead(tl)==1 && ev.TIV_pt(tl) > TIV_pt_l_thr  )
+			{ 
+				ILV_isoPT = 0.;
+				for(int ts = tl+1; ts< ev.TIV_N() && ev.TIV_lead(ts) !=1 ;ts++ )
+				{
+					
+					if( ev.TIV_dR(ts) < TIV_dR_outer_thr  && ev.TIV_dR(ts) > TIV_dR_inner_thr && ev.TIV_pt(ts) > TIV_pt_s_thr )
+					{
+						ILV_isoPT+= ev.TIV_pt(ts);
+					}
+				}
+				if( ILV_isoPT / ev.TIV_pt(tl) < Lower_TIV ) Lower_TIV = ILV_isoPT / ev.TIV_pt(tl);
+			}
+		}
+		LowTIV = Lower_TIV;
+	
+
+
 		if ( ev.LowTIV()  > mCut )
+		//if ( LowTIV  > mCut )
 		{
 			return true;
 		} 
-		else 
+		else
 		{
-			return false;
+		    return false;
 		}
 	}
 	std::ostream& CutTIV::Description(std::ostream &ostrm) 
@@ -1047,7 +1126,7 @@ namespace Operation
 
 ///--------------------------GenPar Selection---------------------------------------------------------------------
 
-	GenParExist::GenParExist(int pdgId) : mPdgId(pdgId){} 
+  /* GenParExist::GenParExist(int pdgId) : mPdgId(pdgId){} 
 	GenParExist::~GenParExist() {}
 
 	bool GenParExist::Process(EventData & ev) 
@@ -1068,7 +1147,7 @@ namespace Operation
 	{
 		ostrm << "  Gen PdgID:" << mPdgId << " Exist  :.................";
 		return ostrm;
-	}
+	} */
 ///---------------------------- W +/- Selection------------------------------------------------------------------
 
 	WsignSelection::WsignSelection(double charge) : mCharge(charge){} 
@@ -1110,9 +1189,9 @@ namespace Operation
 				}	
 			} 
 
-			//if( WmunuMT>50. && WmunuMT<100. && LepCharge == mCharge ) send =true;
+			if( WmunuMT>50. && WmunuMT<100. && LepCharge == mCharge ) send =true;
 
-			if( WmunuMT>50. && WmunuMT<100. ) send =true;
+			//if( WmunuMT>50. && WmunuMT<100. ) send =true;
 		}
 				
 		
@@ -1193,6 +1272,7 @@ namespace Operation
 			}
 	
 			if( ZmumuMT>60 && ZmumuMT<120 ) send =true;
+			//if( ZmumuMT>0 && ZmumuMT<12000 ) send =true;
 
 		}
 
@@ -1248,6 +1328,15 @@ namespace Operation
 			if(  PFMuonTightCuts(ev , i,  mPt) == true ) send =false ;
 
 		}
+
+		/*for(int i=0; i<ev.NGenPar(); i++)
+		{
+			if( (abs(ev.GenParId(i) )==12 || abs(ev.GenParId(i) )==14 || abs(ev.GenParId(i) )==16 ) && ev.GenParStatus(i)==3 )
+			{
+				if(ev.GenParPt(i) <20. || abs(ev.GenParEta(i))>2.1  ) send=false;
+			}
+		}*/
+			
 
 		return send;
 	}

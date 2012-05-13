@@ -94,16 +94,16 @@ int main(int argc, char ** argv)
 
  	hWZAnalysis      WZAnalysis1(histFile+"_WZAnalysis_1.root"); manager.Add(&WZAnalysis1);///-------------
 
-
  	hWSourceAnalysis  WSourceAnalysis(histFile+"_hWSourceAnalysis.root"); manager.Add(&WSourceAnalysis);///-------------
 
-
-	PFLepIso        CPFLepIso(20.);  manager.Add( &CPFLepIso );	
+	//PFLepIso        CPFLepIso(20.);  manager.Add( &CPFLepIso );	
 	//WsignSelection     CWsignSelection(1.0);  manager.Add( & CWsignSelection );
 	hDataMcMatching  DataMcMatching6(histFile+"_AnaMuon_6.root"); manager.Add(&DataMcMatching6);
 
 
 	hWZAnalysis      WZAnalysis2(histFile+"_WZAnalysis_2.root"); manager.Add(&WZAnalysis2);///-------------
+
+	//CutTIV CTIV(0.01); manager.Add(&CTIV);
 
 	
 	CutMet CMet2(250); manager.Add(&CMet2);

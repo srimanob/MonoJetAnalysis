@@ -1,14 +1,20 @@
 #!/bin/tcsh -f
 
 
-SubmitCondor   met             AnaWminusCutEff  0 cuteff
-SubmitCondor   metbtag         AnaWminusCutEff  0 cuteff
+SubmitCondor   met1            AnaWminusCutEff  0 cuteff
+SubmitCondor   met2            AnaWminusCutEff  0 cuteff
+SubmitCondor   met3            AnaWminusCutEff  0 cuteff
+SubmitCondor   met4            AnaWminusCutEff  0 cuteff
+SubmitCondor   met5            AnaWminusCutEff  0 cuteff
+SubmitCondor   met6            AnaWminusCutEff  0 cuteff
+
 SubmitCondor   wjets           AnaWminusCutEff  1 cuteff
 SubmitCondor   ttbar           AnaWminusCutEff  1 cuteff
 SubmitCondor   zjets           AnaWminusCutEff  1 cuteff
 SubmitCondor   znunu100        AnaWminusCutEff  1 cuteff
 SubmitCondor   znunu200        AnaWminusCutEff  1 cuteff
-SubmitCondor   md2d2           AnaWminusCutEff  1 cuteff
+
+SubmitCondor   md2d2           AnaWminusCutEff  0 cuteff
 SubmitCondor   qcd170          AnaWminusCutEff  1 cuteff
 SubmitCondor   qcd300          AnaWminusCutEff  1 cuteff
 SubmitCondor   qcd470          AnaWminusCutEff  1 cuteff

@@ -49,7 +49,7 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 {
 	TCanvas *myCanvas = new TCanvas ("", "");
 	
-	TLegend myLegend(0.68, 0.62, 0.88, 0.92);
+	TLegend myLegend(0.63, 0.57, 0.89, 0.93);
 
 	myLegend.SetBorderSize(0);
 	//L[id]->SetFillColor(0);
@@ -150,26 +150,35 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 		//
 		//((TH1D*)(*tfileIt)->Get(histname))->GetXaxis()->SetLabelFont( 42 );
 		//
- 	//	((TH1D*)(*tfileIt)->Get("NJet"))->GetXaxis()->CenterLabels(kTRUE);
- 	//	((TH1D*)(*tfileIt)->Get("NJet"))->SetNdivisions(10);
- 	//	((TH1D*)(*tfileIt)->Get("MetMu2"))->GetXaxis()->SetNdivisions(6,4,0, kFALSE);
- 	//	((TH1D*)(*tfileIt)->Get("MetMu3"))->GetXaxis()->SetNdivisions(6,4,0, kFALSE);
+ 		((TH1D*)(*tfileIt)->Get("NJet"))->GetXaxis()->CenterLabels(kTRUE);
+ 		((TH1D*)(*tfileIt)->Get("NJet"))->SetNdivisions(10);
+
+                ((TH1D*)(*tfileIt)->Get("NJet5"))->GetXaxis()->CenterLabels(kTRUE);
+                ((TH1D*)(*tfileIt)->Get("NJet5"))->SetNdivisions(5);
+
+                ((TH1D*)(*tfileIt)->Get("NJet6"))->GetXaxis()->CenterLabels(kTRUE);
+                ((TH1D*)(*tfileIt)->Get("NJet6"))->SetNdivisions(6);
+
+
+
+ 		((TH1D*)(*tfileIt)->Get("MetLep2"))->GetXaxis()->SetNdivisions(8,4,0, kFALSE);
+ 		((TH1D*)(*tfileIt)->Get("MetLep3"))->GetXaxis()->SetNdivisions(8,4,0, kFALSE);
+		((TH1D*)(*tfileIt)->Get("MetLep5"))->GetXaxis()->SetNdivisions(13,2,0, kFALSE);
+
+ 		((TH1D*)(*tfileIt)->Get("Jet1Pt"))->GetXaxis()->SetNdivisions(10,4,0, kFALSE);
+ 		((TH1D*)(*tfileIt)->Get("Jet1Pt2"))->GetXaxis()->SetNdivisions(10,4,0, kFALSE);
+  		((TH1D*)(*tfileIt)->Get("Jet2Pt"))->GetXaxis()->SetNdivisions(6,4,0, kFALSE);
+ 		((TH1D*)(*tfileIt)->Get("MuonPt_2"))->GetXaxis()->SetNdivisions(6,5,0, kFALSE);
  
- 	//	((TH1D*)(*tfileIt)->Get("Jet1Pt"))->GetXaxis()->SetNdivisions(7,4,0, kFALSE);
- 	//	((TH1D*)(*tfileIt)->Get("Jet1Pt2"))->GetXaxis()->SetNdivisions(7,4,0, kFALSE);
- 
- 	//	((TH1D*)(*tfileIt)->Get("Jet2Pt"))->GetXaxis()->SetNdivisions(6,4,0, kFALSE);
- 	//	((TH1D*)(*tfileIt)->Get("MuonPt_2"))->GetXaxis()->SetNdivisions(6,5,0, kFALSE);
- 
- 	//	((TH1D*)(*tfileIt)->Get("PFElecPt"))->GetXaxis()->SetNdivisions(8,10,0, kFALSE);
- 	//	((TH1D*)(*tfileIt)->Get("PFMuonPt"))->GetXaxis()->SetNdivisions(8,10,0, kFALSE);
+ 		((TH1D*)(*tfileIt)->Get("PFElecPt"))->GetXaxis()->SetNdivisions(8,10,0, kFALSE);
+ 		((TH1D*)(*tfileIt)->Get("PFMuonPt"))->GetXaxis()->SetNdivisions(8,10,0, kFALSE);
 
 		
- 	//	((TH1D*)(*tfileIt)->Get("NofMuon"))->GetXaxis()->CenterLabels(kTRUE);
- 	//	((TH1D*)(*tfileIt)->Get("NofMuon"))->SetNdivisions(10);
+ 		//((TH1D*)(*tfileIt)->Get("NofMuon"))->GetXaxis()->CenterLabels(kTRUE);
+ 		//((TH1D*)(*tfileIt)->Get("NofMuon"))->SetNdivisions(10);
 
-	//        ((TH1D*)(*tfileIt)->Get("WlepnuPT_50_100"))->GetXaxis()->SetNdivisions(11,2,0, kFALSE);
-	//	((TH1D*)(*tfileIt)->Get("ZleplepPT_60_120"))->GetXaxis()->SetNdivisions(4,5,0, kFALSE);
+	        //((TH1D*)(*tfileIt)->Get("WlepnuPT_50_100"))->GetXaxis()->SetNdivisions(11,2,0, kFALSE);
+		//((TH1D*)(*tfileIt)->Get("ZleplepPT_60_120"))->GetXaxis()->SetNdivisions(4,5,0, kFALSE);
 
 
 
@@ -192,7 +201,7 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 		
 
 		((TH1D*)(*tfileIt)->Get(histname))->SetMinimum(0.2);
-		((TH1D*)(*tfileIt)->Get(histname))->SetMaximum(ent[0]*1100 );
+		((TH1D*)(*tfileIt)->Get(histname))->SetMaximum(ent[0]*1500 );
 		
 		//cout  << ent[0] << "................" <<  endl;
 		
@@ -211,7 +220,7 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 
 	TLatex *text1, *text2;
 
-	text1 = new TLatex(3.570061,23.08044,"CMS Preliminary");
+	text1 = new TLatex(3.570061,23.08044,"CMS");
 	text1->SetNDC();
 	text1->SetTextAlign(13);
 	text1->SetX(0.19);
@@ -221,7 +230,7 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 	text1->SetTextSizePixels(24);// dflt=28
 	text1->Draw();
 
-	text2 = new TLatex(3.570061,23.08044,"#intL dt = 4.7 fb^{-1} at #sqrt{s}=7 TeV");
+	text2 = new TLatex(3.570061,23.08044,"#intL dt = 5 fb^{-1} at #sqrt{s}=7 TeV");
 	text2->SetNDC();
 	text2->SetTextAlign(13);
 	text2->SetX(0.19);

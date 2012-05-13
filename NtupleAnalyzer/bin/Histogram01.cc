@@ -23,7 +23,7 @@
 #include "TPad.h"
 #include "TProfile.h"
 #include "Constants.h"
-
+#include <memory>
 #include <TLorentzVector.h>
 
 #include "DataFormats/Math/interface/deltaR.h"
@@ -203,8 +203,12 @@ namespace Histogram01
 		histo1D["Jet2Phi"]          = new TH1D("Jet2Phi"        , "Jet2Phi "            , 80, -4, 4);
 
 		//Njet
-		histo1D["NJet"]             = new TH1D("NJet"           , "NJet "               , 10, 0, 10);
-		
+		histo1D["NJet"]             = new TH1D("NJet"            , "NJet "               , 10, 0, 10);
+		histo1D["NJet5"]            = new TH1D("NJet5"           , "NJet "               , 5, 0, 5);
+		histo1D["NJet6"]            = new TH1D("NJet6"           , "NJet "               , 6, 0, 6);
+		histo1D["NJet55"]           = new TH1D("NJet55"          , "NJet "               , 5, 0, 5);
+		histo1D["NJet66"]           = new TH1D("NJet66"          , "NJet "               , 6, 0, 6);
+
 		//deltaPhi
 		histo1D["dPhi_MetLep_Jet1"] = new TH1D("dPhi_MetLep_Jet1", "dPhi MetLep Jet1 "   , 35, 0, 3.5);
 		histo1D["dPhi_Met_Jet1"]    = new TH1D("dPhi_Met_Jet1"   , "dPhi Met Jet1 "      , 35, 0, 3.5 );
@@ -218,6 +222,7 @@ namespace Histogram01
 		histo1D["Met"]              = new TH1D("Met"             , "MET "                ,  40, 0, 1000);
 		histo1D["MetLep1"]          = new TH1D("MetLep1"         , "MET+Lep"              , 40, 0, 1000);
 		histo1D["MetLep2"]          = new TH1D("MetLep2"         , "MET+Lep"              , 32, 200, 1000);
+		histo1D["MetLep5"]          = new TH1D("MetLep5"         , "MET+Lep"              , 26, 350, 1000);
 
 		//for overflow 
 		histo1D["MetLep3"]          = new TH1D("MetLep3"         , "MET+Lep"             , 32, 200, 1000); 
@@ -234,8 +239,13 @@ namespace Histogram01
 		histo1D["MetSumEt"]         = new TH1D("MetSumEt"        , "SumEt"               , 150, 0, 1500);
 
 		//TIV
-		histo1D["TIV"]              = new TH1D("TIV"             , "TIV "                , 70, -0.05, 0.3);
-		
+		histo1D["TIV"]              = new TH1D("TIV"             , "TIV "                , 70, -0.05, 0.3);		
+		histo1D["TIV_e"]            = new TH1D("TIV_e"           , "TIV "                , 70, -0.05, 0.3);
+		histo1D["TIV_m"]            = new TH1D("TIV_m"           , "TIV "                , 70, -0.05, 0.3);
+		histo1D["TIV_t"]            = new TH1D("TIV_t"           , "TIV "                , 70, -0.05, 0.3);
+
+
+
 		//Muon ISo
 		histo1D["MuonPt"]           = new TH1D("MuonPt"         , "MuonPt "               ,40, 0,400);
 		histo1D["MuonPt_2"]         = new TH1D("MuonPt_2"       , "MuonPt "               ,30, 0,120);
@@ -286,8 +296,8 @@ namespace Histogram01
 		histo1D["GenTauPt"]         = new TH1D("GenTauPt"          , "Gen Tau p_{T}"      , 100, 0, 800);
 
 
-		histo1D["PFMuonPt1"]           = new TH1D("PFMuonPt1"           , "PFMuonPt1"          , 100, 0, 800);
-		histo1D["PFMuonEta1"]          = new TH1D("PFMuonEta1"          , "PFMuonEta1"         , 100, -6, 6);
+		histo1D["PFMuonPt1"]           = new TH1D("PFMuonPt1"           , "PFMuonPt1"          , 80, 0, 800);
+		histo1D["PFMuonEta1"]          = new TH1D("PFMuonEta1"          , "PFMuonEta1"         , 100, -5, 5);
 		histo1D["PFMuonIso1"]          = new TH1D("PFMuonIso1"          , "PFMuonIso1"         , 100, -1, 3);
 		histo1D["PFMuonisGMPT1"]       = new TH1D("PFMuonisGMPT1"       , "PFMuonisGMPT1"      , 50, 0, 50);
 		histo1D["PFMuonnValidHits1"]   = new TH1D("PFMuonnValidHits1"   , "PFMuonnValidHits1"  , 100, 0, 100);
@@ -295,8 +305,8 @@ namespace Histogram01
 		histo1D["PFMuondz1"]           = new TH1D("PFMuondz1"           , "PFMuondz1"          , 100, -1, 5);
 
 
-		histo1D["PFMuonPt2"]           = new TH1D("PFMuonPt2"           , "PFMuonPt2"          , 100, 0, 800);
-		histo1D["PFMuonEta2"]          = new TH1D("PFMuonEta2"          , "PFMuonEta2"         , 100, -6, 6);
+		histo1D["PFMuonPt2"]           = new TH1D("PFMuonPt2"           , "PFMuonPt2"          , 80, 0, 800);
+		histo1D["PFMuonEta2"]          = new TH1D("PFMuonEta2"          , "PFMuonEta2"         , 100, -5, 5);
 		histo1D["PFMuonIso2"]          = new TH1D("PFMuonIso2"          , "PFMuonIso2"         , 100, -1, 3);
 		histo1D["PFMuonisGMPT2"]       = new TH1D("PFMuonisGMPT2"       , "PFMuonisGMPT2"      , 50, 0, 50);
 		histo1D["PFMuonnValidHits2"]   = new TH1D("PFMuonnValidHits2"   , "PFMuonnValidHits2"  , 100, 0, 100);
@@ -346,7 +356,7 @@ namespace Histogram01
 		histo2D["SumETvsNPV"]         = new TH2D("SumETvsNPV"       , "SumETvsNPV"        ,1500,0,1500, 30, 0, 30);
 		profile1D["SumETprNPV"]       = new TProfile("SumETprNPV"   , "<SumET> vs NPV"    ,30,0,30,0,1500);
 
-        histo2D["PileUpETvsNPV"]      = new TH2D("PileUpETvsNPV"    , "SumETvsNPV"        ,1500,0,1500, 30, 0, 30);
+		histo2D["PileUpETvsNPV"]      = new TH2D("PileUpETvsNPV"    , "SumETvsNPV"        ,1500,0,1500, 30, 0, 30);
 		profile1D["PileUpETprNPV"]    = new TProfile("PileUpETprNPV", "<PileUpET> vs NPV"    ,30,0,30,0,1500);
 
 
@@ -354,7 +364,7 @@ namespace Histogram01
 		profile1D["NPVprnpv0"]	      = new TProfile("NPVprnpv0"    , "NPVprnpv0"    ,50,0,50,0,50);
 
 
-		for(int i=0; i<45; i++ )
+		for(int i=0; i<100; i++ )
 		{
 			char his[100];
 
@@ -364,6 +374,29 @@ namespace Histogram01
 
 		}		
 
+		histo1D["nnpdf20_p"]      = new TH1D("nnpdf20_p"     , "nnpdf20 plus"              , 300, -3, 3);
+                histo1D["nnpdf20_m"]      = new TH1D("nnpdf20_m"     , "nnpdf20 minus"             , 300, -3, 3);
+		histo1D["nnpdf20"]        = new TH1D("nnpdf20"       , "nnpdf20"             , 300, -3, 3);
+
+
+		histo1D["alphas_m"]      = new TH1D("alphas_m"     , "alphas minus"              , 10, 0, 10);
+		histo1D["alphas"]        = new TH1D("alphas"       , "alphas"                    , 10, 0, 10);
+		histo1D["alphas_p"]      = new TH1D("alphas_p"     , "alphas plus"               , 10, 0, 10);
+
+
+		histo1D["GenZnunuEta"]      = new TH1D("GenZnunuEta"     , "GenZEta"               , 100, -5, 5);
+		histo1D["GenZnunuPt"]       = new TH1D("GenZnunuPt"     , "GenZPt"               , 100, 0, 1000);
+
+		histo1D["GenElecTIV"]       = new TH1D("GenElecTIV"     , "GenElecTIV"               , 100, 0, 1000);
+		histo1D["GenMuonTIV"]       = new TH1D("GenMuonTIV"     , "GenMuonTIV"               , 100, 0, 1000);
+		histo1D["GenTauTIV"]        = new TH1D("GenTauTIV"      , "GenTauTIV"                , 2000, -1000, 1000);
+
+
+		histo1D["ISRWeight"]        = new TH1D("ISRWeight"      , "ISRWeight"                , 10, 0, 10);
+
+		histo1D["dRTIVGenMuon"]     = new TH1D("dRTIVGenMuon"   , "dRTIVGenMuon"             , 1000,  -1, 9);
+
+ 
 
 
 	}
@@ -448,7 +481,7 @@ namespace Histogram01
 		Iso = (ev.PFMuonNeutralHadronIso(1) + ev.PFMuonChargedHadronIso(1) + ev.PFMuonPhotonIso(1))/ev.PFMuonPt(1);
 
 		histo1D["PFMuonPt2"]->Fill( ev.PFMuonPt(1) );
-		histo1D["PFMuonEta2"]->Fill( ev.PFMuonPt(1) );
+		histo1D["PFMuonEta2"]->Fill( ev.PFMuonEta(1) );
 		histo1D["PFMuonIso2"]->Fill( Iso );
 		histo1D["PFMuonisGMPT2"]->Fill( ev.PFMuonisGMPT(1) );
 		histo1D["PFMuonnValidHits2"]->Fill( ev.PFMuonnValidHits(1) );
@@ -524,7 +557,10 @@ namespace Histogram01
 
 		//njet
 		histo1D["NJet"]->Fill( njets , w );
-		
+		histo1D["NJet55"]->Fill( njets , w );
+		histo1D["NJet66"]->Fill( njets , w );
+
+
 		//deltaPhi
 		histo1D["dPhi_MetLep_Jet1"]->Fill( fabs( deltaPhi( ev.PFAK5JetPhi(ixjet1) , MetLepPhi( ev.MetPx(t) , ev.MetPy(t) ,ev) ) ), w );
 		histo1D["dPhi_Met_Jet1"]->Fill( fabs( deltaPhi( ev.PFAK5JetPhi(ixjet1) , ev.MetPhi(t) ) ), w );
@@ -547,6 +583,7 @@ namespace Histogram01
 		histo1D["Met"]->Fill( ev.MetPt( t) , w );
 		histo1D["MetLep1"]->Fill( MetLepPt( ev.MetPx(t) , ev.MetPy(t) , ev ) , w ); 
 		histo1D["MetLep2"]->Fill( MetLepPt( ev.MetPx(t) , ev.MetPy(t) , ev ) , w );
+		histo1D["MetLep5"]->Fill( MetLepPt( ev.MetPx(t) , ev.MetPy(t) , ev ) , w );
 		histo1D["MetLep4"]->Fill( MetLepPt( ev.MetPx(t) , ev.MetPy(t) , ev ) , w );
 
 		if(ev.MetPt(0) >95. ) histo1D["MetLep1_cm"]->Fill( MetLepPt( ev.MetPx(t) , ev.MetPy(t) , ev ) , w ); 
@@ -559,7 +596,47 @@ namespace Histogram01
 		
 		//TIV
 		histo1D["TIV"]->Fill( ev.LowTIV()  , w );
+
+		for(int i=0; i<ev.NGenPar(); i++)
+		{
+			if(abs(ev.GenParId(i) )==11 && ev.GenParStatus(i)==3 )
+			{
+				histo1D["TIV_e"]->Fill( ev.LowTIV()  , w );
+			}
+			else if(abs(ev.GenParId(i) )==13 && ev.GenParStatus(i)==3 )
+			{
+				histo1D["TIV_m"]->Fill( ev.LowTIV()  , w );
 		
+			}
+			else if(abs(ev.GenParId(i) )==15 && ev.GenParStatus(i)==3 )
+			{
+				histo1D["TIV_t"]->Fill( ev.LowTIV()  , w );
+			}
+		}
+
+
+		for(int i=0; i<ev.TIV_N(); i++)
+		{
+			for(int j=0; j<ev.NGenPar(); j++)
+			{
+				
+			        if( deltaR(  ev.TIV_eta(i), ev.TIV_phi(i) , ev.GenParEta(j), ev.GenParPhi(j) ) <1110.2 )
+				{
+					
+					if( abs(ev.GenParId(i) )==11 && ev.GenParStatus(i)==2) histo1D["GenElecTIV"]->Fill( ev.GenParPt(i)  , w ); 
+
+					if( abs(ev.GenParId(i) )==13 && ev.GenParStatus(i)==3) 
+					{  
+					   histo1D["GenMuonTIV"]->Fill( ev.GenParPt(i)  , w );
+					   histo1D["dRTIVGenMuon"]->Fill( deltaR(ev.TIV_eta(i), ev.TIV_phi(i) , ev.GenParEta(j), ev.GenParPhi(j) ) , w );
+					}
+					if( abs(ev.GenParId(i) )==211 && ev.GenParDoughterOf(i)==15 ) histo1D["GenTauTIV"]->Fill( ev.GenParDoughterOf(i)  , w ); 
+
+				}
+			}
+		}
+
+
 		//MuonIso
 		if(ev.NMuon() >0 )histo1D["MuonPt"]->Fill( ev.MuonPt(0)  , w );
 		if(ev.NMuon() >0 )histo1D["MuonPt_2"]->Fill( ev.MuonPt(0)  , w );
@@ -612,6 +689,12 @@ namespace Histogram01
  
 		for(int i=0; i<ev.NGenPar(); i++)
 		{
+		        if( ( abs(ev.GenParId(i) )==12 ||  abs(ev.GenParId(i)) ==14 || abs(ev.GenParId(i)) ==16 ) && ev.GenParStatus(i)==3  )
+		        {      
+			      histo1D["GenZnunuEta"]->Fill( ev.GenParEta(i), w );
+			      histo1D["GenZnunuPt"]->Fill( ev.GenParPt(i) , w );  
+			}
+
 			if(abs(ev.GenParId(i) )==24 && ev.GenParStatus(i)==2 )
 			{
 				histo1D["GenWPt"]->Fill( ev.GenParPt(i), w );
@@ -623,11 +706,11 @@ namespace Histogram01
 			}
 			if(abs(ev.GenParId(i) )==23 && ev.GenParStatus(i)==2 )
 			{
-				histo1D["GenZPt"]->Fill( ev.GenParPt(i), w );
-				histo2D["GenJet1ptvsZpt"]->Fill( ev.GenAK5JetPt(0), ev.GenParPt(i), w );
-				histo2D["RecJet1ptvsZpt"]->Fill( ev.PFAK5JetPtCor(ixjet1), ev.GenParPt(i), w );
-				histo2D["METmuvsZpt"]->Fill( MetLepPt( ev.MetPx(t) , ev.MetPy(t) , ev ), ev.GenParPt(i), w );   
-				histo1D["METoverZpt"]->Fill( MetLepPt( ev.MetPx(t) , ev.MetPy(t) , ev )/ ev.GenParPt(i), w ); 
+			  	histo1D["GenZPt"]->Fill( ev.GenParPt(i), w );
+			  	histo2D["GenJet1ptvsZpt"]->Fill( ev.GenAK5JetPt(0), ev.GenParPt(i), w );
+			  	histo2D["RecJet1ptvsZpt"]->Fill( ev.PFAK5JetPtCor(ixjet1), ev.GenParPt(i), w );
+			  	histo2D["METmuvsZpt"]->Fill( MetLepPt( ev.MetPx(t) , ev.MetPy(t) , ev ), ev.GenParPt(i), w );   
+			  	histo1D["METoverZpt"]->Fill( MetLepPt( ev.MetPx(t) , ev.MetPy(t) , ev )/ ev.GenParPt(i), w ); 
 			}
 
 			if( abs(ev.GenParId(i) )==11 && ev.GenParStatus(i)==3 )  histo1D["Met_Wenu"]->Fill( MetLepPt( ev.MetPx(t) , ev.MetPy(t) , ev ) ,w );
@@ -638,7 +721,7 @@ namespace Histogram01
 			
 		}
 
-		for(int i=0; i<ev.NGenPar(); i++)
+		/*for(int i=0; i<ev.NGenPar(); i++)
 		{
 			if(abs(ev.GenParId(i) )==11 && ev.GenParStatus(i)==3 )
 			{
@@ -653,23 +736,47 @@ namespace Histogram01
 			{
 				histo1D["GenTauPt"]->Fill( ev.GenParPt(i), w );
 			}
-		}
+		}*/
 
 
-
-		for(int i=0; i<41; i++ )
+		/*
+		
+		for(int i=0; i<45; i++ )
 		{
 			char his[100];
-
 			sprintf(his,"PDF%d", i);
 
-			double w = ev.PDFWeight(i) * ev.PDFWeights(0) / ev.PDFWeight(0);
+			//double w = ev.PDFWeight(i) * ev.PDFWeights(0) / ev.PDFWeight(0);
+			//if(ev.PDFWeight(0) >0) histo1D[his]->Fill( 5 , w );
 
-			histo1D[his]->Fill( 5 , w ); 
+			histo1D[his]->Fill( 5 , ev.PDFWeights(i) );
 
-		}	
+			//histo1D["nnpdf20"]->Fill(w);
+			//double delta= ( ev.PDFWeight(i) * ev.PDFWeights(0) / ev.PDFWeight(0) ) - ev.PDFWeights(0); 
+			//if (delta>0)   histo1D["nnpdf20_p"]->Fill(delta);
+			//else           histo1D["nnpdf20_m"]->Fill(delta);
+		}
 
+		
+		if(ev.PDFWeight(0)>0)
+		{
 
+			//use these ones if  you used  CTEQ  for  alphaS  uncert..
+			histo1D["alphas_m"]->Fill( 5 , ev.PDFWeightAlphaS(1) * ev.PDFWeights(0) / ev.PDFWeight(0) );
+			histo1D["alphas"]->Fill( 5 , ev.PDFWeightAlphaS(2) * ev.PDFWeights(0) / ev.PDFWeight(0) );
+			histo1D["alphas_p"]->Fill( 5 , ev.PDFWeightAlphaS(3) * ev.PDFWeights(0) / ev.PDFWeight(0) );
+
+			//use these ones if you used  MSTW  for  alphaS  uncert..
+			//histo1D["alphas_m"]->Fill( 5 , ev.PDFWeightAlphaSmstw(0) * ev.PDFWeights(0) / ev.PDFWeight(0) );
+			//histo1D["alphas"]->Fill( 5 , ev.PDFWeights(0) );
+			//histo1D["alphas_p"]->Fill( 5 , ev.PDFWeightAlphaSmstw(1) * ev.PDFWeights(0) / ev.PDFWeight(0) );
+
+			//for now  there is no  nnpdf  alphas  uncert
+			
+
+		} 
+		
+		
 		for(int i=0; i<ev.NGenPar(); i++)
 		{
 		  histo1D["GravitonPt"]->Fill( ev.GenParPt(i), w );
@@ -689,7 +796,7 @@ namespace Histogram01
 		
 		
 		
-		}
+			}*/
 		
 
 		return true;
@@ -729,6 +836,22 @@ namespace Histogram01
 		    histo1D["Jet1Pt2"]->SetBinContent( i , a7 );
 		}
 		
+
+		histo1D["NJet5"]->SetBinContent( 1 , histo1D["NJet55"]->GetBinContent(1) );
+		histo1D["NJet5"]->SetBinContent( 2 , histo1D["NJet55"]->GetBinContent(2) );
+		histo1D["NJet5"]->SetBinContent( 3 , histo1D["NJet55"]->GetBinContent(3) );
+		histo1D["NJet5"]->SetBinContent( 4 , histo1D["NJet55"]->GetBinContent(4) );
+		histo1D["NJet5"]->SetBinContent( 5 , histo1D["NJet55"]->GetBinContent(5) + histo1D["NJet55"]->GetBinContent(6) );
+
+
+		histo1D["NJet6"]->SetBinContent( 1 , histo1D["NJet66"]->GetBinContent(1) );
+		histo1D["NJet6"]->SetBinContent( 2 , histo1D["NJet66"]->GetBinContent(2) );
+		histo1D["NJet6"]->SetBinContent( 3 , histo1D["NJet66"]->GetBinContent(3) );
+		histo1D["NJet6"]->SetBinContent( 4 , histo1D["NJet66"]->GetBinContent(4) );
+		histo1D["NJet6"]->SetBinContent( 5 , histo1D["NJet66"]->GetBinContent(5) );
+		histo1D["NJet6"]->SetBinContent( 6 , histo1D["NJet66"]->GetBinContent(6) + histo1D["NJet55"]->GetBinContent(7) );
+
+
 
 
 		//histo1D["MetLep1_eff"]->Divide( histo1D["MetLep1_cm"], histo1D["MetLep1"] , 1.0, 1.0 ); 
@@ -1170,23 +1293,23 @@ namespace Histogram01
 		//int  t= ev.MetType(); 
 		
 
-		for(int i=0; i<ev.NGenPar(); i++)
+		/*for(int i=0; i<ev.NGenPar(); i++)
 		{
 
 			if(abs(ev.GenParId(i) )==24 && ev.GenParStatus(i)==3 )
 			{
-				histo1D["WPT"]->Fill( ev.GenParPt(i) );
+			  histo1D["WPT"]->Fill( ev.GenParPt(i) );
 			}
 			if(abs(ev.GenParId(i) )==24 && ev.GenParStatus(i)==3 && ev.GenParCharge(i)==-1 )
 			{
-				histo1D["WminusPT"]->Fill( ev.GenParPt(i) );
+			  histo1D["WminusPT"]->Fill( ev.GenParPt(i) );
 
 			}
 			if(abs(ev.GenParId(i) )==24 && ev.GenParStatus(i)==3 && ev.GenParCharge(i)== 1 )
 			{
-				histo1D["WplusPT"]->Fill( ev.GenParPt(i) );
+			  histo1D["WplusPT"]->Fill( ev.GenParPt(i) );
 			}
-		}
+		}*/
 		
 		for(int i=0; i<ev.NPFMuon(); i++)
 		{

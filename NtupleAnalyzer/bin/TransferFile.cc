@@ -27,20 +27,23 @@ int main(int argc, char ** argv)
 	char mymkdir[255];
 	//char mycd[255];
 
-	string  mytxt = "wjets";
+       
 
 	sprintf(mymkdir,"mkdir %s" , argv[1] );
 
-	sprintf(myls,"ls /pnfs/cms/WAX/resilient/vergili/%s/nt*  > list.txt" , argv[1], argv[1] );
+	sprintf(myls,"ls /pnfs/cms/WAX/resilient/vergili/%s/nt*  > %s.txt" , argv[1], argv[1] );
 
 	system(mymkdir);
 
 	system(myls);
 
+	string  mytxt = argv[1];
+	mytxt += ".txt";
+
 
 	ifstream file;
 
-	file.open("list.txt" ,ios::in);
+	file.open( mytxt.c_str()  ,ios::in);
 
 	char line1[255], line2[255], myhadd[255];
 
