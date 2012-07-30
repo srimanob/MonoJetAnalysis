@@ -149,7 +149,7 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 		//((TH1D*)(*tfileIt)->Get(histname))->GetYaxis()->SetLabelSize( labelSize );
 		//
 		//((TH1D*)(*tfileIt)->Get(histname))->GetXaxis()->SetLabelFont( 42 );
-		//
+		/* //
  		((TH1D*)(*tfileIt)->Get("NJet"))->GetXaxis()->CenterLabels(kTRUE);
  		((TH1D*)(*tfileIt)->Get("NJet"))->SetNdivisions(10);
 
@@ -172,10 +172,12 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
  
  		((TH1D*)(*tfileIt)->Get("PFElecPt"))->GetXaxis()->SetNdivisions(8,10,0, kFALSE);
  		((TH1D*)(*tfileIt)->Get("PFMuonPt"))->GetXaxis()->SetNdivisions(8,10,0, kFALSE);
-
-		
+	        	
+		*/
  		//((TH1D*)(*tfileIt)->Get("NofMuon"))->GetXaxis()->CenterLabels(kTRUE);
  		//((TH1D*)(*tfileIt)->Get("NofMuon"))->SetNdivisions(10);
+
+
 
 	        //((TH1D*)(*tfileIt)->Get("WlepnuPT_50_100"))->GetXaxis()->SetNdivisions(11,2,0, kFALSE);
 		//((TH1D*)(*tfileIt)->Get("ZleplepPT_60_120"))->GetXaxis()->SetNdivisions(4,5,0, kFALSE);
@@ -218,28 +220,38 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 	myCanvas->cd()->SetRightMargin(0.04);
 
 
-	TLatex *text1, *text2;
+	TLatex *text1, *text2, *text3;
 
 	text1 = new TLatex(3.570061,23.08044,"CMS");
 	text1->SetNDC();
 	text1->SetTextAlign(13);
-	text1->SetX(0.19);
+	text1->SetX(0.23);
 	text1->SetY(0.92);
 	//text1->SetLineWidth(2);
-	text1->SetTextFont(72);
+	text1->SetTextFont(42);
 	text1->SetTextSizePixels(24);// dflt=28
 	text1->Draw();
 
-	text2 = new TLatex(3.570061,23.08044,"#intL dt = 5 fb^{-1} at #sqrt{s}=7 TeV");
+	text2 = new TLatex(3.570061,23.08044,"#sqrt{s} = 8 TeV");
 	text2->SetNDC();
 	text2->SetTextAlign(13);
-	text2->SetX(0.19);
+	text2->SetX(0.20);
 	text2->SetY(0.86);
 	//text2->SetLineWidth(2);
 	text2->SetTextFont(42);
 	text2->SetTextSize(0.040);// dflt=28
 	text2->Draw();
 
+
+        text3 = new TLatex(3.570061,23.08044,"#intL dt = 5.0 fb^{-1}");
+        text3->SetNDC();
+	text3->SetTextAlign(13);
+        text3->SetX(0.20);
+        text3->SetY(0.79);
+	//text3->SetLineWidth(2);
+	text3->SetTextFont(42);
+        text3->SetTextSize(0.040);// dflt=28
+	text3->Draw();
 
 	
 	gPad->Update();

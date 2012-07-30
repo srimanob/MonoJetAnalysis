@@ -16,6 +16,9 @@
 <use     name="lhapdf"/> 
 
 
+<bin   name="AnaTrigger" file="AnaTrigger.cc"></bin>
+
+
 <bin   name="AnaMonoJet" file="AnaMonoJet.cc"></bin>
 <bin   name="AnaMonoJetCutEff" file="AnaMonoJetCutEff.cc"></bin>
 

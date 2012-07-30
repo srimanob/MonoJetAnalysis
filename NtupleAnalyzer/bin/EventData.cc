@@ -15,72 +15,47 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 {
 
 
-	mydataset["met1"]   = "/uscms_data/d1/lpcjm/DATA/2011A_METBTag_May10ReRecov1_HLTCenJet80_MET80_Lumi_215pb_15oct.root";
-	mydataset["met2"]   = "/uscms_data/d1/lpcjm/DATA/2011A_MET_PromptRecov4_HLTCenJet80_MET80_Lumi_930pb_15oct.root";
-	mydataset["met3"]   = "/uscms_data/d1/lpcjm/DATA/2011A_MET_Aug05ReReco_HLTCenJet80_MET80_Lumi_371pb_15oct.root";
-	mydataset["met4"]   = "/uscms_data/d1/lpcjm/DATA/2011A_MET_PromptRecov6_HLTCenJet80_MET80_Lumi_654pb_15oct.root";
-	mydataset["met5"]   = "/uscms_data/d1/lpcjm/DATA/2011B_MET_PromptRecov1_HLTCenJet80_MET80_Lumi_1011pb_15oct.root";
-	mydataset["met6"]   = "/uscms_data/d1/lpcjm/DATA/2011B_MET_PromptRecov1_HLTCenJet80_MET80_Lumi_1476pb_08nov.root";
-
-	//mydataset["met6"]   = "/uscmst1b_scratch/lpc1/3DayLifetime/vergili/MET_cor.root";
-
-	mydataset["sinmu1"] =  "/uscms_data/d1/lpcjm/DATA/";
-	mydataset["sinmu2"] =  "/uscms_data/d1/lpcjm/DATA/muon/SingleMuon_165088_167913_promptv4.root";
-	mydataset["sinmu3"] =  "/uscms_data/d1/lpcjm/DATA/muon/SingleMuon_170249_172619_aug05.root";
-	mydataset["sinmu4"] =  "/uscms_data/d1/lpcjm/DATA/muon/SingleMuon_172620_17369_promptv6.root";
-	mydataset["sinmu5"] =  "/uscms_data/d1/lpcjm/DATA/SingleMu.root";
-	mydataset["sinmu6"] =  "/uscms_data/d1/lpcjm/DATA/";
+	mydataset["met1"]   = "/uscms_data/d1/lpcjm/DATA/2012/2012A_MET_PromptRecov1_HLT_MET_Lumi_725pb_22june.root";
+	mydataset["met2"]   = "/uscms_data/d1/lpcjm/DATA/2012/2012B_MET_part1_PromptRecov1_HLT_MET_Lumi_1590pb_22june.root";
+	mydataset["met3"]   = "/uscms_data/d1/lpcjm/DATA/2012/2012B_MET_part2_PromptRecov1_HLT_MET_Lumi_1651pb_22june.root";
 
 
-	mydataset["try1"] =  "/uscms_data/d2/vergili/jan/CMSSW_4_2_8_patch7/src/MonoJetAnalysis/NtupleAnalyzer/test/md2d4_cteq.root";
-	mydataset["try2"] =  "/uscms_data/d2/vergili/jan/CMSSW_4_2_8_patch7/src/MonoJetAnalysis/NtupleAnalyzer/test/md2d2.root";
+	mydataset["sinmu1"] =  "/uscms_data/d1/lpcjm/DATA/2012/SinMu2012.root";
 
-		
-/*  //Fall-11
-	mydataset["wjets"] =  "/uscms_data/d1/lpcjm/DATA/Fall11/Fall11_WJets_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_2571pb_04jan.root"; 
-	mydataset["wjets"] =  "/uscms_data/d1/lpcjm/DATA/Fall11/Fall11_WJetsPt100_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_38057pb_04jan.root"; 
-	mydataset["ttbar"] =  "/uscms_data/d1/lpcjm/DATA/Fall11/Fall11_TTJets_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_18117pb_04jan.root"; 
-	mydataset["zjets"] =  "/uscms_data/d1/lpcjm/DATA/Fall11/Fall11_ZJets_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_11707pb_04jan.root"; 
-	mydataset["znunu50"] =  "/uscms_data/d1/lpcjm/DATA/Fall11/Fall11_ZJetsToNuNu_50_HT_100_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_19796pb_04jan.root"; 
-	mydataset["znunu100"] =  "/uscms_data/d1/lpcjm/DATA/Fall11/Fall11_ZJetsToNuNu_100_HT_200_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_23700pb_04jan.root"; 
-	mydataset["znunu200"] =  "/uscms_data/d1/lpcjm/DATA/Fall11/Fall11_ZJetsToNuNu_200_HT_inf_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_69642pb_04jan.root"; 
-*/
+ 	mydataset["znunu50"]  = "/uscms_data/d1/lpcjm/DATA/2012/Summer12_ZJetsToNuNu_50_HT_100_Madgraph_Lumi_9925pb_22june.root";
+	mydataset["znunu100"] = "/uscms_data/d1/lpcjm/DATA/2012/Summer12_ZJetsToNuNu_100_HT_200_Madgraph_Lumi_27552pb_22june.root";
+	mydataset["znunu200"] = "/uscms_data/d1/lpcjm/DATA/2012/Summer12_ZJetsToNuNu_200_HT_400_Madgraph_Lumi_121273pb_22june.root";
+	mydataset["znunu400"] = "/uscms_data/d1/lpcjm/DATA/2012/Summer12_ZJetsToNuNu_400_HT_inf_Madgraph_Lumi_122116pb_22june.root";
 
-/*  //Summer-11  PFMET+mu  110 GeV Selection
-	mydataset["ttbar"]    = "/uscms_data/d1/lpcjm/DATA/try/Summer11_TTJets_TuneZ2_7TeV_Type1PFMETmu_110_Lumi_17907pb_28nov.root";
-	mydataset["wjets"]    = "/uscms_data/d1/lpcjm/DATA/try/Summer11_WJets_TuneZ2_7TeV_Type1PFMETmu_110_Lumi_2502pb_28nov.root";
-	mydataset["znunu50"]  = "/uscms_data/d1/lpcjm/DATA/Summer11_ZJetsToNuNu_50_HT_100_7TeV_HLTCenJet80_MET80_Lumi_19948pb_08nov.root";
-	mydataset["znunu100"] = "/uscms_data/d1/lpcjm/DATA/try/Summer11_ZJetsToNuNu_100_HT_200_7TeV_Type1PFMETmu_110_Lumi_22962pb_28nov.root";
-	mydataset["znunu200"] = "/uscms_data/d1/lpcjm/DATA/try/Summer11_ZJetsToNuNu_200_HT_inf_7TeV_Type1PFMETmu_110_Lumi_68373pb_28nov.root";
-	mydataset["zjets"]    = "/uscms_data/d1/lpcjm/DATA/try/Summer11_ZJets_TuneZ2_7TeV_Type1PFMETmu_110_Lumi_11212pb_28nov.root";
-*/
+	mydataset["wjets1"]    = "/uscms_data/d1/lpcjm/DATA/2012/Summer12_WJetsToLNu_PtW100_part1_Madgraph_Lumi_47034pb_22june.root";
+	mydataset["wjets2"]    = "/uscms_data/d1/lpcjm/DATA/2012/Summer12_WJetsToLNu_PtW100_part2_Madgraph_Lumi_47034pb_22june.root";
+	mydataset["wjets3"]    = "/uscms_data/d1/lpcjm/DATA/2012/Summer12_WJetsToLNu_PtW100_part3_Madgraph_Lumi_47034pb_22june.root";
 
-	//mydataset["wjets"]    = "/uscms_data/d1/lpcjm/DATA/Summer11_WJets_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_2531pb_08nov.root";
-	
-	mydataset["ttbar"]    = "/uscms_data/d1/lpcjm/DATA/Summer11_TTJets_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_17749pb_08nov.root";
-	mydataset["wjets"]    = "/uscms_data/d1/lpcjm/DATA/Summer11_WJetsPt100_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_37592pb_30jan.root";
-	mydataset["zjets"]    = "/uscms_data/d1/lpcjm/DATA/Summer11_ZJets_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_11468pb_08nov.root";
- 	mydataset["znunu50"]  = "/uscms_data/d1/lpcjm/DATA/Summer11_ZJetsToNuNu_50_HT_100_7TeV_HLTCenJet80_MET80_Lumi_19948pb_08nov.root";
-	mydataset["znunu100"] = "/uscms_data/d1/lpcjm/DATA/Summer11_ZJetsToNuNu_100_HT_200_7TeV_HLTCenJet80_MET80_Lumi_23795pb_08nov.root";
-	mydataset["znunu200"] = "/uscms_data/d1/lpcjm/DATA/Summer11_ZJetsToNuNu_200_HT_inf_7TeV_HLTCenJet80_MET80_Lumi_70545pb_08nov.root";
+	mydataset["zjets"]    = "/uscms_data/d1/lpcjm/DATA/2012/Summer12_DYJetsToLL_M50_Madgraph_Lumi_10291pb_22june.root";
+	mydataset["ttbar"]    = "/uscms_data/d1/lpcjm/DATA/2012/Summer12_TTJets_Madgraph_Lumi_49421pb_22june.root";
 
 
-	mydataset["qcd170"]   = "/uscms_data/d1/lpcjm/DATA/Summer11_QCD170_300_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_255pb_22July.root";
-	mydataset["qcd300"]   = "/uscms_data/d1/lpcjm/DATA/Summer11_QCD300_470_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_5495pb_22July.root";
-	mydataset["qcd470"]   = "/uscms_data/d1/lpcjm/DATA/Summer11_QCD470_600_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_56822pb_22July.root";
-	mydataset["qcd600"]   = "/uscms_data/d1/lpcjm/DATA/Summer11_QCD600_800_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_273035pb_22July.root";
-	mydataset["qcd800"]   = "/uscms_data/d1/lpcjm/DATA/Summer11_QCD800_1000_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_2193642pb_22July.root";
-	mydataset["qcd1000"]  = "/uscms_data/d1/lpcjm/DATA/Summer11_QCD1000_1400_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_6302059pb_22July.root";
-	mydataset["qcd1400"]  = "/uscms_data/d1/lpcjm/DATA/Summer11_QCD1400_1800_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_202042318pb_22July.root";
-	mydataset["qcd1800"]  = "/uscms_data/d1/lpcjm/DATA/Summer11_QCD1800_inf_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_818355244pb_22July.root";
+	mydataset["qcd170"]   = "/uscms_data/d1/lpcjm/DATA/2012/";
+	mydataset["qcd300"]   = "/uscms_data/d1/lpcjm/DATA/2012/Summer12_QCD_Pt-300to470_Phytia6_Lumi_3367pb_22june.root";
+	mydataset["qcd470"]   = "/uscms_data/d1/lpcjm/DATA/2012/Summer12_QCD_Pt-470to600_Phytia6_Lumi_35080pb_22june.root";
+	mydataset["qcd600"]   = "/uscms_data/d1/lpcjm/DATA/2012/Summer12_QCD_Pt-600to800_Phytia6_Lumi_147387pb_22june.root";
+	mydataset["qcd800"]   = "/uscms_data/d1/lpcjm/DATA/2012/Summer12_QCD_Pt-800to1000_Phytia6_Lumi_1110712pb_22june.root";
+	mydataset["qcd1000"]  = "/uscms_data/d1/lpcjm/DATA/2012/";
+	mydataset["qcd1400"]  = "/uscms_data/d1/lpcjm/DATA/2012/";
+	mydataset["qcd1800"]  = "/uscms_data/d1/lpcjm/DATA/2012/";
 
-	mydataset["sintbars"]    = "/uscms_data/d1/lpcjm/DATA/Summer11_Tbar_s_channel_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_109046pb_22July.root";
-	mydataset["sintbart"]    = "/uscms_data/d1/lpcjm/DATA/Summer11_Tbar_t_channel_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_1051275pb_22July.root";
-	mydataset["sintbartw"]   = "/uscms_data/d1/lpcjm/DATA/Summer11_Tbar_tw_channelDR_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_108570pb_22July.root";
-	mydataset["sintt"]       = "/uscms_data/d1/lpcjm/DATA/Summer11_T_t_channel_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_1089387pb_22July.root";
-	mydataset["sinttw"]      = "/uscms_data/d1/lpcjm/DATA/Summer11_T_tw_channelDR_TuneZ2_7TeV_HLTCenJet80_MET80_Lumi_109072pb_22July.root";
+
+	mydataset["sintbars"]    = "/uscms_data/d1/lpcjm/DATA/2012";
+	mydataset["sintbart"]    = "/uscms_data/d1/lpcjm/DATA/2012";
+	mydataset["sintbartw"]   = "/uscms_data/d1/lpcjm/DATA/2012";
+	mydataset["sintt"]       = "/uscms_data/d1/lpcjm/DATA/2012";
+	mydataset["sinttw"]      = "/uscms_data/d1/lpcjm/DATA/2012";
 
 	
+	mydataset["dmstop"]   = "/uscms_data/d1/lpcjm/DATA/2012/DarkMatter/DM_Stop_mass210GeV_M230GeV_Lumi_98948pb.root";
+	mydataset["dmhiggs"]  = "/uscms_data/d1/lpcjm/DATA/2012/DarkMatter/DM_Higgs_massXXXGeV_M125GeV_Lumi_8336pb.root";
+
+
 	//ADD Model Samples 
 	mydataset["md1d2"]    = "/uscms_data/d1/lpcjm/DATA/ADD_summer11/md1d2.root";
 	mydataset["md2d2"]    = "/uscms_data/d1/lpcjm/DATA/ADD_summer11/md2d2.root";
@@ -107,6 +82,9 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mydataset["md4d6"]    = "/uscms_data/d1/lpcjm/DATA/ADD_summer11/md4d6.root";
 
 
+
+	mydataset["dmavd001"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass001GeV_M40TeV_madgraph.root";
+	mydataset["dmavd01"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass01GeV_M40TeV_madgraph.root";
 	mydataset["dmavd1"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass1GeV_M40TeV_madgraph.root";
 	mydataset["dmavd10"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass10GeV_M40TeV_madgraph.root";
 	mydataset["dmavd100"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass100GeV_M40TeV_madgraph.root";
@@ -116,6 +94,9 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mydataset["dmavd700"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass700GeV_M40TeV_madgraph.root";
 	mydataset["dmavd1000"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass1000GeV_M40TeV_madgraph.root";
 	
+	
+	mydataset["dmavu001"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass001GeV_M40TeV_madgraph.root";
+	mydataset["dmavu01"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass01GeV_M40TeV_madgraph.root";
 	mydataset["dmavu1"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass1GeV_M40TeV_madgraph.root";
 	mydataset["dmavu10"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass10GeV_M40TeV_madgraph.root";
 	mydataset["dmavu100"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass100GeV_M40TeV_madgraph.root";
@@ -125,6 +106,9 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mydataset["dmavu700"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass700GeV_M40TeV_madgraph.root";
 	mydataset["dmavu1000"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass1000GeV_M40TeV_madgraph.root";
 	
+	
+	mydataset["dmvd001"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass001GeV_M40TeV_madgraph.root";
+	mydataset["dmvd01"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass01GeV_M40TeV_madgraph.root";
 	mydataset["dmvd1"]      = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass1GeV_M40TeV_madgraph.root";
 	mydataset["dmvd10"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass10GeV_M40TeV_madgraph.root";
 	mydataset["dmvd100"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass100GeV_M40TeV_madgraph.root";
@@ -133,7 +117,10 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mydataset["dmvd400"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass400GeV_M40TeV_madgraph.root";
 	mydataset["dmvd700"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass700GeV_M40TeV_madgraph.root";
 	mydataset["dmvd1000"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass1000GeV_M40TeV_madgraph.root";
-	
+
+
+	mydataset["dmvu001"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass001GeV_M40TeV_madgraph.root";
+	mydataset["dmvu01"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass01GeV_M40TeV_madgraph.root";
 	mydataset["dmvu1"]      = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass1GeV_M40TeV_madgraph.root";
 	mydataset["dmvu10"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass10GeV_M40TeV_madgraph.root";
 	mydataset["dmvu100"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass100GeV_M40TeV_madgraph.root";
@@ -142,81 +129,42 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mydataset["dmvu400"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass400GeV_M40TeV_madgraph.root";
 	mydataset["dmvu700"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass700GeV_M40TeV_madgraph.root";
 	mydataset["dmvu1000"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass1000GeV_M40TeV_madgraph.root";
+
+
 	
-
-	//3D Reweight
-	//mydataset["pileup"]    = "/uscms_data/d2/lpcjm/DATA/pileup/Cert_160404-180252_7TeV_Collisions11_JSON.pileupTruth_v2_finebin.root";
-	//1D Reweight
-	mydataset["pileup"]    = "/uscms_data/d2/lpcjm/DATA/pileup/Cert_160404-180252_7TeV_Collisions11_JSON.pileup_v2.root";
-	//mydataset["pileup"]      = "/uscms_data/d2/vergili/nov/CMSSW_4_2_8_patch7/src/MonoJetAnalysis/NtupleAnalyzer/data/pileup/deneme.root";
+	mydataset["pileup"]    = "/uscms_data/d1/lpcjm/DATA/pileup/PileUp_190450_195947.root";
+   
 
 
-	mylumi["met1"]     = 4980.;
-	mylumi["met2"]     = 4980.;
-	mylumi["met3"]     = 4980.;
-	mylumi["met4"]     = 4980.;
-	mylumi["met5"]     = 4980.;
-	mylumi["met6"]     = 4980.;
+	mylumi["met1"]     = 3950.;
+	mylumi["met2"]     = 3950.;
+	mylumi["met3"]     = 3950.;
 
-	mylumi["sinmu1"]   = 4980.;
-	mylumi["sinmu2"]   = 4980.;
-	mylumi["sinmu3"]   = 4980.;
-	mylumi["sinmu4"]   = 4980.;
-	mylumi["sinmu5"]   = 4980.;
-	mylumi["sinmu6"]   = 4980.;
+	mylumi["sinmu1"]   = 3950.;
 
 
-	mylumi["try1"]     = 4980.;
-	mylumi["try2"]     = 4980.;
+	mylumi["znunu50"]  = 9925. ;
+	mylumi["znunu100"] = 27552. ;
+	mylumi["znunu200"] = 121273. ;
+	mylumi["znunu400"] = 189986.4 ;
 
 
-/*	//fall 11
-	mylumi["ttbar"]    = 3677737.  /203.;
-
-	//mylumi["wjets"]    = (81345381. /31634.);
-	mylumi["wjets"]    = (8087094. /212.5);
-
-	mylumi["zjets"]    = 36209629. /3093.;
-
-	mylumi["znunu50"]  = (8163840. /412.4)  ;
-	mylumi["znunu100"] = (3953231. /166.8)  ;
-	mylumi["znunu200"] = (3054499. /43.86)  ;
-*/	
-
-/*
-        //Summer 11-2 
-	mylumi["ttbar"]    = 3635320.  /203.;
-	mylumi["wjets"]    = (79162744. /31634.);
-	//mylumi["wjets"]    = (7988303. / 212.5);
- 	mylumi["zjets"]    = 34681773. /3093.;
-
- 	mylumi["znunu50"]  = 19948.  ;
- 	mylumi["znunu100"] = (3830150. /166.8)  ;
- 	mylumi["znunu200"] = (2998867. /43.86)  ;
-*/
+	mylumi["wjets1"]    = 47034. ;
+	mylumi["wjets2"]    = 47034. ;
+	mylumi["wjets3"]    = 47034. ;
 
 
-	mylumi["ttbar"]      = 17749.;
-	//mylumi["wjets"]    = 2531.;
-	//mylumi["wjets"]    = (7955699. / 212.5);
+	mylumi["zjets"]    = 10291.;
+	mylumi["ttbar"]    = 49421.;
 
-
-	mylumi["wjets"]    = (7988303. / 212.5) / 0.983255814;
-
-	mylumi["zjets"]    = 11468.;
-
-
-	mylumi["znunu50"]  = 19948./0.738741298 ;
-	mylumi["znunu100"] = 23246./0.738741298 ;
-	mylumi["znunu200"] = 68915./0.738741298 ;
-
-	  
 
 	mylumi["qcd170"]   = 255.;
-	mylumi["qcd300"]   = 5495.;
-	mylumi["qcd470"]   = 56822.;
-	mylumi["qcd600"]   = 273035.;
-	mylumi["qcd800"]   = 2193642.;
+
+	mylumi["qcd300"]   = 3367.;
+	mylumi["qcd470"]   = 35080.;
+	mylumi["qcd600"]   = 147387.;
+	mylumi["qcd800"]   = 1110712.;
+
 	mylumi["qcd1000"]  = 6302059.;
 	mylumi["qcd1400"]  = 202042318.;
 	mylumi["qcd1800"]  = 818355244.;
@@ -254,8 +202,13 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mylumi["md3d6"] = 95726. / 0.1693  ;
 	mylumi["md4d6"] = 14616. / 0.01778 ;
 
+	mylumi["dmstop"]  = 60803.;
+	mylumi["dmhiggs"] = 8336.;
 
-	//DarkMatter Samples  
+
+	//DarkMatter Samples
+	mylumi["dmavd001"]  = 4980.;
+	mylumi["dmavd01"]   = 4980.;  
 	mylumi["dmavd1"]    = 4980.; 
 	mylumi["dmavd10"]   = 4980.;
 	mylumi["dmavd100"]  = 4980.;
@@ -264,7 +217,9 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mylumi["dmavd400"]  = 4980.;
 	mylumi["dmavd700"]  = 4980.;
 	mylumi["dmavd1000"] = 4980.;
-	
+
+	mylumi["dmavu001"]  = 4980.;
+	mylumi["dmavu01"]   = 4980.;
 	mylumi["dmavu1"]    = 4980.;
 	mylumi["dmavu10"]   = 4980.;
 	mylumi["dmavu100"]  = 4980.;
@@ -272,8 +227,10 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mylumi["dmavu300"]  = 4980.;
 	mylumi["dmavu400"]  = 4980.;
 	mylumi["dmavu700"]  = 4980.;
-	mylumi["dmavu1000"] = 4980.;
+	mylumi["dmavu1000"] = 4980.;	
 	
+	mylumi["dmvd001"]  =  4980.;
+	mylumi["dmvd01"]   =  4980.;
 	mylumi["dmvd1"]    =  4980.;
 	mylumi["dmvd10"]   =  4980.;
 	mylumi["dmvd100"]  =  4980.;
@@ -281,8 +238,10 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mylumi["dmvd300"]  =  4980.;
 	mylumi["dmvd400"]  =  4980.;
 	mylumi["dmvd700"]  =  4980.;
-	mylumi["dmvd1000"] =  4980.;
+	mylumi["dmvd1000"] =  4980.;	
 	
+	mylumi["dmvu001"]  =  4980.;
+	mylumi["dmvu01"]   =  4980.;
 	mylumi["dmvu1"]    =  4980.;
 	mylumi["dmvu10"]   =  4980.;
 	mylumi["dmvu100"]  =  4980.;
@@ -292,8 +251,6 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mylumi["dmvu700"]  =  4980.;
 	mylumi["dmvu1000"] =  4980.;
 
-
-	
 
 	mEvent = 0;
 	mMaxEvents = maxEvents;
@@ -321,7 +278,7 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	//initPDFSet(1, "cteq66.LHgrid");
 	//initPDFSet(2, "cteq66alphas.LHgrid"); //  alphaS uncert +/-
 
-	//initPDFSet(2, "MSTW2008nlo68cl.LHgrid");
+	//initPDFSet(3, "MSTW2008nlo68cl.LHgrid");
 	//initPDFSet(2, "MSTW2008nlo68cl_asmz-68cl.LHgrid"); // alphaS uncert +
 	//initPDFSet(3, "MSTW2008nlo68cl_asmz+68cl.LHgrid");  // alphaS uncert -
 
@@ -343,10 +300,12 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mDataTree->SetBranchAddress("lumi"                                  ,&mlumi                       );
 	mDataTree->SetBranchAddress("bx"                                    ,&mbx                         );
 	mDataTree->SetBranchAddress("npvm1"                                 ,&mnpvm1                      );
-	mDataTree->SetBranchAddress("npv"                                  ,&mnpv0                       );
+	mDataTree->SetBranchAddress("npv0"                                  ,&mnpv0                       );
 	mDataTree->SetBranchAddress("npvp1"                                 ,&mnpvp1                      );
 	mDataTree->SetBranchAddress("ptHat"                                 ,&mptHat                      );
 	
+	mDataTree->SetBranchAddress("NoiseFlag"                             ,mNoiseFlag                   );
+
 	mDataTree->SetBranchAddress("CaloTowerdEx"                          ,&mCaloTowerdEx               );
 	mDataTree->SetBranchAddress("CaloTowerdEy"                          ,&mCaloTowerdEy               );
 
@@ -794,16 +753,14 @@ EventData::~EventData()
 
 bool EventData::GetNextEvent() 
 {
-  time_t rawtime;
-  time ( &rawtime );
+	time_t rawtime;
+	time ( &rawtime );
 
-  
-        if ( mEvent % 1000000 == 0 ) cout << mEvent << "   time:"<< ctime (&rawtime)  << endl;
+	if ( mEvent % 1000000 == 0 ) cout << mEvent << "   time:"<< ctime (&rawtime)  << endl;
 	if ( mEvent == mMaxEvents ) return false;
 	if ( !mDataTree->GetEntry(mEvent) ) return false;
 	mEvent++;
-
-	 
+ 
 	return true;
 }
 
@@ -819,7 +776,7 @@ double EventData::Weight()
 
 	if(misMC==1)
 	{
-	        int mnpv=0;
+		int mnpv=0;
 		//if(mbx ==-1) mnpv= mnpvm1;
 		//else if(mbx ==0) mnpv= mnpv0;
 		//else if(mbx ==1) mnpv= mnpvp1;
@@ -851,23 +808,23 @@ double EventData::Weight()
 Double_t  EventData::PDFWeight( UInt_t id )
 {	
 	
-	double  w1;
+  double  w1,w2;
 	
-	LHAPDF::usePDFMember(1,0 ); 
+	LHAPDF::usePDFMember(1, id ); 
 	
 	double basepdf1 = LHAPDF::xfx(1, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
 	double basepdf2 = LHAPDF::xfx(1, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
 	w1 = basepdf1*basepdf2;
 	
 	
-// 	LHAPDF::usePDFMember(2,id );
-// 	
-// 	double basepdf1_ = LHAPDF::xfx(2, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
-// 	double basepdf2_ = LHAPDF::xfx(2, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
-// 	w2 = basepdf1_*basepdf2_;
+ 	LHAPDF::usePDFMember(3,0 );
+ 	
+ 	double basepdf1_ = LHAPDF::xfx(3, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
+ 	double basepdf2_ = LHAPDF::xfx(3, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
+ 	w2 = basepdf1_*basepdf2_;
 
 	
-	return w1 ;
+	return w1/w2 ;
 
 } 
 
@@ -903,8 +860,8 @@ Double_t  EventData::PDFWeightAlphaSmstw( UInt_t id )
         w1 = basepdf1*basepdf2;
 
 		return w1;
-} 
-*/
+} */
+
 
 
 Int_t           EventData::IsMC()                                            {   return misMC;                                    }
@@ -929,6 +886,8 @@ Int_t           EventData::npv0()                                            {  
 Int_t           EventData::npvp1()                                           {   return  mnpvp1;                                   }
 
 Double_t        EventData::ptHat()                                           {   return  mptHat;                                   }
+Int_t           EventData::NoiseFlag(UInt_t id)                              {   return  mNoiseFlag[id];                           }
+
 										
 Int_t           EventData::NCaloAK5Jets()                                    {   return  mNCaloAK5Jets;                            }
 Double_t        EventData::CaloAK5JetE(UInt_t id)                            {   return  mCaloAK5JetE[id];                         }

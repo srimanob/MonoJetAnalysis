@@ -73,7 +73,9 @@ int main(int argc, char ** argv)
 	
 	
 	//CutAbnormalEvents  CAbnormalEvents(abrun , abevt);            
-	CutNoiseClean      CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99); 
+	CutNoiseClean      CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99);
+ 
+	//CutHLT             CHLT(0);
 	CutJet1            CJet1( 110 , 2.4,  0.02, 0.98); 
 	CutNJet            CNJet(3);
 	CutDeltaPhi3       CDeltaPhi3(2.5); 
@@ -84,13 +86,15 @@ int main(int argc, char ** argv)
 
 	//manager.Add(&CAbnormalEvents);
 	if(sel!=1) manager.Add(&CNoiseClean);
+	
+	//if(sel!=1) manager.Add(&CHLT);
 	if(sel!=2) manager.Add(&CJet1);
 	if(sel!=3) manager.Add(&CNJet); 
 	if(sel!=4) manager.Add(&CDeltaPhi3);
 	if(sel!=5) manager.Add(&CMet );
 	if(sel!=6) manager.Add(&CTIV );
-	if(sel!=7) manager.Add(&CNoPFMuon );
-	if(sel!=8) manager.Add(&CNoPFElec  );
+	if(sel!=7) manager.Add(&CNoPFMuon);
+	if(sel!=8) manager.Add(&CNoPFElec);
 
       
 	

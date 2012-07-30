@@ -4,16 +4,18 @@
 SubmitCondor    met1           AnaMonoJet  0  cutorder
 SubmitCondor    met2           AnaMonoJet  0  cutorder
 SubmitCondor    met3           AnaMonoJet  0  cutorder
-SubmitCondor    met4           AnaMonoJet  0  cutorder
-SubmitCondor    met5           AnaMonoJet  0  cutorder
-SubmitCondor    met6           AnaMonoJet  0  cutorder
 
-SubmitCondor    wjets          AnaMonoJet  1  cutorder
+SubmitCondor    wjets1          AnaMonoJet  1  cutorder
+SubmitCondor    wjets2          AnaMonoJet  1  cutorder
+SubmitCondor    wjets3          AnaMonoJet  1  cutorder
+
 SubmitCondor    ttbar          AnaMonoJet  1  cutorder
 SubmitCondor    zjets          AnaMonoJet  1  cutorder
 SubmitCondor    znunu50        AnaMonoJet  1  cutorder
 SubmitCondor    znunu100       AnaMonoJet  1  cutorder
 SubmitCondor    znunu200       AnaMonoJet  1  cutorder
+SubmitCondor    znunu400       AnaMonoJet  1  cutorder
+
 
 SubmitCondor    md2d3          AnaMonoJet  1  cutorder
 SubmitCondor    dmavd1         AnaMonoJet  1  cutorder

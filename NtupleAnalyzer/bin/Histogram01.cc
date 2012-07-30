@@ -64,11 +64,11 @@ namespace Histogram01
 
 
 
-		if(ev.run() < 178381 )
+		if(ev.run() < 1000000000 )
 		{
 			int flg_trg80=0;
 			string strtrg = ev.HLTNames();
-			if (strtrg.find("HLT_CentralJet80_MET80")!=string::npos ) flg_trg80=1;
+			if (strtrg.find("HLT_MET120_HBHENoiseCleaned")!=string::npos ) flg_trg80=1;
 	
 
 			if( flg_trg80==1 )  
@@ -147,7 +147,7 @@ namespace Histogram01
 		histo1D["PFAK5JetNeuEmEngFrac2"]      = new TH1D("PFAK5JetNeuEmEngFrac2"    , "PFAK5JetNeuEmEngFrac-2"  , 60, -0.1, 1.1);
 
 		//PV
-		histo1D["NPV"]              = new TH1D("NPV"            , "NPV "                , 25, 0, 25);
+		histo1D["NPV"]              = new TH1D("NPV"            , "NPV "                , 70, 0, 70);
 		histo1D["PVx"]              = new TH1D("PVx"            , "PV x"                , 100, -1, 1);
 		histo1D["PVy"]              = new TH1D("PVy"            , "PV y"                , 200, -2, 2);
 		histo1D["PVz"]              = new TH1D("PVz"            , "PV z"                , 1000, -10, 10);
@@ -217,6 +217,8 @@ namespace Histogram01
 		histo1D["dPhi_Met_Jet2"]    = new TH1D("dPhi_Met_Jet2"   , "dPhi Met Jet2 "      , 35, 0., 3.5);
 		
 		histo1D["dPhi_Jet1_Jet2"]   = new TH1D("dPhi_Jet1_Jet2"  , "dPhi Jet1 Jet2 "     , 35, 0, 3.5);
+                histo1D["dPhi_Jet1_muon"]   = new TH1D("dPhi_Jet1_muon"  , "dPhi Jet1 muon "     , 35, 0, 3.5);
+
 		
 		//Met
 		histo1D["Met"]              = new TH1D("Met"             , "MET "                ,  40, 0, 1000);
@@ -353,15 +355,15 @@ namespace Histogram01
 		histo1D["GravitonPt_qq"]      = new TH1D("GravitonPt_qq"     , "GravitonPt_qq"              , 50, 0, 1000);
 
 
-		histo2D["SumETvsNPV"]         = new TH2D("SumETvsNPV"       , "SumETvsNPV"        ,1500,0,1500, 30, 0, 30);
-		profile1D["SumETprNPV"]       = new TProfile("SumETprNPV"   , "<SumET> vs NPV"    ,30,0,30,0,1500);
+		histo2D["SumETvsNPV"]         = new TH2D("SumETvsNPV"       , "SumETvsNPV"        ,1500,0,1500, 70, 0, 70);
+		profile1D["SumETprNPV"]       = new TProfile("SumETprNPV"   , "<SumET> vs NPV"    ,70,0,70,0,1500);
 
-		histo2D["PileUpETvsNPV"]      = new TH2D("PileUpETvsNPV"    , "SumETvsNPV"        ,1500,0,1500, 30, 0, 30);
-		profile1D["PileUpETprNPV"]    = new TProfile("PileUpETprNPV", "<PileUpET> vs NPV"    ,30,0,30,0,1500);
+		histo2D["PileUpETvsNPV"]      = new TH2D("PileUpETvsNPV"    , "SumETvsNPV"        ,1500,0,1500, 70, 0, 70);
+		profile1D["PileUpETprNPV"]    = new TProfile("PileUpETprNPV", "<PileUpET> vs NPV"    ,70,0,70,0,1500);
 
 
-		histo2D["NPVvsnpv0"]	      = new TH2D("NPVvsnpv0"    , "NPVvsnpv0"        ,50,0,50, 50, 0, 50);
-		profile1D["NPVprnpv0"]	      = new TProfile("NPVprnpv0"    , "NPVprnpv0"    ,50,0,50,0,50);
+		histo2D["NPVvsnpv0"]	      = new TH2D("NPVvsnpv0"    , "NPVvsnpv0"        ,70,0,70, 70, 0, 70);
+		profile1D["NPVprnpv0"]	      = new TProfile("NPVprnpv0"    , "NPVprnpv0"    ,70,0,70,0,70);
 
 
 		for(int i=0; i<100; i++ )
@@ -396,6 +398,10 @@ namespace Histogram01
 
 		histo1D["dRTIVGenMuon"]     = new TH1D("dRTIVGenMuon"   , "dRTIVGenMuon"             , 1000,  -1, 9);
 
+ 		histo1D["NoiseFlag"]        = new TH1D("NoiseFlag"      , "NoiseFlag"                , 10,  0, 10);
+
+                histo1D["JetPhotEng"]       = new TH1D("JetPhotEng"     , "JetPhotEng"               , 140,  -0.5, 3.5 );
+
  
 
 
@@ -422,6 +428,11 @@ namespace Histogram01
 		int ixjet2= JetIndex(1, ev);	
 
 
+		for(int i=0; i<10; i++)
+		{
+			if(ev.NoiseFlag(i)==0 ) histo1D["NoiseFlag"]->Fill( i, 1 );
+		}
+
 		double  pileupET = ev.MetSumEt(t) - (ev.PFAK5JetPtCor(ixjet1)+ ev.PFAK5JetPtCor(ixjet2) );  
 
 		histo2D["PileUpETvsNPV"]->Fill(  pileupET , ev.NPV() , w );
@@ -434,7 +445,7 @@ namespace Histogram01
 		histo1D["Jet1Phi_uncor"]->Fill( atan2( ev.PFAK5JetPy(ixjet1) ,  ev.PFAK5JetPx(ixjet1)  )  , w);
 		histo1D["Jet1Pt_uncor"]->Fill(  ev.PFAK5JetPt(ixjet1) , w);
 
-
+		histo1D["JetPhotEng"]->Fill(  ev.PFAK5JetPhotEng(ixjet1)/ev.PFAK5JetE(ixjet1) , w);
 
 
 		histo1D["NPFTau"]->Fill(ev.NPFTau() );       
@@ -572,6 +583,9 @@ namespace Histogram01
 			histo1D["dPhi_Met_Jet2"]->Fill(  fabs( deltaPhi( ev.PFAK5JetPhi(ixjet2) , ev.MetPhi(t) ) ) , w );
 			
 			histo1D["dPhi_Jet1_Jet2"]->Fill(  fabs( deltaPhi( ev.PFAK5JetPhi(ixjet1) ,  ev.PFAK5JetPhi(ixjet2) ) ), w );
+			
+			histo1D["dPhi_Jet1_muon"]->Fill(  fabs( deltaPhi( ev.PFAK5JetPhi(ixjet1) ,  ev.PFMuonPhi(0) ) ), w );
+
 
 			histo1D["Jet2Pt"]->Fill( ev.PFAK5JetPtCor(ixjet2) , w ); 
 			histo1D["Jet2Eta"]->Fill( ev.PFAK5JetEta(ixjet2) , w ); 
@@ -749,7 +763,7 @@ namespace Histogram01
 			//double w = ev.PDFWeight(i) * ev.PDFWeights(0) / ev.PDFWeight(0);
 			//if(ev.PDFWeight(0) >0) histo1D[his]->Fill( 5 , w );
 
-			histo1D[his]->Fill( 5 , ev.PDFWeights(i) );
+			histo1D[his]->Fill( 5 , ev.PDFWeight(i) );
 
 			//histo1D["nnpdf20"]->Fill(w);
 			//double delta= ( ev.PDFWeight(i) * ev.PDFWeights(0) / ev.PDFWeight(0) ) - ev.PDFWeights(0); 

@@ -4,17 +4,26 @@
 SubmitCondor   met1            AnaMonoJetCutEff  0 cuteff
 SubmitCondor   met2            AnaMonoJetCutEff  0 cuteff
 SubmitCondor   met3            AnaMonoJetCutEff  0 cuteff
-SubmitCondor   met4            AnaMonoJetCutEff  0 cuteff
-SubmitCondor   met5            AnaMonoJetCutEff  0 cuteff
-SubmitCondor   met6            AnaMonoJetCutEff  0 cuteff
 
-SubmitCondor   wjets           AnaMonoJetCutEff  1 cuteff
+SubmitCondor   wjets1          AnaMonoJetCutEff  1 cuteff
+SubmitCondor   wjets2          AnaMonoJetCutEff  1 cuteff
+SubmitCondor   wjets3          AnaMonoJetCutEff  1 cuteff
+
+
+
 SubmitCondor   ttbar           AnaMonoJetCutEff  1 cuteff
 SubmitCondor   zjets           AnaMonoJetCutEff  1 cuteff
 
 SubmitCondor   znunu50         AnaMonoJetCutEff  1 cuteff
 SubmitCondor   znunu100        AnaMonoJetCutEff  1 cuteff
 SubmitCondor   znunu200        AnaMonoJetCutEff  1 cuteff
+SubmitCondor   znunu400        AnaMonoJetCutEff  1 cuteff
+
+
+SubmitCondor   dmhiggs          AnaMonoJetCutEff  1 cuteff
+SubmitCondor   dmstop           AnaMonoJetCutEff  1 cuteff
+
+
 
 SubmitCondor   md2d3           AnaMonoJetCutEff  1 cuteff
 SubmitCondor   dmavd1          AnaMonoJetCutEff  1 cuteff

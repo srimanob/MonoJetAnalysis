@@ -56,14 +56,15 @@ class NtupleAnalyzer : public edm::EDAnalyzer
 
 		InputTag TriggerTag;
 
+
 		double JetPtCutTag, JetEtaCutTag, WeightTag;
 		bool isMCTag;
 		double isSignalTag;
 
 
 		///HLT  L1, L1Tech
-		int nHLT, nL1, nL1T; 
-		int HLTArray[500], L1Array[128], L1TArray[64],  HLTArray2[100], HLTPreScale[500], HLTPreScale2[100]; 
+                int nHLT, nL1, nL1T, nNoiseFlag; 
+                int HLTArray[500], L1Array[128], L1TArray[64],  HLTArray2[100], HLTPreScale[500], HLTPreScale2[100], NoiseFlag[10]; 
 		char trgnm[15000];
 		TriggerNames trgnm_, trgnm2_;
 		int nhlt;
@@ -604,6 +605,112 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 // 
 //         if(pfmets2[0].uncorrectedPt(pat::MET::uncorrALL)< 60) return;
 
+//-------------------------------------------------------------------------
+
+
+	///--------------------------------------------------------------------------
+	Handle<TriggerResults> hltTriggerResultHandle;
+	iEvent.getByLabel( TriggerTag , hltTriggerResultHandle);
+
+	trgnm_ = iEvent.triggerNames(*hltTriggerResultHandle);
+
+
+	const TriggerResults &Hlt = *hltTriggerResultHandle;
+	char tmpnm1[3000],tmpnm2[3000];
+	nhlt=0;
+
+	
+	
+	if (&Hlt) 
+	{
+		//cout <<Hlt.size()<<endl;
+		//cout <<"---------------------------------"<<endl;
+		nhlt = Hlt.size();
+		//trgnm_.init(Hlt);
+
+
+		for (int itrig = 0; itrig != nhlt; ++itrig)
+		{
+			string trigName=trgnm_.triggerName(itrig);
+
+			bool accept = Hlt.accept(itrig);
+			if (accept && trigName.find("HLT")!=string::npos) 
+			{
+				sprintf(tmpnm1,"%s",tmpnm2);
+				sprintf(tmpnm2,"%s%s",tmpnm1,trigName.c_str());
+			}
+			
+			//cout <<itrig<<" "<<trigName<<" "<<accept<<endl;
+
+		}
+		//cout <<trgnm<<endl;
+		//string strtrg = trgnm;
+	}
+
+	
+
+	int flg_trg=0;
+	string strtrg = tmpnm2;
+	if (strtrg.find("HLT_MET120")!=string::npos ||
+        strtrg.find("HLT_MET200")!=string::npos ||
+		strtrg.find("HLT_MET300")!=string::npos ||
+		strtrg.find("HLT_MET400")!=string::npos ||
+		strtrg.find("HLT_MonoCentralPFJet80_PFMETnoMu95_NHEF0p95")!=string::npos  ) flg_trg=1;
+
+	if (flg_trg==0) return; 
+	sprintf(trgnm,"TRG%s", tmpnm2);
+
+
+
+	///--------------------HLTrigger---------------------------------------------
+	
+
+	int hltCount=0;
+
+	if(!hltTriggerResultHandle.isValid()) 
+	{
+		cout << "invalid handle for HLT TriggerResults" << std::endl;
+	} 
+	else 
+	{
+		
+		//HLTNames.init(*hltTriggerResultHandle);
+
+		string tempnames;  
+		hltCount = hltTriggerResultHandle->size();
+
+		for(int i = 0 ; i < hltCount ; i++) 
+		{
+			//tempnames += HLTNames.triggerName(i) + "  ";
+			HLTArray[i] = hltTriggerResultHandle->accept(i);
+
+			//cout << i << "  " <<trgnm_.triggerName(i) << "  " << hltTriggerResultHandle->accept(i) << endl;
+		}
+		
+		nHLT = hltCount; 
+
+	}
+	
+
+
+
+	///--------------------------------------------------------------------------
+
+	//TriggerNames myTrigName;
+	 Handle<TriggerResults> myTrig;
+	 iEvent.getByLabel( "TriggerResults", myTrig );
+	 
+	  int hltCount2 = myTrig->size();
+	 
+	  for(int i = 0 ; i < hltCount2; i++)
+	  {
+	    //cout << i << "  " <<  myTrig->accept(i)  << endl;
+	    NoiseFlag[i] = myTrig->accept(i);
+	  }
+	  nNoiseFlag = hltCount2;
+
+
+
 
 	///--------------------Run  Event Lumi Bx-----------------------------------
 
@@ -906,7 +1013,7 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 			//edm::FileInPath fip(JEC_PATH+"Spring10_Uncertainty_AK5Calo.txt");
 			//edm::FileInPath fip(JEC_PATH+"Spring10_Uncertainty_AK5PF.txt");
 			// edm::FileInPath fip(JEC_PATH+"Spring10_Uncertainty_AK5JPT.txt");
-			JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty( "/uscms_data/d2/vergili/april/CMSSW_4_2_8_patch7/src/MonoJetAnalysis/NtupleAnalyzer/data/GR_R_42_V19_AK5PF_Uncertainty.txt" );
+			JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty( "/uscms_data/d2/vergili/june/CMSSW_5_3_2_patch4/src/MonoJetAnalysis/NtupleAnalyzer/data/GR_R_42_V19_AK5PF_Uncertainty.txt" );
 			jecUnc->setJetEta(jet2.eta() ); // Give rapidity of jet you want tainty on
 			jecUnc->setJetPt( jet2.pt() );// Also give the corrected pt of the jet you want the uncertainty on
 			// The following function gives the relative uncertainty in the jet Pt.
@@ -1014,7 +1121,9 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 	///-----------PF MetsType1 Corrected----------------------------------
 	
 	Handle<View<pat::MET> > PFMetType1Hand;
-	iEvent.getByLabel("patMETsTypeIPF",PFMetType1Hand);
+	//iEvent.getByLabel("patMETsTypeIPF",PFMetType1Hand);
+        iEvent.getByLabel("patMETsPF",PFMetType1Hand);
+
 	const View<pat::MET> & pfmetsType1 = *PFMetType1Hand;
 
 	
@@ -1621,7 +1730,7 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 	}
 	mNPFElec=eleci;
 
-	///----------------Tau-------------------------------------------------------
+	/*///----------------Tau-------------------------------------------------------
 	
 	edm::Handle<edm::View<pat::Tau> > TauHand;
 	iEvent.getByLabel("cleanPatTaus",TauHand);
@@ -1642,19 +1751,7 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
  		mTauEtaEtaMoment[taui] = tau.etaetaMoment();
  		mTauPhiPhiMoment[taui] = tau.phiphiMoment();
  		mTauEtaPhiMoment[taui] = tau.etaphiMoment();
- 		
-		//Calo objects 
-		/*
-		mTauTracksInvariantMass[taui]            = tau.TracksInvariantMass();
-		mTauSignalTracksInvariantMass[taui]      = tau.signalTracksInvariantMass(); 
-		mTauMaximumHCALhitEt[taui]               = tau.maximumHCALhitEt();
-		mTauIsolationECALhitsEtSum[taui]         = tau.isolationECALhitsEtSum();
-		mTauIsolationTracksPtSum[taui]           = tau.isolationTracksPtSum();
-		mTauLeadTrackHCAL3x3hottesthitDEta[taui] = tau.leadTrackHCAL3x3hottesthitDEta();
-		mTauLeadTrackHCAL3x3hitsEtSum[taui]      = tau.leadTrackHCAL3x3hitsEtSum();
-		mTauLeadTracksignedSipt[taui]            = tau.leadTracksignedSipt();
-		*/
-
+ 	       
 
 		taui++;
 	
@@ -1714,7 +1811,7 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 	}
 	mNPFTau = taui;
 	
-	
+	*/
 	
 	///----------------Photon-----------------------------------------------------
 	
@@ -1772,16 +1869,15 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 			int id = p.pdgId();
 	
 
-			printf("%2d   %10d    %6.1f   %6.1f   %6.1f  %6.1f   %6.1f  %3d  %6.2f  %6.2f \n", 
-			  p.status() ,  p.pdgId(), p.pt() , p.px(), p.py(), p.pz(), p.mass(),p.charge(),  p.eta(), p.phi());
+			//printf("%2d   %10d    %6.1f   %6.1f   %6.1f  %6.1f   %6.1f  %3d  %6.2f  %6.2f \n", 
+			//  p.status() ,  p.pdgId(), p.pt() , p.px(), p.py(), p.pz(), p.mass(),p.charge(),  p.eta(), p.phi());
 
-
-			  //cout << p.pdgId()  << " " << p.pt() << " " << p.px()<<  " "  << p.py()<< " "  <<   p.pz()<< " " << p.charge()<< " "  << p.eta()<< " " <<  p.mass()<< " " << p.phi() <<  endl;
 
 			//cout  << id  << endl; 
 
-			//if( p.status() ==3 || abs( p.status() ) ==23 || abs(id) == 23 || abs(id) == 24 || abs(id) == 39 || abs(id)==5 || abs(id)==6
-			//    || abs(id) == 11 || abs(id) == 12 || abs(id)==13 || abs(id) == 14 || abs(id) == 15 || abs(id)==16 || abs(id)==5000039 )  
+			if( p.status() ==3 || abs( p.status() ) ==23 || abs(id) == 23 || abs(id) == 24 || abs(id) == 39 || abs(id)==5 || abs(id)==6
+			    || abs(id) == 11 || abs(id) == 12 || abs(id)==13 || abs(id) == 14 || abs(id) == 15 || abs(id)==16 || abs(id)==5000039 || 
+                            abs(id) == 17 || abs(id) == 18 )  
 
 			//if(  abs( p.status() ) ==23 && abs(id)==5000039 )  
 			{
@@ -1809,11 +1905,6 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 				    const reco::Candidate *pa = p.mother();
 				    int parentID = pa->pdgId();
 				    mGenParDoughterOf[igcount]=parentID;
-
-
-
-
-				    //cout<< "--" << pa->pdgId()<< " "  << pa->pt()<< " "  << pa->px()<< " " << pa->py()<< " " <<   pa->pz()<< " " << pa->charge()<< " "  << pa->eta()<< " "  <<  pa->mass()<< " " << pa->phi() <<  endl;
 
 				} 
 				
@@ -1918,116 +2009,7 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 			
 	}
 	
-
-
-
-	///--------------------HLTrigger---------------------------------------------
 	
-	Handle<TriggerResults> hltTriggerResultHandle;
-	iEvent.getByLabel( TriggerTag , hltTriggerResultHandle);
-
-	trgnm_ = iEvent.triggerNames(*hltTriggerResultHandle);
-
-	int hltCount=0;
-
-	if(!hltTriggerResultHandle.isValid()) 
-	{
-		cout << "invalid handle for HLT TriggerResults" << std::endl;
-	} 
-	else 
-	{
-		
-		//HLTNames.init(*hltTriggerResultHandle);
-
-		string tempnames;  
-		hltCount = hltTriggerResultHandle->size();
-
-		for(int i = 0 ; i < hltCount ; i++) 
-		{
-			//tempnames += HLTNames.triggerName(i) + "  ";
-			HLTArray[i] = hltTriggerResultHandle->accept(i);
-
-			//cout << i << "  " <<trgnm_.triggerName(i) << "  " << hltTriggerResultHandle->accept(i) << endl;
-		}
-		
-		nHLT = hltCount; 
-
-	}
-	
-
-	///--------------------------------------------------------------------------
-
-	const TriggerResults &Hlt = *hltTriggerResultHandle;
-	char tmpnm[3000];
-	nhlt=0;
-
-	
-	
-	for (int i = 0; i<100; i++)
-	{
-		HLTArray2[i]=0;
-		HLTPreScale2[i]=1;
-	}
-
-	if (&Hlt) 
-	{
-		//cout <<Hlt.size()<<endl;
-		//cout <<"---------------------------------"<<endl;
-		nhlt = Hlt.size();
-		//trgnm_.init(Hlt);
-
-		sprintf(trgnm,"TRG");
-		for (int itrig = 0; itrig != nhlt; ++itrig)
-		{
-			string trigName=trgnm_.triggerName(itrig);
-
-			
-
-			bool accept = Hlt.accept(itrig);
-			if (accept && trigName.find("HLT")!=string::npos) 
-			{
-				sprintf(tmpnm,"%s",trgnm);
-				sprintf(trgnm,"%s%s",tmpnm,trigName.c_str());
-			}
-			
-			//cout <<itrig<<" "<<trigName<<" "<<accept<<endl;
-
-			if(accept)
-			{
-				//cout <<itrig<<" "<<trigName<<" "<<accept<<endl;
-
-				if(      trigName == "HLT_CentralJet80_MET65")     HLTArray2[0]=1;
-				else if( trigName == "HLT_CentralJet80_MET65_v1")  HLTArray2[0]=2;
-				else if( trigName == "HLT_CentralJet80_MET65_v2")  HLTArray2[0]=3;
-				else if( trigName == "HLT_CentralJet80_MET65_v3")  HLTArray2[0]=4;
-				
-				else if( trigName == "HLT_CentralJet80_MET80")     HLTArray2[1]=1;
-				else if( trigName == "HLT_CentralJet80_MET80_v1")  HLTArray2[1]=2;
-				else if( trigName == "HLT_CentralJet80_MET80_v2")  HLTArray2[1]=3;
-				else if( trigName == "HLT_CentralJet80_MET80_v3")  HLTArray2[1]=4;
-
-				else if( trigName == "HLT_CentralJet80_MET80HF")   HLTArray2[1]=5;
-				else if( trigName == "HLT_CentralJet80_MET80HF_v1")HLTArray2[1]=6;
-				else if( trigName == "HLT_CentralJet80_MET80HF_v2")HLTArray2[1]=7;
-				else if( trigName == "HLT_CentralJet80_MET80HF_v3")HLTArray2[1]=8;
-				
-				else if( trigName == "HLT_CentralJet80_MET100")    HLTArray2[2]=1;
-				else if( trigName == "HLT_CentralJet80_MET100_v1") HLTArray2[2]=2;
-				else if( trigName == "HLT_CentralJet80_MET100_v2") HLTArray2[2]=3;
-				else if( trigName == "HLT_CentralJet80_MET100_v3") HLTArray2[2]=4;
-				
-				else if( trigName == "HLT_CentralJet80_MET160")    HLTArray2[3]=1;
-				else if( trigName == "HLT_CentralJet80_MET160_v1") HLTArray2[3]=2;
-				else if( trigName == "HLT_CentralJet80_MET160_v2") HLTArray2[3]=3;
-				else if( trigName == "HLT_CentralJet80_MET160_v3") HLTArray2[3]=4;
-				
-
-				
-			}
-		}
-		//cout <<trgnm<<endl;
-		//string strtrg = trgnm;
-	}
 
 
 
@@ -2837,7 +2819,7 @@ void NtupleAnalyzer::beginJob()
 		
 	}
 
-	if(isSignalTag==2.)
+	if(isSignalTag==1.)
 	{
 		mtree->Branch("NPDFWeights1", &mNPdfWeights1, "NPDFWeights1/I");
 		mtree->Branch("PDFWeights1",  mPdfWeights1,   "PDFWeights1[NPDFWeights1]/D");
@@ -2860,6 +2842,10 @@ void NtupleAnalyzer::beginJob()
 	mtree->Branch("HLTArray2"      ,HLTArray2      ,"HLTArray2[100]/I");
 	mtree->Branch("HLTNames"       ,trgnm          ,"HLTNames/C");
 	mtree->Branch("HLTPreScale2"   ,HLTPreScale2   ,"HLTPreScale2[100]/I");
+
+	mtree->Branch("nNoiseFlag"     ,&nNoiseFlag    ,"nNoiseFlag/I");
+	mtree->Branch("NoiseFlag"      ,NoiseFlag      ,"NoiseFlag[nNoiseFlag]/I");
+
 	
 
 	if(!isMCTag)

@@ -66,7 +66,7 @@ DrawOptions::DrawOptions(TString dataSet_)
       search=-1;
     }
     
-   else if(dataSet_ == "ADD M_{D}2#delta3")
+   else if(dataSet_ == "DM STop")
     {
       reweight=1;
       color=102;
@@ -76,7 +76,7 @@ DrawOptions::DrawOptions(TString dataSet_)
       drawOpt="signal";
       search=1;
     } 
-   else if(dataSet_ == "DM-AVd m=1GeV")
+   else if(dataSet_ == "DM Higgs")
     {
       reweight=1;
       color=102;

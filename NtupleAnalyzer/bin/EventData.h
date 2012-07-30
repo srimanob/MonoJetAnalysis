@@ -56,6 +56,7 @@ class EventData
 		Int_t           npv0();
 		Int_t           npvp1();
 		Double_t        ptHat();
+		Int_t           NoiseFlag(UInt_t id);
 
 		Int_t           NCaloAK5Jets();
 		Double_t        CaloAK5JetE(UInt_t id);    
@@ -528,6 +529,7 @@ class EventData
 		Int_t           mnpvp1;
 
 		Double_t        mptHat;
+		Int_t           mNoiseFlag[10];
 
 		Int_t           mNCaloAK5Jets;
 		Double_t        mCaloAK5JetE[MAXJET];    

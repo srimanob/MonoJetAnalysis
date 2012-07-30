@@ -18,96 +18,151 @@ using namespace std;
 
 ///-----------------------------------------------------------------------------------------------------------------
 
-
 namespace Operation 
 {
 
 	vector<double> generate_flat10_weights(TH1D* data_npu_estimated)
 	{
 	  
-	       //Array for 1D  reweight 
-		const double npu_probs[35] = 
+	  //Array for 1D  reweight 
+    const double npu_probs[60] = 
 		{
-			1.45346E-01,
-			6.42802E-02,
-			6.95255E-02,
-			6.96747E-02,
-			6.92955E-02,
-			6.84997E-02,
-			6.69528E-02,
-			6.45515E-02,
-			6.09865E-02,
-			5.63323E-02,
-			5.07322E-02,
-			4.44681E-02,
-			3.79205E-02,
-			3.15131E-02,
-			2.54220E-02,
-			2.00184E-02,
-			1.53776E-02,
-			1.15387E-02,
-			8.47608E-03,
-			6.08715E-03,
-			4.28255E-03,
-			2.97185E-03,
-			2.01918E-03,
-			1.34490E-03,
-			8.81587E-04,
-			5.69954E-04,
-			3.61493E-04,
-			2.28692E-04,
-			1.40791E-04,
-			8.44606E-05,
-			5.10204E-05,
-			3.07802E-05,
-			1.81401E-05,
-			1.00201E-05,
-			5.80004E-06
-			}; 
-
-		/*	//Array for 3D reweight
-		const double npu_probs[25] = {
-			0.0698146584,
-			0.0698146584,
-			0.0698146584,
-			0.0698146584,
-			0.0698146584,
-			0.0698146584,
-			0.0698146584,
-			0.0698146584,
-			0.0698146584,
-			0.0698146584,
-			0.0698146584,
-			0.0630151648,
-			0.0526654164,
-			0.0402754482,
-			0.0292988928,
-			0.0194384503,
-			0.0122016783,
-			0.007207042,
-			0.004003637,
-			0.0020278322,
-			0.0010739954,
-			0.0004595759,
-			0.0002229748,
-			0.0001028162,
-			4.58337152809607E-05 
-			}; */
-
-
-
-
-		vector<double> result(35);
+			3.10347e-05,
+			6.78815e-05,
+			0.000150129,
+			0.000295762,
+			0.000491949,
+			0.000773783,
+			0.00114708,
+			0.00167576,
+			0.00241632,
+			0.0034114,
+			0.00468821,
+			0.00635805,
+			0.00833243,
+			0.0106723,
+			0.0134027,
+			0.0164735,
+			0.0195376,
+			0.022991,
+			0.0262165,
+			0.029431,
+			0.0323909,
+			0.0351272,
+			0.0374332,
+			0.0394877,
+			0.0409591,
+			0.0419383,
+			0.0426948,
+			0.0427961,
+			0.0426697,
+			0.0418952,
+			0.040996,
+			0.0395511,
+			0.037894,
+			0.0359037,
+			0.0336904,
+			0.0313308,
+			0.0288144,
+			0.0262867,
+			0.0236899,
+			0.0211874,
+			0.0186044,
+			0.0163021,
+			0.014236,
+			0.0120566,
+			0.0102604,
+			0.00862128,
+			0.00722878,
+			0.00589933,
+			0.00478757,
+			0.00393351,
+			0.0031027,
+			0.00245733,
+			0.00193895,
+			0.00150304,
+			0.00115026,
+			0.000848245,
+			0.000654251,
+			0.000483286,
+			0.00036781,
+			0.000263082,
+		}; 
+		//Official Pileup
+		/*const double npu_probs[60] = 
+		{
+			2.344E-05,
+            2.344E-05,
+            2.344E-05,
+            2.344E-05,
+            4.687E-04,
+            4.687E-04,
+            7.032E-04,
+            9.414E-04,
+            1.234E-03,
+            1.603E-03,
+            2.464E-03,
+            3.250E-03,
+            5.021E-03,
+            6.644E-03,
+            8.502E-03,
+            1.121E-02,
+            1.518E-02,
+            2.033E-02,
+            2.608E-02,
+            3.171E-02,
+            3.667E-02,
+            4.060E-02,
+            4.338E-02,
+            4.520E-02,
+            4.641E-02,
+            4.735E-02,
+            4.816E-02,
+            4.881E-02,
+            4.917E-02,
+            4.909E-02,
+            4.842E-02,
+            4.707E-02,
+            4.501E-02,
+            4.228E-02,
+            3.896E-02,
+            3.521E-02,
+            3.118E-02,
+            2.702E-02,
+            2.287E-02,
+            1.885E-02,
+            1.508E-02,
+            1.166E-02,
+            8.673E-03,
+            6.190E-03,
+            4.222E-03,
+            2.746E-03,
+            1.698E-03,
+            9.971E-04,
+            5.549E-04,
+            2.924E-04,
+            1.457E-04,
+            6.864E-05,
+            3.054E-05,
+            1.282E-05,
+            5.081E-06,
+            1.898E-06,
+            6.688E-07,
+            2.221E-07,
+            6.947E-08,
+            2.047E-08
+		};*/
+		vector<double> result(60);
 
 		double s = 0.0;
-		for(int npu=0; npu<35; ++npu)
+		for(int npu=0; npu<60; ++npu)
 		{
 			double npu_estimated = data_npu_estimated->GetBinContent(data_npu_estimated->GetXaxis()->FindBin(npu));
 			result[npu] = npu_estimated / npu_probs[npu];
 			s += npu_estimated;
 		}
 		// normalize weights such that the total sum of weights over thw whole sample is 1.0, i.e., sum_i  result[i] * npu_probs[i] should be 1.0 (!)
-		for(int npu=0; npu<35; ++npu)
+		for(int npu=0; npu<60; ++npu)
 		{
 			result[npu] /= s;
 		}
@@ -121,11 +176,11 @@ namespace Operation
 	{
 
 		bool  pass    = false;
-		float dxy     = ev.PFMuondxy(i);
-		float dz      = ev.PFMuondz(i);
+		//float dxy     = ev.PFMuondxy(i);
+		//float dz      = ev.PFMuondz(i);
 		bool  passIso = false;
 		bool  passKin = false;
-		bool  passVtx = false;
+		//bool  passVtx = false;
 		bool  passID  = false;
 	
 		float Iso = 0.0;
@@ -138,7 +193,7 @@ namespace Operation
 		passKin = true;
 
 
-		if(fabs(dxy) < 0.02  && fabs(dz) < 1.0 ) passVtx = true;
+		//if(fabs(dxy) < 0.02  && fabs(dz) < 1.0 ) passVtx = true;
 
 		//if(ev.PFMuonisGMPT(i) && ev.PFMuonnValidHits(i) >= 11 ) passID = true;
 
@@ -378,12 +433,12 @@ namespace Operation
 		double Metx = MetPx;
 		double Mety = MetPy;
 
-		if( ev.MetType()>9)  // pf or tc Met 
+		if( ev.MetType()>9)  // pf or tc Met
 		{
 			for(int i=0; i<ev.NPFLep(); i++ )
 			{
 				if( PFLepTightCuts(ev ,i ) )
-				{  
+				{
 					Metx =  Metx + ev.PFLepPx(i);
 					Mety =  Mety + ev.PFLepPy(i);
 				}
@@ -410,8 +465,7 @@ namespace Operation
 					Mety =  Mety + ev.PFLepPy(i);
 				}
 			}
-
-		}		
+		}	
 		
 		return atan2( Mety,Metx);  
 	}
@@ -618,14 +672,14 @@ namespace Operation
 // 		outfile << "Total events processed by all operations: " << ng_all << endl;
 // 		outfile << "Total events passing all operations: " << ng_total << endl;
 // 
- 		std::vector<Manager::OpData>::iterator i = mOperations.begin();
- 		while ( i != mOperations.end() ) 
- 		{
- 			cout << "Events surviving " << *(i->op) << ": " << i->ng  << endl;
-			outfile << "Events surviving " << *(i->op)  << ": " << i->ng << endl;
+ 		//std::vector<Manager::OpData>::iterator i = mOperations.begin();
+ 		//while ( i != mOperations.end() ) 
+ 		//{
+ 		//	cout << "Events surviving " << *(i->op) << ": " << i->ng  << endl;
+			//outfile << "Events surviving " << *(i->op)  << ": " << i->ng << endl;
  
- 			++i;
- 		}
+ 		//	++i;
+ 		//}
 
 		 
 
@@ -682,19 +736,23 @@ namespace Operation
 	bool CutHLT::Process(EventData & ev) 
 	{
 
-	  int flg_trg=0;
-	  string strtrg = ev.HLTNames();
-	  if (strtrg.find("HLT_CentralPFJet80_CaloMET50_dPhi1_PFMHT80")!=string::npos ) flg_trg=1;
+	  //int flg_trg=0;
+	  //string strtrg = ev.HLTNames();
+	  //if (strtrg.find("HLT_CentralPFJet80_CaloMET50_dPhi1_PFMHT80")!=string::npos ) flg_trg=1;
 
 
-		if ( flg_trg==1 )  
+	        if ( ev.NoiseFlag(0)==0 ||  ev.NoiseFlag(1)==0 ||  ev.NoiseFlag(2)==0 ||  ev.NoiseFlag(3)==0 ||
+                     ev.NoiseFlag(4)==0 ||  ev.NoiseFlag(5)==0 ||  ev.NoiseFlag(6)==0 ||  ev.NoiseFlag(7)==0 )  
 		{
-			return true;
+			return false;
 		} 
 		else 
 		{
-			return false;
+			return true;
 		}
+
+
+
 	}
 	std::ostream& CutHLT::Description(std::ostream &ostrm) 
 	{
@@ -978,6 +1036,10 @@ namespace Operation
 			if(JetNumber(ev)==1) accept =true;
 			if(ixjet2<99 && ixjet1<99 &&   JetNumber(ev)>1 && abs( deltaPhi( ev.PFAK5JetPhi(ixjet1),  ev.PFAK5JetPhi(ixjet2)  ) ) < mCut1 ) accept=true;
 			
+			//if( ev.NPFAK5Jets()==1) accept =true;
+                        //if(   ev.NPFAK5Jets()>1  && abs( deltaPhi( ev.PFAK5JetPhi(0),  ev.PFAK5JetPhi(1) )) < mCut1 ) accept=true;
+
+
 			if(accept)
 			{
 				send=true;
@@ -1054,7 +1116,7 @@ namespace Operation
 	bool CutTIV::Process(EventData & ev) 
 	{
 
-		double LowTIV=0;
+	        //double LowTIV=0;
 
 		float Lower_TIV = 100;
 		float ILV_isoPT;
@@ -1103,7 +1165,7 @@ namespace Operation
 				if( ILV_isoPT / ev.TIV_pt(tl) < Lower_TIV ) Lower_TIV = ILV_isoPT / ev.TIV_pt(tl);
 			}
 		}
-		LowTIV = Lower_TIV;
+		//LowTIV = Lower_TIV;
 	
 
 
@@ -1214,7 +1276,8 @@ namespace Operation
 
 		//int t = ev.MetType();
 
-		int IsoLepIndex=0, LepCharge=0;
+		int IsoLepIndex=0; 
+		//int  LepCharge=0;
 
 		int isoLepPseq[20], isoLepMseq[20], isoLepPnum=0,isoLepMnum=0; //=0 for isoMuPnum,isoMuMnum
 
@@ -1228,7 +1291,7 @@ namespace Operation
 			if( PFLepTightCuts(ev ,i) )
 			{
 				IsoLepIndex++;
-				LepCharge = ev.PFLepCharge(i);
+				//LepCharge = ev.PFLepCharge(i);
 
 				if(ev.PFLepCharge(i)<0)
 				{
@@ -1246,7 +1309,7 @@ namespace Operation
 		if( isoLepPnum==1 && isoLepMnum==1)
 		{
 
-			double dimuPhi =0;
+		        //double dimuPhi =0;
 			double ZmumuMT=0;
 			double ZPt=0;
 	
@@ -1267,7 +1330,7 @@ namespace Operation
 		
 					ZmumuMT=sqrt((ZEn*ZEn)-(ZPt*ZPt)-(ZPz*ZPz));
 		
-					dimuPhi = atan2( ZPy, ZPx);
+					//dimuPhi = atan2( ZPy, ZPx);
 				}
 			}
 	

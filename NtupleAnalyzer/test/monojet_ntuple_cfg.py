@@ -11,8 +11,8 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 
 #-- Meta data to be logged in DBS ---------------------------------------------
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.38 $'),
-    name = cms.untracked.string('$Source: /cvs/CMSSW/CMSSW/PhysicsTools/Configuration/test/SUSY_pattuple_cfg.py,v $'),
+    version = cms.untracked.string('$Revision: 1.39 $'),
+    name = cms.untracked.string('$Source: /afs/cern.ch/project/cvs/reps/CMSSW/CMSSW/PhysicsTools/Configuration/test/SUSY_pattuple_cfg.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
 
@@ -28,8 +28,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 import FWCore.ParameterSet.VarParsing as VarParsing
 options = VarParsing.VarParsing ('standard')
 
-#options.output = "SUSYPAT.root"
-		
+options.output = "SUSYPAT.root"
 options.maxEvents = 100
 #  for SusyPAT configuration
 options.register('GlobalTag', "", VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "GlobalTag to use (if empty default Pat GT is used)")
@@ -37,6 +36,7 @@ options.register('mcInfo', True, VarParsing.VarParsing.multiplicity.singleton, V
 options.register('jetCorrections', 'L1FastJet', VarParsing.VarParsing.multiplicity.list, VarParsing.VarParsing.varType.string, "Level of jet corrections to use: Note the factors are read from DB via GlobalTag")
 options.jetCorrections.append('L2Relative')
 options.jetCorrections.append('L3Absolute')
+options.jetCorrections.append('L2L3Residual')
 options.register('hltName', 'HLT', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "HLT menu to use for trigger matching")
 options.register('mcVersion', '', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Currently not needed and supported")
 options.register('jetTypes', '', VarParsing.VarParsing.multiplicity.list, VarParsing.VarParsing.varType.string, "Additional jet types that will be produced (AK5Calo and AK5PF, cross cleaned in PF2PAT, are included anyway)")
@@ -54,7 +54,7 @@ options._tagOrder =[]
 if options.files:
     process.source.fileNames = cms.untracked.vstring (options.files)
 process.source.fileNames = [
-       "/store/data/Run2011A/MET/RECO/PromptReco-v6/000/172/822/C0A08434-8CC2-E011-ACEB-003048F11C5C.root"
+     '/store/data/Run2012B/MET/RECO/13Jul2012-v1/00014/B6EE102D-2DD0-E111-8825-00261894380D.root'
     ]
 
 process.maxEvents.input = options.maxEvents
@@ -95,8 +95,6 @@ if options.hltSelection:
 if options.addKeep:
     process.out.outputCommands.extend(options.addKeep)
 
-
-
 #---------------------------------------good Vertex filter------------------------------------------------------
 
 
@@ -130,7 +128,12 @@ process.hltPhysicsDeclared.L1GtReadoutRecordTag = 'gtDigis'
 
 process.load('HLTrigger.HLTfilters.hltHighLevel_cfi')
 
-process.hltHighLevel.HLTPaths = cms.vstring( "HLT_Mu17_Mu8*" )
+process.hltHighLevel.HLTPaths = cms.vstring( "HLT_MET120*",
+                                             "HLT_MET200*",
+                                             "HLT_MET300*",
+                                             "HLT_MET400*",
+                                             "HLT_MonoCentralPFJet80_PFMETnoMu95_NHEF0p95*"
+)
 
 
 process.hltHighLevel.andOr = True   # True = OR, False = AND
@@ -145,27 +148,80 @@ process.load("MonoJetAnalysis.NtupleAnalyzer.NtupleAnalyzer_cfi")
 process.TFileService  = cms.Service("TFileService", fileName = cms.string('ntuple.root') )
 
 
+
+#---------------------------Noise FLags---------------------------------------------------------------
+
+## The good primary vertex filter ____________________________________________||
+process.primaryVertexFilter = cms.EDFilter(
+        "VertexSelector",
+            src = cms.InputTag("offlinePrimaryVertices"),
+            cut = cms.string("!isFake && ndof > 4 && abs(z) <= 24 && position.Rho <= 2"),
+            filter = cms.bool(True)
+            )
+
+## The beam scraping filter __________________________________________________||
+process.noscraping = cms.EDFilter(
+        "FilterOutScraping",
+            applyfilter = cms.untracked.bool(True),
+            debugOn = cms.untracked.bool(False),
+            numtrack = cms.untracked.uint32(10),
+            thresh = cms.untracked.double(0.25)
+            )
+
+## The iso-based HBHE noise filter ___________________________________________||
+process.load('CommonTools.RecoAlgos.HBHENoiseFilter_cfi')
+
+## The CSC beam halo tight filter ____________________________________________||
+process.load('RecoMET.METAnalyzers.CSCHaloFilter_cfi')
+
+## The HCAL laser filter _____________________________________________________||
+process.load("RecoMET.METFilters.hcalLaserEventFilter_cfi")
+process.hcalLaserEventFilter.vetoByRunEventNumber=cms.untracked.bool(False)
+process.hcalLaserEventFilter.vetoByHBHEOccupancy=cms.untracked.bool(True)
+
+## The ECAL dead cell trigger primitive filter _______________________________||
+process.load('RecoMET.METFilters.EcalDeadCellTriggerPrimitiveFilter_cfi')
+## For AOD and RECO recommendation to use recovered rechits
+process.EcalDeadCellTriggerPrimitiveFilter.tpDigiCollection = cms.InputTag("ecalTPSkimNA")
+
+## The EE bad SuperCrystal filter ____________________________________________||
+process.load('RecoMET.METFilters.eeBadScFilter_cfi')
+
+## The Good vertices collection needed by the tracking failure filter ________||
+process.goodVertices = cms.EDFilter(
+      "VertexSelector",
+        filter = cms.bool(False),
+        src = cms.InputTag("offlinePrimaryVertices"),
+        cut = cms.string("!isFake && ndof > 4 && abs(z) <= 24 && position.rho < 2")
+      )
+
+## The tracking failure filter _______________________________________________||
+process.load('RecoMET.METFilters.trackingFailureFilter_cfi')
+
+
 #-----------------------------Execution path ------------------------------------------------------------
 
+process.p0 = cms.Path(process.primaryVertexFilter ) 
+process.p1 = cms.Path(process.noscraping  )
+process.p2 = cms.Path(process.HBHENoiseFilter  )
+process.p3 = cms.Path(process.CSCTightHaloFilter  )
+process.p4 = cms.Path(process.hcalLaserEventFilter  )
+process.p5 = cms.Path(process.EcalDeadCellTriggerPrimitiveFilter ) 
+process.p6 = cms.Path(process.goodVertices * process.trackingFailureFilter )
+process.p7 = cms.Path(process.eeBadScFilter )
 
 
 process.p = cms.Path(
-		process.hltPhysicsDeclared *
-		process.L1T1coll *
-		process.hltHighLevel *
-		process.susyPatDefaultSequence*
-		
-		process.goodVertices *
-		#process.noscraping *	
-		#process.HBHENoiseFilter * 
-		#process.eeNoiseFilter *
-		#process.trackingFailureFilter *
-		#process.beamHaloFilter *
-		#process.ecalDeadCellTPfilter*
+		#process.hltPhysicsDeclared *
+		#process.L1T1coll *
 
+	        #process.hltHighLevel *
+
+		process.susyPatDefaultSequence*
 		process.NtupleAnalyzer
 
 )
+
 
 
 
