@@ -79,7 +79,7 @@ int main(int argc, char ** argv)
 	CutJet1            CJet1( 110 , 2.4,  0.02, 0.98); 
 	CutNJet            CNJet(3);
 	CutDeltaPhi3       CDeltaPhi3(2.5); 
-	CutMet             CMet(200,1);
+	CutMet             CMet(350);
 	CutTIV             CTIV(0.01);
 	NoPFMuon           CNoPFMuon(10.);
 	NoPFElec           CNoPFElec(10.);

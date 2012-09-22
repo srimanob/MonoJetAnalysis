@@ -209,8 +209,10 @@ namespace Operation
 	
 
 		if(passKin && passIso && passID) pass = true;
+
+		
 	
-		return pass;
+		return pass; 
 	
 	}	
 
@@ -671,15 +673,15 @@ namespace Operation
 // 		outfile << "Dataset info recorded in: " << dataSet << endl;
 // 		outfile << "Total events processed by all operations: " << ng_all << endl;
 // 		outfile << "Total events passing all operations: " << ng_total << endl;
-// 
- 		//std::vector<Manager::OpData>::iterator i = mOperations.begin();
- 		//while ( i != mOperations.end() ) 
- 		//{
- 		//	cout << "Events surviving " << *(i->op) << ": " << i->ng  << endl;
-			//outfile << "Events surviving " << *(i->op)  << ": " << i->ng << endl;
  
- 		//	++i;
- 		//}
+ 		std::vector<Manager::OpData>::iterator i = mOperations.begin();
+ 		while ( i != mOperations.end() ) 
+ 		{
+ 			cout << "Events surviving " << *(i->op) << ": " << i->ng  << endl;
+			outfile << "Events surviving " << *(i->op)  << ": " << i->ng << endl;
+ 
+ 			++i;
+ 		}
 
 		 
 
@@ -710,7 +712,7 @@ namespace Operation
 
 	bool CutAbnormalEvents::Process(EventData & ev) 
 	{
-	        if( ev.NPV()  > 10 )
+	        if(  abs(ev.MetPt(10) - ev.MetPt(0))< 1.5*ev.MetPt(0)  )
 		{
 			return true;
 		} 
@@ -736,13 +738,14 @@ namespace Operation
 	bool CutHLT::Process(EventData & ev) 
 	{
 
-	  //int flg_trg=0;
-	  //string strtrg = ev.HLTNames();
-	  //if (strtrg.find("HLT_CentralPFJet80_CaloMET50_dPhi1_PFMHT80")!=string::npos ) flg_trg=1;
+		//int flg_trg=0;
+		//string strtrg = ev.HLTNames();
+		//if (strtrg.find("HLT_CentralPFJet80_CaloMET50_dPhi1_PFMHT80")!=string::npos ) flg_trg=1;
 
+		//bit-3 is  beamHalo Tight 
 
-	        if ( ev.NoiseFlag(0)==0 ||  ev.NoiseFlag(1)==0 ||  ev.NoiseFlag(2)==0 ||  ev.NoiseFlag(3)==0 ||
-                     ev.NoiseFlag(4)==0 ||  ev.NoiseFlag(5)==0 ||  ev.NoiseFlag(6)==0 ||  ev.NoiseFlag(7)==0 )  
+	    if( ev.NoiseFlag(0)==0 ||  ev.NoiseFlag(1)==0 ||  ev.NoiseFlag(2)==0 ||  ev.NoiseFlag(3)==0 ||
+            ev.NoiseFlag(4)==0 ||  ev.NoiseFlag(5)==0 ||  ev.NoiseFlag(6)==0 ||  ev.NoiseFlag(7)==0 )
 		{
 			return false;
 		} 
@@ -812,13 +815,23 @@ namespace Operation
 			//if( JetNumber(ev)==1 && ev.PFAK5JetChaHadEngFrac(ixjet1)>0.2 &&  ev.PFAK5JetNeuHadEngFrac(ixjet1)<0.7 &&
 			//  ev.PFAK5JetChaEmEngFrac(ixjet1)<0.7  && ev.PFAK5JetNeuEmEngFrac(ixjet1)<0.7  )
 			  
-		        if( JetNumber(ev)==1 &&  ev.PFAK5JetChaHadEngFrac(ixjet1)>0.2 && ev.PFAK5JetNeuHadEngFrac(ixjet1)<0.7 &&
-			    ev.PFAK5JetChaEmEngFrac(ixjet1)<0.7  && ev.PFAK5JetNeuEmEngFrac(ixjet1)<0.7  )
+			if( ev.NoiseFlag(0)==1 && JetNumber(ev)==1 
+				&& ev.PFAK5JetChaHadEngFrac(ixjet1) > 0.2
+				&& ev.PFAK5JetNeuHadEngFrac(ixjet1)< 0.7
+				&& ev.PFAK5JetChaEmEngFrac(ixjet1) < 0.7
+				&& ev.PFAK5JetNeuEmEngFrac(ixjet1) < 0.7
+				)
 			{
 				send=true;
 			} 
-			if(ixjet2<99 && ixjet1<99 &&  JetNumber(ev)>1 && ev.PFAK5JetChaHadEngFrac(ixjet1)>0.2 && ev.PFAK5JetNeuHadEngFrac(ixjet1)<0.7 &&
-			   ev.PFAK5JetChaEmEngFrac(ixjet1)<0.7 && ev.PFAK5JetNeuEmEngFrac(ixjet1)<0.7  && ev.PFAK5JetNeuHadEngFrac(ixjet2)<0.7  )
+
+			if( ev.NoiseFlag(0)==1 && ixjet2<99 && ixjet1<99 &&  JetNumber(ev)>1 
+				&& ev.PFAK5JetChaHadEngFrac(ixjet1) > 0.2
+				&& ev.PFAK5JetNeuHadEngFrac(ixjet1)< 0.7
+				&& ev.PFAK5JetChaEmEngFrac(ixjet1) < 0.7
+				&& ev.PFAK5JetNeuEmEngFrac(ixjet1) < 0.7
+				&& ev.PFAK5JetNeuHadEngFrac(ixjet2)< 0.7
+				)
 			{
 				send=true;
 			}
@@ -1188,7 +1201,7 @@ namespace Operation
 
 ///--------------------------GenPar Selection---------------------------------------------------------------------
 
-  /* GenParExist::GenParExist(int pdgId) : mPdgId(pdgId){} 
+        GenParExist::GenParExist(int pdgId) : mPdgId(pdgId){} 
 	GenParExist::~GenParExist() {}
 
 	bool GenParExist::Process(EventData & ev) 
@@ -1209,7 +1222,7 @@ namespace Operation
 	{
 		ostrm << "  Gen PdgID:" << mPdgId << " Exist  :.................";
 		return ostrm;
-	} */
+	} 
 ///---------------------------- W +/- Selection------------------------------------------------------------------
 
 	WsignSelection::WsignSelection(double charge) : mCharge(charge){} 
@@ -1251,9 +1264,9 @@ namespace Operation
 				}	
 			} 
 
-			if( WmunuMT>50. && WmunuMT<100. && LepCharge == mCharge ) send =true;
+			//if( WmunuMT>50. && WmunuMT<100. && LepCharge == mCharge ) send =true;
 
-			//if( WmunuMT>50. && WmunuMT<100. ) send =true;
+			if( WmunuMT>50. && WmunuMT<100. ) send =true;
 		}
 				
 		
@@ -1436,8 +1449,3 @@ namespace Operation
 
 
 }
-
-
-
-
-

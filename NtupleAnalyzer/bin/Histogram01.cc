@@ -955,6 +955,9 @@ namespace Histogram01
 		histo1D["GenElecPt"]        = new TH1D("GenElecPt"         , "Gen Elec p_{T}"     , 100, 0, 800);
 		histo1D["GenMuonPt"]        = new TH1D("GenMuonPt"         , "Gen Muon p_{T}"     , 100, 0, 800);
 		histo1D["GenTauPt"]         = new TH1D("GenTauPt"          , "Gen Tau p_{T}"      , 100, 0, 800);
+
+		histo1D["GenMuonPt_2"]      = new TH1D("GenMuonPt_2"       , "Gen Muon p_{T}>20"     , 100, 0, 800);
+
 		
 		histo1D["ZleplepPFMET"]     = new TH1D("ZleplepPFMET"      , "PFMET for Z #lep #lep "      , 100, 0, 800);
 
@@ -1050,7 +1053,7 @@ namespace Histogram01
 		}
 
 
-
+		
 
 
 		// ------------Wmunu identification---------------------------------------
@@ -1063,8 +1066,10 @@ namespace Histogram01
 			}
 			else if(abs(ev.GenParId(i) )==13 && ev.GenParStatus(i)==3 )
 			{
-			  if(ev.GenParCharge(i)==-1)histo1D["GenMuonPt"]->Fill( ev.GenParPt(i), w );
-				
+			  if( ev.GenParPt(i)>20 && abs(ev.GenParEta(i))<2.1 ) histo1D["GenMuonPt_2"]->Fill( ev.GenParPt(i), w );
+			  histo1D["GenMuonPt"]->Fill( ev.GenParPt(i), w );
+			  
+			  
 			}
 			else if(abs(ev.GenParId(i) )==15 && ev.GenParStatus(i)==3 )
 			{

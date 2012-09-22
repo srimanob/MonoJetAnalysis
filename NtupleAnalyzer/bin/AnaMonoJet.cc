@@ -75,7 +75,7 @@ int main(int argc, char ** argv)
 	
 	
 	
-	//CutAbnormalEvents  CAbnormalEvents(abrun , abevt);  manager.Add(&CAbnormalEvents);	
+	CutAbnormalEvents  CAbnormalEvents(abrun , abevt);  manager.Add(&CAbnormalEvents);	
 
  	hDataMcMatching  DataMcMatching0(histFile+"_AnaMonoJet_0.root"); manager.Add(&DataMcMatching0);
   
@@ -120,13 +120,13 @@ int main(int argc, char ** argv)
 	hDataMcMatching  DataMcMatching7(histFile+"_AnaMonoJet_7.root"); manager.Add(&DataMcMatching7);
 	
 	
-	CutTIV CTIV(0.01); manager.Add(&CTIV);	
+	//CutTIV CTIV(0.01); manager.Add(&CTIV);	
 	hDataMcMatching  DataMcMatching8(histFile+"_AnaMonoJet_8.root"); manager.Add(&DataMcMatching8);
 
 	//CutHLT          CHLT(1); manager.Add(&CHLT);
 
 	
-	/*
+	
 	CutMet CMet2(250); manager.Add(&CMet2);
 	hDataMcMatching  DataMcMatching9(histFile+"_AnaMonoJet_9.root"); manager.Add(&DataMcMatching9);
 		
@@ -145,7 +145,7 @@ int main(int argc, char ** argv)
 	
 	CutMet CMet7(500); manager.Add(&CMet7);
 	hDataMcMatching  DataMcMatching14(histFile+"_AnaMonoJet_14.root"); manager.Add(&DataMcMatching14);
-	*/
+	
 	
 //-------------------------------------------------------------------------------------------------------------------------
 

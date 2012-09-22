@@ -63,8 +63,8 @@ class NtupleAnalyzer : public edm::EDAnalyzer
 
 
 		///HLT  L1, L1Tech
-                int nHLT, nL1, nL1T, nNoiseFlag; 
-                int HLTArray[500], L1Array[128], L1TArray[64],  HLTArray2[100], HLTPreScale[500], HLTPreScale2[100], NoiseFlag[10]; 
+		int nHLT, nL1, nL1T, nNoiseFlag; 
+		int HLTArray[500], L1Array[128], L1TArray[64],  HLTArray2[100], HLTPreScale[500], HLTPreScale2[100], NoiseFlag[10]; 
 		char trgnm[15000];
 		TriggerNames trgnm_, trgnm2_;
 		int nhlt;
@@ -104,11 +104,11 @@ class NtupleAnalyzer : public edm::EDAnalyzer
 		double  mPdfx2; 
 		double  mPdfpdf1;
 		double  mPdfpdf2; 
-  double  mPdfWeights[150] , mPdfWeights1[150];
-
+		double  mPdfWeights[150] , mPdfWeights1[150];
+		
 		int     mPdff1; 
 		int     mPdff2;	
-  int     mNPdfWeights, mNPdfWeights1;
+		int     mNPdfWeights, mNPdfWeights1;
 
 		
 		///------------------------Jet Algos------------------------------------------------------
@@ -228,9 +228,9 @@ class NtupleAnalyzer : public edm::EDAnalyzer
 		double	mMuonEta[MAXMUON]            ;
 		double	mMuonPhi[MAXMUON]            ;
 		double	mMuonCharge[MAXMUON]         ;  			  
-		int	mMuonIsGlobal[MAXMUON]       ;
-		int	mMuonIsStandAlone[MAXMUON]   ;
-		int	mMuonIsTracker[MAXMUON]      ;			  
+		int	    mMuonIsGlobal[MAXMUON]       ;
+		int	    mMuonIsStandAlone[MAXMUON]   ;
+		int	    mMuonIsTracker[MAXMUON]      ;			  
 		double	mMuonSumPtDR03[MAXMUON]      ;
 		double	mMuonSumPtDR05[MAXMUON]      ;
 		double	mMuonEmEtDR03[MAXMUON]       ;
@@ -239,8 +239,8 @@ class NtupleAnalyzer : public edm::EDAnalyzer
 
 		//comb muon	
 		double	mMuonCombChi2Norm[MAXMUON]   ;  
-		int	mMuonCombValidHits[MAXMUON]  ;  
-		int	mMuonCombLostHits[MAXMUON]   ;
+		int	    mMuonCombValidHits[MAXMUON]  ;  
+		int	    mMuonCombLostHits[MAXMUON]   ;
 		double	mMuonCombPt[MAXMUON]         ; 
 		double	mMuonCombPz[MAXMUON]         ; 
 		double	mMuonCombP[MAXMUON]          ; 
@@ -258,8 +258,8 @@ class NtupleAnalyzer : public edm::EDAnalyzer
 		
 		// stand alone muon	
 		double	mMuonStandChi2Norm[MAXMUON]    ;
-		int	mMuonStandValidHits[MAXMUON]   ;
-		int	mMuonStandLostHits[MAXMUON]    ;
+		int	    mMuonStandValidHits[MAXMUON]   ;
+		int	    mMuonStandLostHits[MAXMUON]    ;
 		double	mMuonStandPt[MAXMUON]          ;
 		double	mMuonStandPz[MAXMUON]          ;
 		double	mMuonStandP[MAXMUON]           ;
@@ -271,8 +271,8 @@ class NtupleAnalyzer : public edm::EDAnalyzer
 
 		// track muon	
 		double	mMuonTrkChi2Norm[MAXMUON]   ; 
-		int	mMuonTrkValidHits[MAXMUON]  ;
-		int	mMuonTrkLostHits[MAXMUON]   ;
+		int	    mMuonTrkValidHits[MAXMUON]  ;
+		int	    mMuonTrkLostHits[MAXMUON]   ;
 		double	mMuonTrkPt[MAXMUON]         ; 
 		double	mMuonTrkPz[MAXMUON]         ; 
 		double	mMuonTrkP[MAXMUON]          ; 
@@ -697,17 +697,17 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 	///--------------------------------------------------------------------------
 
 	//TriggerNames myTrigName;
-	 Handle<TriggerResults> myTrig;
-	 iEvent.getByLabel( "TriggerResults", myTrig );
+	Handle<TriggerResults> myTrig;
+	iEvent.getByLabel( "TriggerResults", myTrig );
+	
+	int hltCount2 = myTrig->size();
 	 
-	  int hltCount2 = myTrig->size();
-	 
-	  for(int i = 0 ; i < hltCount2; i++)
-	  {
-	    //cout << i << "  " <<  myTrig->accept(i)  << endl;
-	    NoiseFlag[i] = myTrig->accept(i);
-	  }
-	  nNoiseFlag = hltCount2;
+	for(int i = 0 ; i < hltCount2; i++)
+	{
+		//cout << i << "  " <<  myTrig->accept(i)  << endl;
+		NoiseFlag[i] = myTrig->accept(i);
+	}
+	nNoiseFlag = hltCount2;
 
 
 
@@ -1013,7 +1013,7 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 			//edm::FileInPath fip(JEC_PATH+"Spring10_Uncertainty_AK5Calo.txt");
 			//edm::FileInPath fip(JEC_PATH+"Spring10_Uncertainty_AK5PF.txt");
 			// edm::FileInPath fip(JEC_PATH+"Spring10_Uncertainty_AK5JPT.txt");
-			JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty( "/uscms_data/d2/vergili/june/CMSSW_5_3_2_patch4/src/MonoJetAnalysis/NtupleAnalyzer/data/GR_R_42_V19_AK5PF_Uncertainty.txt" );
+			JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty( "/uscms_data/d2/vergili/sep/CMSSW_5_3_3_patch2/src/MonoJetAnalysis/NtupleAnalyzer/data/GR_R_42_V19_AK5PF_Uncertainty.txt" );
 			jecUnc->setJetEta(jet2.eta() ); // Give rapidity of jet you want tainty on
 			jecUnc->setJetPt( jet2.pt() );// Also give the corrected pt of the jet you want the uncertainty on
 			// The following function gives the relative uncertainty in the jet Pt.
@@ -1121,9 +1121,7 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 	///-----------PF MetsType1 Corrected----------------------------------
 	
 	Handle<View<pat::MET> > PFMetType1Hand;
-	//iEvent.getByLabel("patMETsTypeIPF",PFMetType1Hand);
         iEvent.getByLabel("patMETsPF",PFMetType1Hand);
-
 	const View<pat::MET> & pfmetsType1 = *PFMetType1Hand;
 
 	
@@ -1137,7 +1135,7 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 
 	///-----------PF Mets ------------------------------------------------
 	Handle<View<pat::MET> > PFMetHand;
-	iEvent.getByLabel("patMETsPF",PFMetHand);
+	iEvent.getByLabel("patMETsPF", PFMetHand);
 	const View<pat::MET> & pfmets = *PFMetHand;
 	
 	
@@ -2844,7 +2842,7 @@ void NtupleAnalyzer::beginJob()
 	mtree->Branch("HLTPreScale2"   ,HLTPreScale2   ,"HLTPreScale2[100]/I");
 
 	mtree->Branch("nNoiseFlag"     ,&nNoiseFlag    ,"nNoiseFlag/I");
-	mtree->Branch("NoiseFlag"      ,NoiseFlag      ,"NoiseFlag[nNoiseFlag]/I");
+	mtree->Branch("NoiseFlag"      ,NoiseFlag      ,"NoiseFlag[10]/I");
 
 	
 

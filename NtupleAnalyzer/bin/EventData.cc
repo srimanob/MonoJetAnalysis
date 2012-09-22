@@ -14,10 +14,14 @@ using namespace LHAPDF;
 EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDataSet("undefined") 
 {
 
+	mydataset["met1"]   = "/uscms_data/d1/lpcjm/DATA/2012/2012A_MET_PromptRecov1_HLT_MET_Lumi_699pb_20aug.root";
+	mydataset["met2"]   = "/uscms_data/d1/lpcjm/DATA/2012/2012B_MET_part1_PromptRecov1_HLT_MET_Lumi_1588pb_20aug.root";
+	mydataset["met3"]   = "/uscms_data/d1/lpcjm/DATA/2012/2012B_MET_part2_PromptRecov1_HLT_MET_Lumi_2816pb_20aug.root";
+	mydataset["met4"]   = "/uscms_data/d1/lpcjm/DATA/2012/2012C_MET_part1_PromptRecov1_HLT_MET_Lumi_468pb_20aug.root";
+	mydataset["met5"]   = "/uscms_data/d1/lpcjm/DATA/2012/2012C_MET_part2_PromptRecov2_HLT_MET_Lumi_2436pb_20aug.root";
 
-	mydataset["met1"]   = "/uscms_data/d1/lpcjm/DATA/2012/2012A_MET_PromptRecov1_HLT_MET_Lumi_725pb_22june.root";
-	mydataset["met2"]   = "/uscms_data/d1/lpcjm/DATA/2012/2012B_MET_part1_PromptRecov1_HLT_MET_Lumi_1590pb_22june.root";
-	mydataset["met3"]   = "/uscms_data/d1/lpcjm/DATA/2012/2012B_MET_part2_PromptRecov1_HLT_MET_Lumi_1651pb_22june.root";
+	mydataset["try1"]   = "";
+	mylumi["try1"]      = 8000.;
 
 
 	mydataset["sinmu1"] =  "/uscms_data/d1/lpcjm/DATA/2012/SinMu2012.root";
@@ -132,15 +136,18 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 
 
 	
-	mydataset["pileup"]    = "/uscms_data/d1/lpcjm/DATA/pileup/PileUp_190450_195947.root";
-   
+	//mydataset["pileup"]    = "/uscms_data/d1/lpcjm/DATA/pileup/PileUp_190450_195947.root";
+	mydataset["pileup"]    = "/uscms_data/d3/kangal/pileup/CMSSW_5_0_1/src/RecoLuminosity/LumiDB/scripts/pileup.root";
 
 
-	mylumi["met1"]     = 3950.;
-	mylumi["met2"]     = 3950.;
-	mylumi["met3"]     = 3950.;
 
-	mylumi["sinmu1"]   = 3950.;
+	mylumi["met1"]     = 8000.;
+	mylumi["met2"]     = 8000.;
+	mylumi["met3"]     = 8000.;
+	mylumi["met4"]     = 8000.;
+	mylumi["met5"]     = 8000.;
+
+	mylumi["sinmu1"]   = 8000.;
 
 
 	mylumi["znunu50"]  = 9925. ;
@@ -207,49 +214,49 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 
 
 	//DarkMatter Samples
-	mylumi["dmavd001"]  = 4980.;
-	mylumi["dmavd01"]   = 4980.;  
-	mylumi["dmavd1"]    = 4980.; 
-	mylumi["dmavd10"]   = 4980.;
-	mylumi["dmavd100"]  = 4980.;
-	mylumi["dmavd200"]  = 4980.;
-	mylumi["dmavd300"]  = 4980.;
-	mylumi["dmavd400"]  = 4980.;
-	mylumi["dmavd700"]  = 4980.;
-	mylumi["dmavd1000"] = 4980.;
+	mylumi["dmavd001"]  = 8000.;
+	mylumi["dmavd01"]   = 8000.;  
+	mylumi["dmavd1"]    = 8000.; 
+	mylumi["dmavd10"]   = 8000.;
+	mylumi["dmavd100"]  = 8000.;
+	mylumi["dmavd200"]  = 8000.;
+	mylumi["dmavd300"]  = 8000.;
+	mylumi["dmavd400"]  = 8000.;
+	mylumi["dmavd700"]  = 8000.;
+	mylumi["dmavd1000"] = 8000.;
 
-	mylumi["dmavu001"]  = 4980.;
-	mylumi["dmavu01"]   = 4980.;
-	mylumi["dmavu1"]    = 4980.;
-	mylumi["dmavu10"]   = 4980.;
-	mylumi["dmavu100"]  = 4980.;
-	mylumi["dmavu200"]  = 4980.;
-	mylumi["dmavu300"]  = 4980.;
-	mylumi["dmavu400"]  = 4980.;
-	mylumi["dmavu700"]  = 4980.;
-	mylumi["dmavu1000"] = 4980.;	
+	mylumi["dmavu001"]  = 8000.;
+	mylumi["dmavu01"]   = 8000.;
+	mylumi["dmavu1"]    = 8000.;
+	mylumi["dmavu10"]   = 8000.;
+	mylumi["dmavu100"]  = 8000.;
+	mylumi["dmavu200"]  = 8000.;
+	mylumi["dmavu300"]  = 8000.;
+	mylumi["dmavu400"]  = 8000.;
+	mylumi["dmavu700"]  = 8000.;
+	mylumi["dmavu1000"] = 8000.;	
 	
-	mylumi["dmvd001"]  =  4980.;
-	mylumi["dmvd01"]   =  4980.;
-	mylumi["dmvd1"]    =  4980.;
-	mylumi["dmvd10"]   =  4980.;
-	mylumi["dmvd100"]  =  4980.;
-	mylumi["dmvd200"]  =  4980.;
-	mylumi["dmvd300"]  =  4980.;
-	mylumi["dmvd400"]  =  4980.;
-	mylumi["dmvd700"]  =  4980.;
-	mylumi["dmvd1000"] =  4980.;	
+	mylumi["dmvd001"]  =  8000.;
+	mylumi["dmvd01"]   =  8000.;
+	mylumi["dmvd1"]    =  8000.;
+	mylumi["dmvd10"]   =  8000.;
+	mylumi["dmvd100"]  =  8000.;
+	mylumi["dmvd200"]  =  8000.;
+	mylumi["dmvd300"]  =  8000.;
+	mylumi["dmvd400"]  =  8000.;
+	mylumi["dmvd700"]  =  8000.;
+	mylumi["dmvd1000"] =  8000.;	
 	
-	mylumi["dmvu001"]  =  4980.;
-	mylumi["dmvu01"]   =  4980.;
-	mylumi["dmvu1"]    =  4980.;
-	mylumi["dmvu10"]   =  4980.;
-	mylumi["dmvu100"]  =  4980.;
-	mylumi["dmvu200"]  =  4980.;
-	mylumi["dmvu300"]  =  4980.;
-	mylumi["dmvu400"]  =  4980.;
-	mylumi["dmvu700"]  =  4980.;
-	mylumi["dmvu1000"] =  4980.;
+	mylumi["dmvu001"]  =  8000.;
+	mylumi["dmvu01"]   =  8000.;
+	mylumi["dmvu1"]    =  8000.;
+	mylumi["dmvu10"]   =  8000.;
+	mylumi["dmvu100"]  =  8000.;
+	mylumi["dmvu200"]  =  8000.;
+	mylumi["dmvu300"]  =  8000.;
+	mylumi["dmvu400"]  =  8000.;
+	mylumi["dmvu700"]  =  8000.;
+	mylumi["dmvu1000"] =  8000.;
 
 
 	mEvent = 0;

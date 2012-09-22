@@ -70,6 +70,9 @@ int main(int argc, char ** argv)
 	//hWSourceAnalysis WSourceAnalysis(histFile+"_WSource.root"); manager.Add(&WSourceAnalysis);
 	
 
+	GenParExist CGenParExist(13);     manager.Add(&CGenParExist);
+
+
 	hDataMcMatching  DataMcMatching0(histFile+"_AnaMuon_0.root"); manager.Add(&DataMcMatching0);
 
 	CutMet CMet(200); manager.Add(&CMet);
@@ -109,7 +112,6 @@ int main(int argc, char ** argv)
 	CutMet CMet2(250); manager.Add(&CMet2);
 	hDataMcMatching  DataMcMatching7(histFile+"_AnaMuon_7.root"); manager.Add(&DataMcMatching7);
 
-
 	hWZAnalysis      WZAnalysis3(histFile+"_WZAnalysis_3.root"); manager.Add(&WZAnalysis3);///-------------
 
 
@@ -130,6 +132,18 @@ int main(int argc, char ** argv)
  	hDataMcMatching  DataMcMatching10(histFile+"_AnaMuon_10.root"); manager.Add(&DataMcMatching10);
 
 	hWZAnalysis      WZAnalysis6(histFile+"_WZAnalysis_6.root"); manager.Add(&WZAnalysis6);///-------------
+
+        CutMet CMet6(450); manager.Add(&CMet6);
+        hWZAnalysis      WZAnalysis7(histFile+"_WZAnalysis_7.root"); manager.Add(&WZAnalysis7);///-------------
+
+
+        CutMet CMet7(500); manager.Add(&CMet7);
+        hWZAnalysis      WZAnalysis8(histFile+"_WZAnalysis_8.root"); manager.Add(&WZAnalysis8);///-------------
+
+
+        CutMet CMet8(550); manager.Add(&CMet8);
+        hWZAnalysis      WZAnalysis9(histFile+"_WZAnalysis_9.root"); manager.Add(&WZAnalysis9);///-------------
+
 
 
 

@@ -20,9 +20,9 @@ using namespace std;
 namespace Constants 
 {
 	
-	string outputDir = "/uscms_data/d2/vergili/june/CMSSW_5_2_5_patch3/src/MonoJetAnalysis/NtupleAnalyzer/";
+	string outputDir = "/uscms_data/d2/vergili/sep/CMSSW_5_3_3_patch2/src/MonoJetAnalysis/NtupleAnalyzer/";
 	string condorOutDir =  "/uscmst1b_scratch/lpc1/3DayLifetime/vergili/condor/"; 
-	string condorBin    =  "/uscms_data/d2/vergili/june/CMSSW_5_2_5_patch3/bin/slc5_amd64_gcc462/"; 
+	string condorBin    =  "/uscms_data/d2/vergili/sep/CMSSW_5_3_3_patch2/bin/slc5_amd64_gcc462/"; 
 }
 
 

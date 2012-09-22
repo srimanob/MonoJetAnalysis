@@ -149,7 +149,7 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 		//((TH1D*)(*tfileIt)->Get(histname))->GetYaxis()->SetLabelSize( labelSize );
 		//
 		//((TH1D*)(*tfileIt)->Get(histname))->GetXaxis()->SetLabelFont( 42 );
-		/* //
+		 //
  		((TH1D*)(*tfileIt)->Get("NJet"))->GetXaxis()->CenterLabels(kTRUE);
  		((TH1D*)(*tfileIt)->Get("NJet"))->SetNdivisions(10);
 
@@ -173,7 +173,7 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
  		((TH1D*)(*tfileIt)->Get("PFElecPt"))->GetXaxis()->SetNdivisions(8,10,0, kFALSE);
  		((TH1D*)(*tfileIt)->Get("PFMuonPt"))->GetXaxis()->SetNdivisions(8,10,0, kFALSE);
 	        	
-		*/
+		
  		//((TH1D*)(*tfileIt)->Get("NofMuon"))->GetXaxis()->CenterLabels(kTRUE);
  		//((TH1D*)(*tfileIt)->Get("NofMuon"))->SetNdivisions(10);
 
@@ -243,14 +243,14 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 	text2->Draw();
 
 
-        text3 = new TLatex(3.570061,23.08044,"#intL dt = 5.0 fb^{-1}");
-        text3->SetNDC();
+	text3 = new TLatex(3.570061,23.08044,"#intL dt = 8.0 fb^{-1}");
+	text3->SetNDC();
 	text3->SetTextAlign(13);
-        text3->SetX(0.20);
-        text3->SetY(0.79);
+	text3->SetX(0.20);
+	text3->SetY(0.79);
 	//text3->SetLineWidth(2);
 	text3->SetTextFont(42);
-        text3->SetTextSize(0.040);// dflt=28
+	text3->SetTextSize(0.040);// dflt=28
 	text3->Draw();
 
 	
