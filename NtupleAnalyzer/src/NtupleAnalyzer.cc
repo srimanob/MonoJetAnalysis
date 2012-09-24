@@ -932,6 +932,12 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 
 	jeti=0;
 	
+	
+	edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
+        iSetup.get<JetCorrectionsRecord>().get("AK5PF",JetCorParColl);
+        JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
+        JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty(JetCorPar);
+
 
 	for(unsigned int ind=0; ind<(*JetHand).size() && ind<MAXJET; ind++)
 	{ 
@@ -1013,7 +1019,7 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 			//edm::FileInPath fip(JEC_PATH+"Spring10_Uncertainty_AK5Calo.txt");
 			//edm::FileInPath fip(JEC_PATH+"Spring10_Uncertainty_AK5PF.txt");
 			// edm::FileInPath fip(JEC_PATH+"Spring10_Uncertainty_AK5JPT.txt");
-			JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty( "/uscms_data/d2/vergili/sep/CMSSW_5_3_3_patch2/src/MonoJetAnalysis/NtupleAnalyzer/data/GR_R_42_V19_AK5PF_Uncertainty.txt" );
+		  // JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty( "/uscms_data/d2/vergili/sep/CMSSW_5_3_3_patch2/src/MonoJetAnalysis/NtupleAnalyzer/data/GR_R_42_V19_AK5PF_Uncertainty.txt" );
 			jecUnc->setJetEta(jet2.eta() ); // Give rapidity of jet you want tainty on
 			jecUnc->setJetPt( jet2.pt() );// Also give the corrected pt of the jet you want the uncertainty on
 			// The following function gives the relative uncertainty in the jet Pt.

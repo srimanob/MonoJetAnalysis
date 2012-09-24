@@ -205,3 +205,6 @@
 #include "RecoEgamma/EgammaTools/interface/ConversionFinder.h"
 
 #include "DataFormats/Scalers/interface/DcsStatus.h"
+
+#include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
