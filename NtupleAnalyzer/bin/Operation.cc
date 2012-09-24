@@ -815,7 +815,7 @@ namespace Operation
 			//if( JetNumber(ev)==1 && ev.PFAK5JetChaHadEngFrac(ixjet1)>0.2 &&  ev.PFAK5JetNeuHadEngFrac(ixjet1)<0.7 &&
 			//  ev.PFAK5JetChaEmEngFrac(ixjet1)<0.7  && ev.PFAK5JetNeuEmEngFrac(ixjet1)<0.7  )
 			  
-			if( ev.NoiseFlag(0)==1 && JetNumber(ev)==1 
+			if( JetNumber(ev)==1 
 				&& ev.PFAK5JetChaHadEngFrac(ixjet1) > 0.2
 				&& ev.PFAK5JetNeuHadEngFrac(ixjet1)< 0.7
 				&& ev.PFAK5JetChaEmEngFrac(ixjet1) < 0.7
@@ -825,7 +825,7 @@ namespace Operation
 				send=true;
 			} 
 
-			if( ev.NoiseFlag(0)==1 && ixjet2<99 && ixjet1<99 &&  JetNumber(ev)>1 
+			if( ixjet2<99 && ixjet1<99 &&  JetNumber(ev)>1 
 				&& ev.PFAK5JetChaHadEngFrac(ixjet1) > 0.2
 				&& ev.PFAK5JetNeuHadEngFrac(ixjet1)< 0.7
 				&& ev.PFAK5JetChaEmEngFrac(ixjet1) < 0.7
@@ -1234,7 +1234,8 @@ namespace Operation
 
 		int t = ev.MetType();
 
-		int IsoLepIndex=0, LepCharge=0;
+		int IsoLepIndex=0; 
+		int LepCharge=0;
 
 		for(int i=0; i<ev.NPFLep(); i++ )
 		{
@@ -1264,9 +1265,9 @@ namespace Operation
 				}	
 			} 
 
-			//if( WmunuMT>50. && WmunuMT<100. && LepCharge == mCharge ) send =true;
+			if( WmunuMT>50. && WmunuMT<100. && LepCharge == mCharge ) send =true;
 
-			if( WmunuMT>50. && WmunuMT<100. ) send =true;
+			//if( WmunuMT>50. && WmunuMT<100. ) send =true;
 		}
 				
 		

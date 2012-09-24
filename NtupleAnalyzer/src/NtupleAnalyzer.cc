@@ -652,10 +652,9 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 	int flg_trg=0;
 	string strtrg = tmpnm2;
 	if (strtrg.find("HLT_MET120")!=string::npos ||
-        strtrg.find("HLT_MET200")!=string::npos ||
-		strtrg.find("HLT_MET300")!=string::npos ||
-		strtrg.find("HLT_MET400")!=string::npos ||
-		strtrg.find("HLT_MonoCentralPFJet80_PFMETnoMu95_NHEF0p95")!=string::npos  ) flg_trg=1;
+            strtrg.find("HLT_MET200")!=string::npos ||
+	    strtrg.find("HLT_MET300")!=string::npos ||
+	    strtrg.find("HLT_MET400")!=string::npos ) flg_trg=1;
 
 	if (flg_trg==0) return; 
 	sprintf(trgnm,"TRG%s", tmpnm2);
