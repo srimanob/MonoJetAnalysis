@@ -11,7 +11,7 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 
 #-- Meta data to be logged in DBS ---------------------------------------------
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.41 $'),
+    version = cms.untracked.string('$Revision: 1.42 $'),
     name = cms.untracked.string('$Source: /afs/cern.ch/project/cvs/reps/CMSSW/CMSSW/PhysicsTools/Configuration/test/SUSY_pattuple_cfg.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
@@ -36,7 +36,8 @@ options.register('mcInfo', True, VarParsing.VarParsing.multiplicity.singleton, V
 options.register('jetCorrections', 'L1FastJet', VarParsing.VarParsing.multiplicity.list, VarParsing.VarParsing.varType.string, "Level of jet corrections to use: Note the factors are read from DB via GlobalTag")
 options.jetCorrections.append('L2Relative')
 options.jetCorrections.append('L3Absolute')
-options.jetCorrections.append('L2L3Residual')
+###options.jetCorrections.append('L2L3Residual')  ## it is not applying to MC
+
 options.register('hltName', 'HLT', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "HLT menu to use for trigger matching")
 options.register('mcVersion', '', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Currently not needed and supported")
 options.register('jetTypes', '', VarParsing.VarParsing.multiplicity.list, VarParsing.VarParsing.varType.string, "Additional jet types that will be produced (AK5Calo and AK5PF, cross cleaned in PF2PAT, are included anyway)")
@@ -45,6 +46,7 @@ options.register('doValidation', False, VarParsing.VarParsing.multiplicity.singl
 options.register('doExtensiveMatching', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "Matching to simtracks (needs extra tags)")
 options.register('doSusyTopProjection', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "Apply Susy selection in PF2PAT to obtain lepton cleaned jets (needs validation)")
 options.register('doType1MetCorrection', True, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "Apply Type1 MET correction in PF2PAT")
+options.register('doType0MetCorrection', True, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "Apply Type1 MET correction in PF2PAT")
 options.register('addKeep', '', VarParsing.VarParsing.multiplicity.list, VarParsing.VarParsing.varType.string, "Additional keep and drop statements to trim the event content")
 
 #---parse user input
@@ -55,7 +57,7 @@ options._tagOrder =[]
 if options.files:
     process.source.fileNames = cms.untracked.vstring (options.files)
 process.source.fileNames = [
-     '/store/data/Run2012C/MET/RECO/PromptReco-v2/000/201/278/92D51DD2-5EED-E111-9C5D-001D09F24D8A.root'
+     '/store/mc/Summer12/WJetsToLNu_PtW-100_TuneZ2star_8TeV-madgraph/AODSIM/PU_S7_START52_V9-v1/0001/9EE5907D-27A9-E111-94D0-E0CB4E1A118E.root'
     ]
 
 process.maxEvents.input = options.maxEvents
@@ -69,12 +71,12 @@ if options.GlobalTag:
 ############################# START SUSYPAT specifics ####################################
 from PhysicsTools.Configuration.SUSY_pattuple_cff import addDefaultSUSYPAT, getSUSY_pattuple_outputCommands
 #Apply SUSYPAT
-addDefaultSUSYPAT(process,options.mcInfo,options.hltName,options.jetCorrections,options.mcVersion,options.jetTypes,options.doValidation,options.doExtensiveMatching,options.doSusyTopProjection,options.doType1MetCorrection)
+addDefaultSUSYPAT(process,options.mcInfo,options.hltName,options.jetCorrections,options.mcVersion,options.jetTypes,options.doValidation,options.doExtensiveMatching,options.doSusyTopProjection,options.doType1MetCorrection,options.doType0MetCorrection)
 SUSY_pattuple_outputCommands = getSUSY_pattuple_outputCommands( process )
 ############################## END SUSYPAT specifics ####################################
 
 #-- TimeReport and TrigReport after running ----------------------------------
-process.options.wantSummary = True
+process.options.wantSummary = False
 
 #-- HLT selection ------------------------------------------------------------
 import HLTrigger.HLTfilters.hltHighLevel_cfi as hlt
@@ -98,8 +100,6 @@ if options.hltSelection:
     process.out.SelectEvents = cms.untracked.PSet(SelectEvents = cms.vstring("p"))
 if options.addKeep:
     process.out.outputCommands.extend(options.addKeep)
-
-
 
 
 
@@ -207,24 +207,32 @@ process.goodVertices = cms.EDFilter(
 process.load('RecoMET.METFilters.trackingFailureFilter_cfi')
 
 
+#--------------------Muons with wrong momenta--------------------------------
+
+process.load('RecoMET.METFilters.inconsistentMuonPFCandidateFilter_cfi')
+process.load('RecoMET.METFilters.greedyMuonPFCandidateFilter_cfi')
+
+
+
 #-----------------------------Execution path ------------------------------------------------------------
 
-process.p0 = cms.Path(process.primaryVertexFilter ) 
-process.p1 = cms.Path(process.noscraping  )
-process.p2 = cms.Path(process.HBHENoiseFilter  )
-process.p3 = cms.Path(process.CSCTightHaloFilter  )
-process.p4 = cms.Path(process.CSCLooseHaloFilter  )
-process.p5 = cms.Path(process.hcalLaserEventFilter  )
-process.p6 = cms.Path(process.EcalDeadCellTriggerPrimitiveFilter ) 
-process.p7 = cms.Path(process.goodVertices * process.trackingFailureFilter )
-process.p8 = cms.Path(process.eeBadScFilter )
+process.p0 = cms.Path(process.noscraping  )
+process.p1 = cms.Path(process.HBHENoiseFilter  )
+process.p2 = cms.Path(process.CSCTightHaloFilter  )
+process.p3 = cms.Path(process.CSCLooseHaloFilter  )
+process.p4 = cms.Path(process.hcalLaserEventFilter  )
+process.p5 = cms.Path(process.EcalDeadCellTriggerPrimitiveFilter ) 
+process.p6 = cms.Path(process.goodVertices * process.trackingFailureFilter )
+process.p7 = cms.Path(process.eeBadScFilter )
+process.p8 = cms.Path(process.greedyMuonPFCandidateFilter*process.inconsistentMuonPFCandidateFilter)
 
 
 process.p = cms.EndPath(
 		#process.hltPhysicsDeclared *
 		#process.L1T1coll *
-	       #process.hltHighLevel *
+	    #process.hltHighLevel *
 
+		process.primaryVertexFilter *
 		process.susyPatDefaultSequence*
 		process.NtupleAnalyzer
 
@@ -234,13 +242,3 @@ process.p = cms.EndPath(
 file = open('MonoJetPAT_cfg.py','w')
 file.write(str(process.dumpPython()))
 file.close()
-
-
-
-
-
-
-
-
-
-
