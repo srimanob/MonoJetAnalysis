@@ -22,15 +22,17 @@ namespace Operation
 	bool    IsIsoMuon(int i , EventData & eventData);
 	bool    IsIsoMuonWithoutEta(int i , EventData & eventData);
 	bool    LepInJet(double JetEta , double JetPhi ,   EventData & eventData);
+	bool    LepInJet2(int i , EventData & ev);
+
 	double  MetLepPt(double MetPx , double MetPy , EventData & eventData);
 
 	double  MetLepPhi(double MetPx , double MetPy , EventData & eventData);
 	int     JetIndex(int ind , EventData & eventData);
 	int     JetNumber(EventData & eventData);
 
-	bool    PFLepTightCuts(EventData&  ev , int i, double pt=20.);
-	bool    PFMuonTightCuts(EventData& ev , int i, double pt=20.);
-	bool    PFElecTightCuts(EventData& ev , int i, double pt=20.);
+	bool    PFLepTightCuts(EventData&  ev , int i, double pt=20., double eta=2.1);
+	bool    PFMuonTightCuts(EventData& ev , int i, double pt=20., double eta=2.1);
+	bool    PFElecTightCuts(EventData& ev , int i, double pt=20., double eta=2.5);
 
 
 
@@ -347,12 +349,13 @@ namespace Operation
 	class PFLepIso : public Operation::_Base 
 	{
 		public:
-			PFLepIso(double cut);
+			PFLepIso(double pt, double eta);
 			~PFLepIso();
 			bool Process(EventData & eventData);
 			std::ostream& Description(std::ostream& ostrm);
 		private:
-			double mCut;
+			double mPt;
+			double mEta;
 	};	
 
 
@@ -361,12 +364,13 @@ namespace Operation
 	class NoPFMuon : public Operation::_Base 
 	{
 		public:
-			NoPFMuon(double pt);
+			NoPFMuon(double pt, double eta);
 			~NoPFMuon();
 			bool Process(EventData & eventData);
 			std::ostream& Description(std::ostream& ostrm);
 		private:
 			double mPt;
+			double mEta; 
 		
 	};	
 //----------------------No PF Electron Cut--------------------------------------------------
@@ -374,12 +378,13 @@ namespace Operation
 	class NoPFElec : public Operation::_Base 
 	{
 		public:
-			NoPFElec(double pt);
+			NoPFElec(double pt, double eta);
 			~NoPFElec();
 			bool Process(EventData & eventData);
 			std::ostream& Description(std::ostream& ostrm);
 		private:
 			double mPt;
+			double mEta;
 		
 	};	
 }

@@ -24,71 +24,75 @@ namespace Operation
 	vector<double> generate_flat10_weights(TH1D* data_npu_estimated)
 	{
 	  
-	  //Array for 1D  reweight 
-    const double npu_probs[60] = 
+	    //Array for 1D  reweight 
+		const double npu_probs[60] = 
 		{
-			3.10347e-05,
-			6.78815e-05,
-			0.000150129,
-			0.000295762,
-			0.000491949,
-			0.000773783,
-			0.00114708,
-			0.00167576,
-			0.00241632,
-			0.0034114,
-			0.00468821,
-			0.00635805,
-			0.00833243,
-			0.0106723,
-			0.0134027,
-			0.0164735,
-			0.0195376,
-			0.022991,
-			0.0262165,
-			0.029431,
-			0.0323909,
-			0.0351272,
-			0.0374332,
-			0.0394877,
-			0.0409591,
-			0.0419383,
-			0.0426948,
-			0.0427961,
-			0.0426697,
-			0.0418952,
-			0.040996,
-			0.0395511,
-			0.037894,
-			0.0359037,
-			0.0336904,
-			0.0313308,
-			0.0288144,
-			0.0262867,
-			0.0236899,
-			0.0211874,
-			0.0186044,
-			0.0163021,
-			0.014236,
-			0.0120566,
-			0.0102604,
-			0.00862128,
-			0.00722878,
-			0.00589933,
-			0.00478757,
-			0.00393351,
-			0.0031027,
-			0.00245733,
-			0.00193895,
-			0.00150304,
-			0.00115026,
-			0.000848245,
-			0.000654251,
-			0.000483286,
-			0.00036781,
-			0.000263082,
+		  3.0066e-05,
+		  6.16847e-05,
+		  0.000128875,
+		  0.000269747,
+		  0.000450567,
+		  0.000716926,
+		  0.0010533,
+		  0.00157797,
+		  0.00225834,
+		  0.00316597,
+		  0.00436889,
+		  0.0059542,
+		  0.00781646,
+		  0.0101815,
+		  0.0126519,
+		  0.0156465,
+		  0.0186337,
+		  0.021965,
+		  0.0251456,
+		  0.0283688,
+		  0.0313802,
+		  0.0342184,
+		  0.0365446,
+		  0.0386875,
+		  0.0402083,
+		  0.0413358,
+		  0.042339,
+		  0.0426038,
+		  0.0426671,
+		  0.0420323,
+		  0.0411957,
+		  0.0398011,
+		  0.0384753,
+		  0.036454,
+		  0.034453,
+		  0.0321174,
+		  0.02968,
+		  0.0270858,
+		  0.0245988,
+		  0.0219999,
+		  0.0194784,
+		  0.0170617,
+		  0.0149901,
+		  0.0127694,
+		  0.0109517,
+		  0.0091755,
+		  0.00765088,
+		  0.00629721,
+		  0.00516557,
+		  0.00422096,
+		  0.00337558,
+		  0.00266176,
+		  0.00209516,
+		  0.0016254,
+		  0.00125981,
+		  0.000948703,
+		  0.000712127,
+		  0.000533284,
+		  0.00040568,
+		  0.000297272
+		
 		}; 
-		//Official Pileup
+
+		//Official Pileup 
+
+		
 		/*const double npu_probs[60] = 
 		{
 			2.344E-05,
@@ -151,7 +155,8 @@ namespace Operation
             2.221E-07,
             6.947E-08,
             2.047E-08
-		};*/
+	    }; */
+
 		vector<double> result(60);
 
 		double s = 0.0;
@@ -172,7 +177,7 @@ namespace Operation
 
 	///-------------------PF  Lepton selection----------------------------------------------
 
-	bool PFMuonTightCuts(EventData& ev , int i, double pt)
+	bool PFMuonTightCuts(EventData& ev , int i, double pt, double eta)
 	{
 
 		bool  pass    = false;
@@ -188,8 +193,7 @@ namespace Operation
 	
 		if(Iso <  0.2 ) passIso = true;
 	
-		//if(ev.PFMuonPt(i) > 20. && fabs(ev.PFMuonEta(i)) < 2.4 )
-		if(ev.PFMuonPt(i) > pt && fabs(ev.PFMuonEta(i)) < 2.1 )  
+		if(ev.PFMuonPt(i) > pt && fabs(ev.PFMuonEta(i)) < eta )  
 		passKin = true;
 
 
@@ -218,12 +222,12 @@ namespace Operation
 
 	///-------------------PF  Lepton selection----------------------------------------------
 
-	bool PFElecTightCuts(EventData& ev , int i, double pt)
+	bool PFElecTightCuts(EventData& ev , int i, double pt, double eta)
 	{
 
 		// kinematic and fiducial
 		float cutE_pt              = pt;
-		float cutE_eta             = 2.5;
+		float cutE_eta             = eta;
 		float cutE_etagap[2]       = {1.4442,1.5666};
 		
 		//WP80 ID
@@ -348,19 +352,19 @@ namespace Operation
 
 	///-------------------PF  Lepton selection----------------------------------------------
 
-	bool PFLepTightCuts(EventData& ev , int i, double pt)
+	bool PFLepTightCuts(EventData& ev , int i, double pt, double eta)
 	{
 		bool send=false;
 
 		if(ev.LepType()=="m" )
 		{
-			send = PFMuonTightCuts( ev , i, pt);
+			send = PFMuonTightCuts( ev , i, pt, eta);
 	
 		}
 		else if(ev.LepType()=="e")
 		{
 			
-			send = PFElecTightCuts( ev , i, pt);
+			send = PFElecTightCuts( ev , i, pt,eta);
 
 		}
 		return send;
@@ -422,11 +426,24 @@ namespace Operation
 			{	
 				send= true;  // this jet has iso elec
 			}
-		}
-
+		} 
 		
 		return send;
 	}
+
+	bool LepInJet2(int i , EventData & ev)
+	{
+		bool send=false;
+
+		float muonFrac=ev.PFAK5JetMuonEng(i)/ev.PFAK5JetE(i);
+		if(muonFrac>0.5) send=true; // this jet has iso muon
+ 
+		float electFrac=ev.PFAK5JetElecEng(i)/ev.PFAK5JetE(i);
+		if(electFrac>0.5) send=true; // this jet has iso elec
+
+		return send;
+	}
+
 	
 	///-------------------MET+mu-----------------------------------------------------------------
 
@@ -439,11 +456,11 @@ namespace Operation
 		{
 			for(int i=0; i<ev.NPFLep(); i++ )
 			{
-				if( PFLepTightCuts(ev ,i ) )
-				{
+			    //if( PFLepTightCuts(ev ,i ) )
+				//{
 					Metx =  Metx + ev.PFLepPx(i);
 					Mety =  Mety + ev.PFLepPy(i);
-				}
+				//}
 			}
 		}
 		
@@ -461,11 +478,11 @@ namespace Operation
 		{
 			for(int i=0; i<ev.NPFLep(); i++ )
 			{
-				if( PFLepTightCuts(ev ,i) )
-				{  
+				//if( PFLepTightCuts(ev ,i) )
+				//{  
 					Metx =  Metx + ev.PFLepPx(i);
 					Mety =  Mety + ev.PFLepPy(i);
-				}
+				//}
 			}
 		}	
 		
@@ -497,7 +514,7 @@ namespace Operation
 			for (int i=0; i<ev.NPFAK5Jets(); i++)
 			{
 				if( ev.PFAK5JetPtCor(i)>ev.SecJetCut() && abs(ev.PFAK5JetEta(i))< 4.5
-					 && LepInJet(ev.PFAK5JetEta(i) , ev.PFAK5JetPhi(i) , ev )==false )
+					 && LepInJet2(i , ev )==false )
 				{
 					if(njets==ind)send=i;
 					njets++ ;
@@ -529,7 +546,7 @@ namespace Operation
 			for (int i=0; i<ev.NPFAK5Jets(); i++)
 			{
 				if( ev.PFAK5JetPtCor(i)>ev.SecJetCut() && abs(ev.PFAK5JetEta(i)) < 4.5
-					&& LepInJet(ev.PFAK5JetEta(i) , ev.PFAK5JetPhi(i) , ev )==false )
+					&& LepInJet2(i, ev )==false )
 				{
 					njets++ ;
 				}
@@ -712,7 +729,7 @@ namespace Operation
 
 	bool CutAbnormalEvents::Process(EventData & ev) 
 	{
-	        if(  abs(ev.MetPt(10) - ev.MetPt(0))< 1.5*ev.MetPt(0)  )
+	        if(  abs(ev.MetPt(10) - ev.MetPt(0))< 2.0*ev.MetPt(0)  )
 		{
 			return true;
 		} 
@@ -742,10 +759,10 @@ namespace Operation
 		//string strtrg = ev.HLTNames();
 		//if (strtrg.find("HLT_CentralPFJet80_CaloMET50_dPhi1_PFMHT80")!=string::npos ) flg_trg=1;
 
-		//bit-3 is  beamHalo Tight 
+		//to see  NoiseFlag array  look at  test/monojet...cfg.py   
 
-	    if( ev.NoiseFlag(0)==0 ||  ev.NoiseFlag(1)==0 ||  ev.NoiseFlag(2)==0 ||  ev.NoiseFlag(3)==0 ||
-            ev.NoiseFlag(4)==0 ||  ev.NoiseFlag(5)==0 ||  ev.NoiseFlag(6)==0 ||  ev.NoiseFlag(7)==0 )
+	        if( ev.NoiseFlag(0)==0 ||  ev.NoiseFlag(1)==0 ||  ev.NoiseFlag(2)==0 ||  ev.NoiseFlag(4)==0 ||
+                    ev.NoiseFlag(5)==0 ||  ev.NoiseFlag(6)==0 ||  ev.NoiseFlag(7)==0 ||  ev.NoiseFlag(8)==0 )
 		{
 			return false;
 		} 
@@ -1201,7 +1218,7 @@ namespace Operation
 
 ///--------------------------GenPar Selection---------------------------------------------------------------------
 
-        GenParExist::GenParExist(int pdgId) : mPdgId(pdgId){} 
+	GenParExist::GenParExist(int pdgId) : mPdgId(pdgId){} 
 	GenParExist::~GenParExist() {}
 
 	bool GenParExist::Process(EventData & ev) 
@@ -1302,8 +1319,10 @@ namespace Operation
 
 		for(int i=0; i<ev.NPFLep(); i++ )
 		{
+			bool check = true;
 			if( PFLepTightCuts(ev ,i) )
 			{
+				check=false;
 				IsoLepIndex++;
 				//LepCharge = ev.PFLepCharge(i);
 
@@ -1318,12 +1337,25 @@ namespace Operation
 					isoLepPnum++;
 				}
 			}
+			if(check)
+			{
+				if(ev.PFLepCharge(i)<0)
+				{
+					isoLepMseq[isoLepMnum]=i;
+					isoLepMnum++;
+				}
+				else if(ev.PFLepCharge(i)>0)
+				{
+					isoLepPseq[isoLepPnum]=i;
+					isoLepPnum++;
+				}
+			}
 		}
 
-		if( isoLepPnum==1 && isoLepMnum==1)
-		{
 
-		        //double dimuPhi =0;
+		if( (isoLepPnum==1 && isoLepMnum==1) || (isoLepPnum==0 && isoLepMnum==1) || (isoLepPnum==1 && isoLepMnum==0) )
+		{
+			//double dimuPhi =0;
 			double ZmumuMT=0;
 			double ZPt=0;
 	
@@ -1366,7 +1398,7 @@ namespace Operation
 
 ///---------------------------PF Lep Iso--------------------------------------------------
 
-	PFLepIso::PFLepIso(double cut) :mCut(cut) {} 
+	PFLepIso::PFLepIso(double pt, double eta) : mPt(pt) , mEta(eta) {} 
 	PFLepIso::~PFLepIso() {}
 
 	bool PFLepIso::Process(EventData & ev) 
@@ -1376,7 +1408,7 @@ namespace Operation
 		
 		for(int i=0; i<ev.NPFLep(); i++ )
 		{
-			if(  PFLepTightCuts(ev , i, mCut)  ) send =true ;
+			if(  PFLepTightCuts(ev , i, mPt, mEta )  ) send =true ;
 
 		}
 
@@ -1393,7 +1425,7 @@ namespace Operation
 ///--------------------------No PF  Muon for monojet -----------------------------------------------
 
 
-	NoPFMuon::NoPFMuon(double pt) : mPt(pt) {} 
+	NoPFMuon::NoPFMuon(double pt, double eta) : mPt(pt), mEta(eta) {} 
 	NoPFMuon::~NoPFMuon() {}
 
 	bool NoPFMuon::Process(EventData & ev) 
@@ -1402,7 +1434,7 @@ namespace Operation
 
 		for(int i=0; i<ev.NPFMuon(); i++ )
 		{
-			if(  PFMuonTightCuts(ev , i,  mPt) == true ) send =false ;
+			if(  PFMuonTightCuts(ev , i,  mPt, mEta) == true ) send =false ;
 
 		}
 
@@ -1426,7 +1458,7 @@ namespace Operation
 ///--------------------------No PF  Electron for monojet ------------------------------------------
 
 
-	NoPFElec::NoPFElec(double pt) : mPt(pt) {} 
+	NoPFElec::NoPFElec(double pt , double eta) : mPt(pt), mEta(eta) {} 
 	NoPFElec::~NoPFElec() {}
 
 	bool NoPFElec::Process(EventData & ev) 
@@ -1435,7 +1467,7 @@ namespace Operation
 
 		for(int i=0; i<ev.NPFElec(); i++ )
 		{
-			if(  PFElecTightCuts(ev , i,  mPt) == true ) send =false ;
+			if(  PFElecTightCuts(ev , i,  mPt, mEta) == true ) send =false ;
 
 		}
 

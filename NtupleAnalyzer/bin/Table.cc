@@ -147,7 +147,7 @@ int main(int argc, char ** argv)
 	else if(selection==2.5)
 	{
 
-	 printf( "| %10.2f | %10.0f | %10.0f | %10.0f | %10.0f | %10.0f | %10.0f |",  t[0], t[1], t[2] , t[3], t[4], t[0]+t[1]+t[2]+t[3]+t[4] , t[5]  ) ;
+	  printf( "| %10.2f | %10.0f | %10.0f | %10.0f | %10.0f | %10.0f | %10.0f | %10.0f |",  t[0], t[1], t[2] , t[3], t[4],t[5], t[0]+t[1]+t[2]+t[3]+t[4]+t[5] , t[6]  ) ;
 
 
 	  /*   float a0= sqrt(terr[0])/terr[0]*t[0];

@@ -74,7 +74,7 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 		(*tfileIt)->GetListOfKeys()->Print();
 
 		cout << " still alive " << endl;
-		if( fillcolorVec[it]!=111 && fillcolorVec[it]!=112  && fillcolorVec[it]!=113 ) 
+		if( fillcolorVec[it]!=111 && fillcolorVec[it]!=112  && fillcolorVec[it]!=113 && fillcolorVec[it]!=114 && fillcolorVec[it]!=115   ) 
 		{
 			((TH1D*)(*tfileIt)->Get(histname))->SetFillColor(fillcolorVec[it]);
 			if(legend==true)  myLegend.AddEntry(((TH1D*)(*tfileIt)->Get(histname)),legendVec[it], "F");
@@ -101,6 +101,21 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 			((TH1D*)(*tfileIt)->Get(histname))->SetLineColor(4);
 			if(legend==true)  myLegend.AddEntry(((TH1D*)(*tfileIt)->Get(histname)),legendVec[it], "lp");
 		}
+		if(  fillcolorVec[it]==114  )
+		  {
+		    ((TH1D*)(*tfileIt)->Get(histname))->SetLineStyle(2);
+		    ((TH1D*)(*tfileIt)->Get(histname))->SetLineWidth(3);
+		    ((TH1D*)(*tfileIt)->Get(histname))->SetLineColor(7);
+		    if(legend==true)  myLegend.AddEntry(((TH1D*)(*tfileIt)->Get(histname)),legendVec[it], "lp");
+		  }
+		if(  fillcolorVec[it]==115  )
+		  {
+		    ((TH1D*)(*tfileIt)->Get(histname))->SetLineStyle(2);
+		    ((TH1D*)(*tfileIt)->Get(histname))->SetLineWidth(3);
+		    ((TH1D*)(*tfileIt)->Get(histname))->SetLineColor(9);
+		    if(legend==true)  myLegend.AddEntry(((TH1D*)(*tfileIt)->Get(histname)),legendVec[it], "lp");
+		  }
+
 
 		if(it==0) 
 		{
@@ -150,7 +165,7 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 		//
 		//((TH1D*)(*tfileIt)->Get(histname))->GetXaxis()->SetLabelFont( 42 );
 		 //
- 		((TH1D*)(*tfileIt)->Get("NJet"))->GetXaxis()->CenterLabels(kTRUE);
+ 		/*((TH1D*)(*tfileIt)->Get("NJet"))->GetXaxis()->CenterLabels(kTRUE);
  		((TH1D*)(*tfileIt)->Get("NJet"))->SetNdivisions(10);
 
                 ((TH1D*)(*tfileIt)->Get("NJet5"))->GetXaxis()->CenterLabels(kTRUE);
@@ -172,7 +187,7 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
  
  		((TH1D*)(*tfileIt)->Get("PFElecPt"))->GetXaxis()->SetNdivisions(8,10,0, kFALSE);
  		((TH1D*)(*tfileIt)->Get("PFMuonPt"))->GetXaxis()->SetNdivisions(8,10,0, kFALSE);
-	        	
+		*/
 		
  		//((TH1D*)(*tfileIt)->Get("NofMuon"))->GetXaxis()->CenterLabels(kTRUE);
  		//((TH1D*)(*tfileIt)->Get("NofMuon"))->SetNdivisions(10);
@@ -243,14 +258,14 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 	text2->Draw();
 
 
-	text3 = new TLatex(3.570061,23.08044,"#intL dt = 8.0 fb^{-1}");
-	text3->SetNDC();
+        text3 = new TLatex(3.570061,23.08044,"#intL dt = 12.0 fb^{-1}");
+        text3->SetNDC();
 	text3->SetTextAlign(13);
-	text3->SetX(0.20);
-	text3->SetY(0.79);
+        text3->SetX(0.20);
+        text3->SetY(0.79);
 	//text3->SetLineWidth(2);
 	text3->SetTextFont(42);
-	text3->SetTextSize(0.040);// dflt=28
+        text3->SetTextSize(0.040);// dflt=28
 	text3->Draw();
 
 	

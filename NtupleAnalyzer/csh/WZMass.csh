@@ -12,7 +12,7 @@ hadd ttbar_muon_2.root  ttbar_WZAnalysis_2.root  qcd*WZAnalysis_2*
 
 hadd zjets_muon_2.root  zjets_WZAnalysis_2.root  ttbar_WZAnalysis_2.root  qcd*WZAnalysis_2*
 
-hadd wjets_muon_2.root  wjets_WZAnalysis_2.root  zjets_WZAnalysis_2.root  ttbar_WZAnalysis_2.root  qcd*WZAnalysis_2*
+hadd wjets_muon_2.root  wjets*_WZAnalysis_2.root  zjets_WZAnalysis_2.root  ttbar_WZAnalysis_2.root  qcd*WZAnalysis_2*
 
 
 hadd qcd_muon_1.root    qcd*WZAnalysis_1*
@@ -21,9 +21,9 @@ hadd ttbar_muon_1.root  ttbar_WZAnalysis_1.root  qcd*WZAnalysis_1*
 
 hadd zjets_muon_1.root  zjets_WZAnalysis_1.root  ttbar_WZAnalysis_1.root  qcd*WZAnalysis_1*
 
-hadd wjets_muon_1.root  wjets_WZAnalysis_1.root  zjets_WZAnalysis_1.root  ttbar_WZAnalysis_1.root  qcd*WZAnalysis_1*
+hadd wjets_muon_1.root  wjets*_WZAnalysis_1.root  zjets_WZAnalysis_1.root  ttbar_WZAnalysis_1.root  qcd*WZAnalysis_1*
 
-hadd zinv_muon_1.root   znunu*_WZAnalysis_1.root  wjets_WZAnalysis_1.root  zjets_WZAnalysis_1.root  ttbar_WZAnalysis_1.root  qcd*WZAnalysis_1*
+hadd zinv_muon_1.root   znunu*_WZAnalysis_1.root  wjets*_WZAnalysis_1.root  zjets_WZAnalysis_1.root  ttbar_WZAnalysis_1.root  qcd*WZAnalysis_1*
 
 
 

@@ -1,3 +1,4 @@
+
 ////////////////////////////////////////////////////////////////////////////
 //            nTuple Analysis Macro                                       //
 ////////////////////////////////////////////////////////////////////////////
@@ -72,7 +73,7 @@ int main(int argc, char ** argv)
 	vector<int> abevt;
 	
 	
-	//CutAbnormalEvents  CAbnormalEvents(abrun , abevt);            
+	CutAbnormalEvents  CAbnormalEvents(abrun , abevt);            
 	CutNoiseClean      CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99);
  
 	//CutHLT             CHLT(0);
@@ -81,10 +82,10 @@ int main(int argc, char ** argv)
 	CutDeltaPhi3       CDeltaPhi3(2.5); 
 	CutMet             CMet(350);
 	CutTIV             CTIV(0.01);
-	NoPFMuon           CNoPFMuon(10.);
-	NoPFElec           CNoPFElec(10.);
+	NoPFMuon           CNoPFMuon(10., 66.);
+	NoPFElec           CNoPFElec(10., 66.);
 
-	//manager.Add(&CAbnormalEvents);
+	manager.Add(&CAbnormalEvents);
 	if(sel!=1) manager.Add(&CNoiseClean);
 	
 	//if(sel!=1) manager.Add(&CHLT);

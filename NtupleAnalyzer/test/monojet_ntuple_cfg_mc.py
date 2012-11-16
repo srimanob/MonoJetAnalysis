@@ -11,8 +11,8 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 
 #-- Meta data to be logged in DBS ---------------------------------------------
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.42 $'),
-    name = cms.untracked.string('$Source: /afs/cern.ch/project/cvs/reps/CMSSW/CMSSW/PhysicsTools/Configuration/test/SUSY_pattuple_cfg.py,v $'),
+    version = cms.untracked.string('$Revision: 1.4 $'),
+    name = cms.untracked.string('$Source: /local/reps/CMSSW/UserCode/vergili/MonoJetAnalysis/NtupleAnalyzer/test/monojet_ntuple_cfg_mc.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
 
@@ -214,6 +214,17 @@ process.load('RecoMET.METFilters.greedyMuonPFCandidateFilter_cfi')
 
 
 
+process.pdfWeights1 = cms.EDProducer("PdfWeightProducer",
+               # Fix POWHEG if buggy (this PDF set will also appear on output,
+               # so only two more PDF sets can be added in PdfSetNames if not "")
+               #FixPOWHEG = cms.untracked.string("cteq66.LHgrid"),
+               #GenTag = cms.untracked.InputTag("genParticles"),
+               PdfInfoTag = cms.untracked.InputTag("generator"),
+               PdfSetNames = cms.untracked.vstring("cteq66.LHgrid")
+)                                     
+                                     
+
+
 #-----------------------------Execution path ------------------------------------------------------------
 
 process.p0 = cms.Path(process.noscraping  )
@@ -227,12 +238,15 @@ process.p7 = cms.Path(process.eeBadScFilter )
 process.p8 = cms.Path(process.greedyMuonPFCandidateFilter*process.inconsistentMuonPFCandidateFilter)
 
 
+
+
 process.p = cms.EndPath(
 		#process.hltPhysicsDeclared *
 		#process.L1T1coll *
-	    #process.hltHighLevel *
+      	        #process.hltHighLevel *
 
-		process.primaryVertexFilter *
+                process.pdfWeights1*
+                process.primaryVertexFilter *
 		process.susyPatDefaultSequence*
 		process.NtupleAnalyzer
 

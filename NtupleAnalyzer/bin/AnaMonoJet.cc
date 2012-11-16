@@ -83,7 +83,7 @@ int main(int argc, char ** argv)
  	hDataMcMatching  DataMcMatching1(histFile+"_AnaMonoJet_1.root"); manager.Add(&DataMcMatching1);
  
 
-	CutHLT          CHLT(0); manager.Add(&CHLT);
+	//CutHLT          CHLT(0); manager.Add(&CHLT);
  	CutNoiseClean CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99); manager.Add(&CNoiseClean);
  	hDataMcMatching  DataMcMatching2(histFile+"_AnaMonoJet_2.root"); manager.Add(&DataMcMatching2);
 
@@ -101,32 +101,28 @@ int main(int argc, char ** argv)
  	CutDeltaPhi3  CDeltaPhi3(2.5);  manager.Add(&CDeltaPhi3);
  	hDataMcMatching  DataMcMatching5(histFile+"_AnaMonoJet_5.root"); manager.Add(&DataMcMatching5);
  
-
 	hHLTEff  HLTEff2(histFile+"_HLTEff2.root"); manager.Add(&HLTEff2);
 
 
 	//CutTIV CTIV(0.01); manager.Add(&CTIV);
 	//hDataMcMatching  DataMcMatching8(histFile+"_AnaMonoJet_8.root"); manager.Add(&DataMcMatching8);
 
-
 	//NoPFElec         CNoPFElec(10.);  manager.Add(&CNoPFElec);
 	//hDataMcMatching  DataMcMatching7(histFile+"_AnaMonoJet_7.root"); manager.Add(&DataMcMatching7);
 
 
-	NoPFMuon        CNoPFMuon(10.);  manager.Add(&CNoPFMuon);
+	NoPFMuon        CNoPFMuon(10., 66.);  manager.Add(&CNoPFMuon); // no cut on eta
 	hDataMcMatching  DataMcMatching6(histFile+"_AnaMonoJet_6.root"); manager.Add(&DataMcMatching6);
 	
-	NoPFElec         CNoPFElec(10.);  manager.Add(&CNoPFElec);
+	NoPFElec         CNoPFElec(10., 66.);  manager.Add(&CNoPFElec); // no cut on eta
 	hDataMcMatching  DataMcMatching7(histFile+"_AnaMonoJet_7.root"); manager.Add(&DataMcMatching7);
 	
 	
-	//CutTIV CTIV(0.01); manager.Add(&CTIV);	
+	CutTIV CTIV(0.01); manager.Add(&CTIV);	
 	hDataMcMatching  DataMcMatching8(histFile+"_AnaMonoJet_8.root"); manager.Add(&DataMcMatching8);
 
 	//CutHLT          CHLT(1); manager.Add(&CHLT);
-
-	
-	
+		
 	CutMet CMet2(250); manager.Add(&CMet2);
 	hDataMcMatching  DataMcMatching9(histFile+"_AnaMonoJet_9.root"); manager.Add(&DataMcMatching9);
 		
@@ -146,6 +142,7 @@ int main(int argc, char ** argv)
 	CutMet CMet7(500); manager.Add(&CMet7);
 	hDataMcMatching  DataMcMatching14(histFile+"_AnaMonoJet_14.root"); manager.Add(&DataMcMatching14);
 	
+
 	
 //-------------------------------------------------------------------------------------------------------------------------
 

@@ -66,7 +66,7 @@ DrawOptions::DrawOptions(TString dataSet_)
       search=-1;
     }
     
-   else if(dataSet_ == "DM STop")
+   else if(dataSet_ == "ADD M_{D}= 2 TeV, #delta = 3")
     {
       reweight=1;
       color=102;
@@ -76,7 +76,7 @@ DrawOptions::DrawOptions(TString dataSet_)
       drawOpt="signal";
       search=1;
     } 
-   else if(dataSet_ == "DM Higgs")
+   else if(dataSet_ == "DM #Lambda = 599 GeV, m = 1 GeV")
     {
       reweight=1;
       color=102;
@@ -86,6 +86,28 @@ DrawOptions::DrawOptions(TString dataSet_)
       drawOpt="signal";
       search=1;
     } 
+   else if(dataSet_ == "DM STop")
+     {
+       reweight=1;
+       color=102;
+       linewidth=1;
+       fillcolor=114;
+       linestyle=2;
+       drawOpt="signal";
+       search=1;
+     }
+   else if(dataSet_ == "DM Higgs VBF")
+     {
+       reweight=1;
+       color=102;
+       linewidth=1;
+       fillcolor=115;
+       linestyle=2;
+       drawOpt="signal";
+       search=1;
+     }
+
+
   else if(dataSet_ == "Data")
     {
       reweight=1;

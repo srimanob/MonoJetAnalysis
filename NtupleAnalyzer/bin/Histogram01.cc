@@ -314,33 +314,32 @@ namespace Histogram01
 		histo1D["PFMuonnValidHits2"]   = new TH1D("PFMuonnValidHits2"   , "PFMuonnValidHits2"  , 100, 0, 100);
 		histo1D["PFMuondxy2"]          = new TH1D("PFMuondxy2"          , "PFMuondxy2"         , 100, -1, 5);
 		histo1D["PFMuondz2"]           = new TH1D("PFMuondz2"           , "PFMuondz2"          , 100, -1, 5);
-
 		histo1D["CaloJetEMF"]          = new TH1D("CaloJetEMF"           , "CaloJetEMF"        , 300, -1, 2);
 
-		histo1D["NPFTau"]           = new TH1D("NPFTau"            , "NPFTau"         , 10, 0, 10);
-		histo1D["PFTauE"]          = new TH1D("PFTauE"           , "PFTauE"        , 100, 0, 500);
-		histo1D["PFTauPt"]          = new TH1D("PFTauPt"           , "PFTauPt"        , 100, 0, 500);
-		histo1D["PFTauPx"]          = new TH1D("PFTauPx"           , "PFTauPx"        , 100, -100, 100);
-		histo1D["PFTauPy"]          = new TH1D("PFTauPy"           , "PFTauPy"        , 100, -100, 100);
-		histo1D["PFTauPz"]          = new TH1D("PFTauPz"           , "PFTauPz"        , 100, -100, 100);
-		histo1D["PFTauEta"]          = new TH1D("PFTauEta"           , "PFTauEta"        , 100, -5, 5);
-		histo1D["PFTauPhi"]          = new TH1D("PFTauPhi"           , "PFTauPhi"        , 100, -4, 4);
-		histo1D["PFTauEtaEtaMoment"]          = new TH1D("PFTauEtaEtaMoment"           , "PFTauEtaEtaMoment"        , 100, -0.01, 0.1);
-		histo1D["PFTauPhiPhiMoment"]          = new TH1D("PFTauPhiPhiMoment"           , "PFTauPhiPhiMoment"        , 100, -0.01, 0.1);
-		histo1D["PFTauLeadPFChargedHadrCandsignedSipt"]          = new TH1D("PFTauLeadPFChargedHadrCandsignedSipt"           , "PFTauLeadPFChargedHadrCandsignedSipt"        , 200, -1, 3);
-		histo1D["PFTauIsoPFChargedHadrCandsPtSum"]          = new TH1D("PFTauIsoPFChargedHadrCandsPtSum"           , "PFTauIsoPFChargedHadrCandsPtSum"        , 100, 0, 50);
-		histo1D["PFTauIsoPFGammaCandsEtSum"]          = new TH1D("PFTauIsoPFGammaCandsEtSum"           , "PFTauIsoPFGammaCandsEtSum"        , 30, 0, 15);
+		histo1D["NPFTau"]                                = new TH1D("NPFTau"                               , "NPFTau"                                , 10, 0, 10);
+		histo1D["PFTauE"]                                = new TH1D("PFTauE"                               , "PFTauE"                                , 100, 0, 500);
+		histo1D["PFTauPt"]                               = new TH1D("PFTauPt"                              , "PFTauPt"                               , 100, 0, 500);
+		histo1D["PFTauPx"]                               = new TH1D("PFTauPx"                              , "PFTauPx"                               , 100, -100, 100);
+		histo1D["PFTauPy"]                               = new TH1D("PFTauPy"                              , "PFTauPy"                               , 100, -100, 100);
+		histo1D["PFTauPz"]                               = new TH1D("PFTauPz"                              , "PFTauPz"                               , 100, -100, 100);
+		histo1D["PFTauEta"]                              = new TH1D("PFTauEta"                             , "PFTauEta"                              , 100, -5, 5);
+		histo1D["PFTauPhi"]                              = new TH1D("PFTauPhi"                             , "PFTauPhi"                              , 100, -4, 4);
+		histo1D["PFTauEtaEtaMoment"]                     = new TH1D("PFTauEtaEtaMoment"                    , "PFTauEtaEtaMoment"                     , 100, -0.01, 0.1);
+		histo1D["PFTauPhiPhiMoment"]                     = new TH1D("PFTauPhiPhiMoment"                    , "PFTauPhiPhiMoment"                     , 100, -0.01, 0.1);
+		histo1D["PFTauLeadPFChargedHadrCandsignedSipt"]  = new TH1D("PFTauLeadPFChargedHadrCandsignedSipt" , "PFTauLeadPFChargedHadrCandsignedSipt"  , 200, -1, 3);
+		histo1D["PFTauIsoPFChargedHadrCandsPtSum"]       = new TH1D("PFTauIsoPFChargedHadrCandsPtSum"      , "PFTauIsoPFChargedHadrCandsPtSum"       , 100, 0, 50);
+		histo1D["PFTauIsoPFGammaCandsEtSum"]             = new TH1D("PFTauIsoPFGammaCandsEtSum"            , "PFTauIsoPFGammaCandsEtSum"             , 30, 0, 15);
 
-		histo1D["PFTauMaximumHCALPFClusterEt"]           = new TH1D("PFTauMaximumHCALPFClusterEt"            , "PFTauMaximumHCALPFClusterEt"         , 100, 0, 500);
-		histo1D["PFTauEmFraction"]           = new TH1D("PFTauEmFraction"            , "PFTauEmFraction"         , 70, -0.2, 1.2);
-		histo1D["PFTauHcalTotOverPLead"]           = new TH1D("PFTauHcalTotOverPLead"            , "PFTauHcalTotOverPLead"         , 100, 0, 200);
-		histo1D["PFTauHcalMaxOverPLead"]           = new TH1D("PFTauHcalMaxOverPLead"            , "PFTauHcalMaxOverPLead"         , 100, 0, 200);
-		histo1D["PFTauHcal3x3OverPLead"]           = new TH1D("PFTauHcal3x3OverPLead"            , "PFTauHcal3x3OverPLead"         , 50, 0, 100);
-		histo1D["PFTauEcalStripSumEOverPLead"]           = new TH1D("PFTauEcalStripSumEOverPLead"            , "PFTauEcalStripSumEOverPLead"         , 75, 0, 150);
-		histo1D["PFTauBremsRecoveryEOverPLead"]           = new TH1D("PFTauBremsRecoveryEOverPLead"            , "PFTauBremsRecoveryEOverPLead"         , 10, 0, 10);
-		histo1D["PFTauElectronPreIDOutput"]           = new TH1D("PFTauElectronPreIDOutput"            , "PFTauElectronPreIDOutput"         , 10, 0, 10);
-		histo1D["PFTauElectronPreIDDecision"]           = new TH1D("PFTauElectronPreIDDecision"            , "PFTauElectronPreIDDecision"         , 10, 0, 10);
-		histo1D["PFTauMuonDecision"]           = new TH1D("PFTauMuonDecision"            , "PFTauMuonDecision"         , 10, 0, 10);
+		histo1D["PFTauMaximumHCALPFClusterEt"]           = new TH1D("PFTauMaximumHCALPFClusterEt"    , "PFTauMaximumHCALPFClusterEt"         , 100, 0, 500);
+		histo1D["PFTauEmFraction"]                       = new TH1D("PFTauEmFraction"                , "PFTauEmFraction"                     , 70, -0.2, 1.2);
+		histo1D["PFTauHcalTotOverPLead"]                 = new TH1D("PFTauHcalTotOverPLead"          , "PFTauHcalTotOverPLead"               , 100, 0, 200);
+		histo1D["PFTauHcalMaxOverPLead"]                 = new TH1D("PFTauHcalMaxOverPLead"          , "PFTauHcalMaxOverPLead"               , 100, 0, 200);
+		histo1D["PFTauHcal3x3OverPLead"]                 = new TH1D("PFTauHcal3x3OverPLead"          , "PFTauHcal3x3OverPLead"               , 50, 0, 100);
+		histo1D["PFTauEcalStripSumEOverPLead"]           = new TH1D("PFTauEcalStripSumEOverPLead"    , "PFTauEcalStripSumEOverPLead"         , 75, 0, 150);
+		histo1D["PFTauBremsRecoveryEOverPLead"]          = new TH1D("PFTauBremsRecoveryEOverPLead"   , "PFTauBremsRecoveryEOverPLead"        , 10, 0, 10);
+		histo1D["PFTauElectronPreIDOutput"]              = new TH1D("PFTauElectronPreIDOutput"       , "PFTauElectronPreIDOutput"            , 10, 0, 10);
+		histo1D["PFTauElectronPreIDDecision"]            = new TH1D("PFTauElectronPreIDDecision"     , "PFTauElectronPreIDDecision"          , 10, 0, 10);
+		histo1D["PFTauMuonDecision"]                     = new TH1D("PFTauMuonDecision"              , "PFTauMuonDecision"                   , 10, 0, 10);
 
 
 
@@ -395,15 +394,12 @@ namespace Histogram01
 
 
 		histo1D["ISRWeight"]        = new TH1D("ISRWeight"      , "ISRWeight"                , 10, 0, 10);
-
 		histo1D["dRTIVGenMuon"]     = new TH1D("dRTIVGenMuon"   , "dRTIVGenMuon"             , 1000,  -1, 9);
 
  		histo1D["NoiseFlag"]        = new TH1D("NoiseFlag"      , "NoiseFlag"                , 10,  0, 10);
+		histo1D["JetPhotEng"]       = new TH1D("JetPhotEng"     , "JetPhotEng"               , 140,  -0.5, 3.5 );
 
-                histo1D["JetPhotEng"]       = new TH1D("JetPhotEng"     , "JetPhotEng"               , 140,  -0.5, 3.5 );
-
- 
-
+		histo1D["AbNormalEvents"]       = new TH1D("AbNormalEvents"     , "|PFMET-CALOMET|/CALOMET"               , 100,  0, 10 );
 
 	}
 
@@ -432,6 +428,8 @@ namespace Histogram01
 		{
 			if(ev.NoiseFlag(i)==0 ) histo1D["NoiseFlag"]->Fill( i, 1 );
 		}
+
+		histo1D["AbNormalEvents"]->Fill(  abs(ev.MetPt(10) - ev.MetPt(0))/ev.MetPt(0) ,w );
 
 		double  pileupET = ev.MetSumEt(t) - (ev.PFAK5JetPtCor(ixjet1)+ ev.PFAK5JetPtCor(ixjet2) );  
 
@@ -500,7 +498,6 @@ namespace Histogram01
 		histo1D["PFMuondz2"]->Fill( ev.PFMuondz(1) );
 
 		if(ev.CaloAK5JetEmf(0) >0.03 && ev.CaloAK5JetEmf(0)<0.98 ) histo1D["CaloJetEMF"]->Fill( ev.CaloAK5JetEmf(0) , w);
-
 
 		
 		//pf noise clean  for leading jet
@@ -579,18 +576,13 @@ namespace Histogram01
 		if(njets==2)
 		{  
 			histo1D["dPhi_MetLep_Jet2"]->Fill(  fabs( deltaPhi( ev.PFAK5JetPhi(ixjet2) , MetLepPhi( ev.MetPx(t) , ev.MetPy(t) ,ev) ) ), w );
-
-			histo1D["dPhi_Met_Jet2"]->Fill(  fabs( deltaPhi( ev.PFAK5JetPhi(ixjet2) , ev.MetPhi(t) ) ) , w );
-			
-			histo1D["dPhi_Jet1_Jet2"]->Fill(  fabs( deltaPhi( ev.PFAK5JetPhi(ixjet1) ,  ev.PFAK5JetPhi(ixjet2) ) ), w );
-			
+			histo1D["dPhi_Met_Jet2"]->Fill(  fabs( deltaPhi( ev.PFAK5JetPhi(ixjet2) , ev.MetPhi(t) ) ) , w );			
+			histo1D["dPhi_Jet1_Jet2"]->Fill(  fabs( deltaPhi( ev.PFAK5JetPhi(ixjet1) ,  ev.PFAK5JetPhi(ixjet2) ) ), w );		
 			histo1D["dPhi_Jet1_muon"]->Fill(  fabs( deltaPhi( ev.PFAK5JetPhi(ixjet1) ,  ev.PFMuonPhi(0) ) ), w );
-
 
 			histo1D["Jet2Pt"]->Fill( ev.PFAK5JetPtCor(ixjet2) , w ); 
 			histo1D["Jet2Eta"]->Fill( ev.PFAK5JetEta(ixjet2) , w ); 
 			histo1D["Jet2Phi"]->Fill( ev.PFAK5JetPhi(ixjet2) , w ); 
-
 		}
 		
 		//Met
@@ -634,7 +626,7 @@ namespace Histogram01
 			for(int j=0; j<ev.NGenPar(); j++)
 			{
 				
-			        if( deltaR(  ev.TIV_eta(i), ev.TIV_phi(i) , ev.GenParEta(j), ev.GenParPhi(j) ) <1110.2 )
+			    if( deltaR(  ev.TIV_eta(i), ev.TIV_phi(i) , ev.GenParEta(j), ev.GenParPhi(j) ) <1110.2 )
 				{
 					
 					if( abs(ev.GenParId(i) )==11 && ev.GenParStatus(i)==2) histo1D["GenElecTIV"]->Fill( ev.GenParPt(i)  , w ); 
@@ -952,13 +944,6 @@ namespace Histogram01
 		
 		histo2D["dPhi1_vs_dPhi2"]   = new TH2D("dPhi1_vs_dPhi2"    , "dPhi1 vs dPhi2"     , 40, 0, 4 , 40, 0,4 ); 
 
-		histo1D["GenElecPt"]        = new TH1D("GenElecPt"         , "Gen Elec p_{T}"     , 100, 0, 800);
-		histo1D["GenMuonPt"]        = new TH1D("GenMuonPt"         , "Gen Muon p_{T}"     , 100, 0, 800);
-		histo1D["GenTauPt"]         = new TH1D("GenTauPt"          , "Gen Tau p_{T}"      , 100, 0, 800);
-
-		histo1D["GenMuonPt_2"]      = new TH1D("GenMuonPt_2"       , "Gen Muon p_{T}>20"     , 100, 0, 800);
-
-		
 		histo1D["ZleplepPFMET"]     = new TH1D("ZleplepPFMET"      , "PFMET for Z #lep #lep "      , 100, 0, 800);
 
 		
@@ -977,6 +962,32 @@ namespace Histogram01
 		histo1D["dRPFMuonRegMuon"]   = new TH1D("dRPFMuonRegMuon"     , "dRPFMuonRegMuon"        ,700, -1, 6);	
 
 		//hprof  = new TProfile("hprof","Profile of pz versus px",100,-4,4,0,20);
+
+
+
+
+		histo1D["GenMuonPt"]         = new TH1D("GenMuonPt"          , "Gen Muon p_{T}"                   , 10, 0, 10);
+		histo1D["GenMuonPt_10"]      = new TH1D("GenMuonPt_10"       , "Gen Muon p_{T}>10 |#eta|<2.4"     , 10, 0, 10);
+		histo1D["GenMuonPt_20"]      = new TH1D("GenMuonPt_20"       , "Gen Muon p_{T}>20 |#eta|<2.1"     , 10, 0, 10);
+
+		histo1D["IsoMuonPt_10"]      = new TH1D("IsoMuonPt_10"       , "Iso Muon pt>10 |eta|<2.4"              , 10, 0, 10);
+		histo1D["IsoMuonPt_20"]      = new TH1D("IsoMuonPt_20"       , "Iso Muon pt>20 |eta|<2.1  50<WMT<100"  , 10, 0, 10);
+
+
+		histo1D["GenElecPt"]         = new TH1D("GenElecPt"          , "Gen Elec p_{T}"                   , 10, 0, 10);
+		histo1D["GenElecPt_10"]      = new TH1D("GenElecPt_10"       , "Gen Elec p_{T}>10"                , 10, 0, 10);
+		histo1D["GenElecPt_20"]      = new TH1D("GenElecPt_20"       , "Gen Elec p_{T}>20 |#eta|<2.5"     , 10, 0, 10);
+
+		histo1D["IsoElecPt_10"]      = new TH1D("IsoElecPt_10"       , "Iso Elec pt>10"                       , 10, 0, 10);
+		histo1D["IsoElecPt_20"]      = new TH1D("IsoElecPt_20"       , "Iso Elec pt>20 |eta|<2.5 50<WMT<100"  , 10, 0, 10);
+
+
+		histo1D["GenTauPt"]          = new TH1D("GenTauPt"           , "Gen Tau p_{T}"                    , 10, 0, 10);			
+		histo1D["GenTauElecPt"]      = new TH1D("GenTauElecPt"       , "Gen Elec from Tau p_{T}"          , 10, 0, 10);
+		histo1D["GenTauMuonPt"]      = new TH1D("GenTauMuonPt"       , "Gen Muon from Tau p_{T}"          , 10, 0, 10);
+		histo1D["IsoTauElecPt_10"]   = new TH1D("IsoTauElecPt_10"    , "Iso Elec from Tau p_{T}>10"       , 10, 0, 10);
+		histo1D["IsoTauMuonPt_10"]   = new TH1D("IsoTauMuonPt_10"    , "Iso Muon from Tau p_{T}>10"       , 10, 0, 10);
+
 
 	}
 
@@ -1014,21 +1025,35 @@ namespace Histogram01
 			isoLepPseq[i]=0; isoLepMseq[i]=0;
 		}
 		
-		//---------- ISoMuon index counting ---------------------------- 
+		//---------- ISoMuon index counting for Zmumu---------------------------- 
 		for(int i=0; i<ev.NPFLep(); i++ )
 		{
-		 
-			if( PFLepTightCuts(ev ,i) )
+			bool check = true;
+			if( PFLepTightCuts(ev ,i ) )
 			{
+				check=false;
 				IsoLepIndex++;
-				
-				if(ev.PFLepCharge(i)<0.0)
+				//LepCharge = ev.PFLepCharge(i);
+
+				if(ev.PFLepCharge(i)<0)
 				{
 					isoLepMseq[isoLepMnum]=i;
 					isoLepMnum++;
 				}
-
-				else if(ev.PFLepCharge(i)>0.0)
+				else if(ev.PFLepCharge(i)>0)
+				{
+					isoLepPseq[isoLepPnum]=i;
+					isoLepPnum++;
+				}
+			}
+			if(check)
+			{
+				if(ev.PFLepCharge(i)<0)
+				{
+					isoLepMseq[isoLepMnum]=i;
+					isoLepMnum++;
+				}
+				else if(ev.PFLepCharge(i)>0)
 				{
 					isoLepPseq[isoLepPnum]=i;
 					isoLepPnum++;
@@ -1037,6 +1062,69 @@ namespace Histogram01
 		}
 		histo1D["NofLep"]->Fill(IsoLepIndex , w );
 		histo1D["NofLep2"]->Fill(ev.NPFMuon() , w ); 
+
+
+		// ------------Lost mu, e, tau estimation------------------------------
+
+		bool  checkMuonStatus=false, checkElecStatus=false;
+		bool  checkTauMuonStatus = false, checkTauElecStatus=false;
+
+		for(int i=0; i<ev.NGenPar(); i++)
+		{
+			if( abs(ev.GenParId(i))==11 && ev.GenParStatus(i)==3   )
+			{
+				if( ev.GenParPt(i)>10 ) histo1D["GenElecPt_10"]->Fill(  5, w );
+				if( ev.GenParPt(i)>20 && abs(ev.GenParEta(i))<2.5 ) histo1D["GenElecPt_20"]->Fill( 5 , w );
+
+				histo1D["GenElecPt"]->Fill( 5, w );
+				checkElecStatus=true;
+			}
+			if( abs(ev.GenParId(i))==13 && ev.GenParStatus(i)==3  )
+			{
+				if( ev.GenParPt(i)>10 ) histo1D["GenMuonPt_10"]->Fill( 5, w );
+				if( ev.GenParPt(i)>20 && abs(ev.GenParEta(i))<2.1 ) histo1D["GenMuonPt_20"]->Fill( 5 , w );
+
+				if( ev.GenParPt(i)>0 ) histo1D["GenMuonPt"]->Fill( 5, w );	  
+				checkMuonStatus=true;
+			}
+			if(abs(ev.GenParId(i) )==15 && ev.GenParStatus(i)==3 )
+			{
+				histo1D["GenTauPt"]->Fill( 5, w );
+			}
+			
+			if( abs(ev.GenParId(i))==11 && ev.GenParStatus(i)==1 && abs(ev.GenParDoughterOf(i)) ==15 )
+			{
+				histo1D["GenTauElecPt"]->Fill( 5, w );
+				checkTauElecStatus = true;
+
+			}
+			if( abs(ev.GenParId(i))==13 && ev.GenParStatus(i)==1 && abs(ev.GenParDoughterOf(i)) ==15 )
+			{
+				histo1D["GenTauMuonPt"]->Fill( 5, w );
+				checkTauMuonStatus = true;
+			}
+		}
+
+		for(int i=0; i<ev.NPFMuon(); i++ )
+		{
+			if( PFMuonTightCuts(ev ,i, 10., 66.)  )//66  means  no eta cut
+			{  
+				if(checkMuonStatus) histo1D["IsoMuonPt_10"]->Fill( 5 , w );	
+				if(checkTauMuonStatus)  histo1D["IsoTauMuonPt_10"]->Fill( 5 , w );	
+
+			}
+		}
+
+		for(int i=0; i<ev.NPFElec(); i++ )
+		{
+			if( PFElecTightCuts(ev ,i, 10., 66.) )  //66  means  no eta cut
+			{  
+				if(checkElecStatus) histo1D["IsoElecPt_10"]->Fill( 5 , w );	
+				if(checkTauElecStatus)  histo1D["IsoTauElecPt_10"]->Fill( 5 , w );	
+			}
+		}
+
+		//------------------------------------------------------------------------
 
 
 		//----------deltaR between PFMuon and Regular Muon-------------------------
@@ -1053,35 +1141,12 @@ namespace Histogram01
 		}
 
 
-		
-
-
-		// ------------Wmunu identification---------------------------------------
-
-		for(int i=0; i<ev.NGenPar(); i++)
-		{
-			if(abs(ev.GenParId(i) )==11 && ev.GenParStatus(i)==3 )
-			{
-				histo1D["GenElecPt"]->Fill( ev.GenParPt(i), w );
-			}
-			else if(abs(ev.GenParId(i) )==13 && ev.GenParStatus(i)==3 )
-			{
-			  if( ev.GenParPt(i)>20 && abs(ev.GenParEta(i))<2.1 ) histo1D["GenMuonPt_2"]->Fill( ev.GenParPt(i), w );
-			  histo1D["GenMuonPt"]->Fill( ev.GenParPt(i), w );
-			  
-			  
-			}
-			else if(abs(ev.GenParId(i) )==15 && ev.GenParStatus(i)==3 )
-			{
-				histo1D["GenTauPt"]->Fill( ev.GenParPt(i), w );
-			}
-		}
-
 		double WlepnuMT=0;
 		if(IsoLepIndex==1)
 		{
 
 			double MTPt=0;
+
 
 			for(int i=0; i<ev.NPFLep(); i++ )
 			{
@@ -1092,8 +1157,8 @@ namespace Histogram01
 					double MTPy= ev.PFLepPy(i)+ ev.MetPy(t);
 
 					MTPt=sqrt(MTPx*MTPx+MTPy*MTPy);
-					WlepnuMT=sqrt((MTEn*MTEn)-(MTPt*MTPt));	
-				}	
+					WlepnuMT=sqrt((MTEn*MTEn)-(MTPt*MTPt));
+				}
 			} 
 			
 			if(WlepnuMT>0)
@@ -1129,8 +1194,9 @@ namespace Histogram01
 			
 			if( WlepnuMT>50 && WlepnuMT<100 )
 			{
-
-
+				if(checkMuonStatus) histo1D["IsoMuonPt_20"]->Fill( 5 , w );
+				if(checkElecStatus) histo1D["IsoElecPt_20"]->Fill( 5 , w );
+				
 				histo1D["WlepnuPT_50_100"]->Fill( MTPt, w );		  
 				histo1D["WlepnuMT_50_100"]->Fill( WlepnuMT, w );
 				histo1D["WlepnuMT_50_100_2"]->Fill( WlepnuMT, w );
@@ -1163,6 +1229,7 @@ namespace Histogram01
 	   
 		
 		if( isoLepPnum==1 &&  isoLepMnum==1)
+		//if( (isoLepPnum==1 && isoLepMnum==1) || (isoLepPnum==0 && isoLepMnum==1) || (isoLepPnum==1 && isoLepMnum==0) )
 		{
 
 			double dilepPhi =0;
@@ -1247,6 +1314,7 @@ namespace Histogram01
 	//-------------- End Job-----------------------------------------------------------------------------------
 	hWZAnalysis::~hWZAnalysis() 
 	{	
+
 
 		for(int i=1; i<22; i++)
 		{
