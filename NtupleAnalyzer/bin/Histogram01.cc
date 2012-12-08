@@ -1,3 +1,8 @@
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//          Author:  Mehmet Vergili   vergili@cern.ch               //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
 #include "Operation.h"
 #include "Histogram01.h"
 #include <iostream>
@@ -685,7 +690,7 @@ namespace Histogram01
 		histo1D["GenJet1Pt"] ->Fill( ev.GenAK5JetPt(0),  w );  
 
 		double  METplusMuPt=0,METplusMuPx=ev.MetPx(t) ,METplusMuPy=ev.MetPy(t) ;
-		for(int i=0; i<ev.NMuon(); i++)
+		for(int i=0; i<ev.NPFMuon(); i++)
 		{
 			METplusMuPx =  METplusMuPx+ ev.PFMuonPx(i);
 			METplusMuPy =  METplusMuPy + ev.PFMuonPy(i);
@@ -969,7 +974,6 @@ namespace Histogram01
 		histo1D["GenMuonPt"]         = new TH1D("GenMuonPt"          , "Gen Muon p_{T}"                   , 10, 0, 10);
 		histo1D["GenMuonPt_10"]      = new TH1D("GenMuonPt_10"       , "Gen Muon p_{T}>10 |#eta|<2.4"     , 10, 0, 10);
 		histo1D["GenMuonPt_20"]      = new TH1D("GenMuonPt_20"       , "Gen Muon p_{T}>20 |#eta|<2.1"     , 10, 0, 10);
-
 		histo1D["IsoMuonPt_10"]      = new TH1D("IsoMuonPt_10"       , "Iso Muon pt>10 |eta|<2.4"              , 10, 0, 10);
 		histo1D["IsoMuonPt_20"]      = new TH1D("IsoMuonPt_20"       , "Iso Muon pt>20 |eta|<2.1  50<WMT<100"  , 10, 0, 10);
 
@@ -977,7 +981,6 @@ namespace Histogram01
 		histo1D["GenElecPt"]         = new TH1D("GenElecPt"          , "Gen Elec p_{T}"                   , 10, 0, 10);
 		histo1D["GenElecPt_10"]      = new TH1D("GenElecPt_10"       , "Gen Elec p_{T}>10"                , 10, 0, 10);
 		histo1D["GenElecPt_20"]      = new TH1D("GenElecPt_20"       , "Gen Elec p_{T}>20 |#eta|<2.5"     , 10, 0, 10);
-
 		histo1D["IsoElecPt_10"]      = new TH1D("IsoElecPt_10"       , "Iso Elec pt>10"                       , 10, 0, 10);
 		histo1D["IsoElecPt_20"]      = new TH1D("IsoElecPt_20"       , "Iso Elec pt>20 |eta|<2.5 50<WMT<100"  , 10, 0, 10);
 
@@ -985,8 +988,21 @@ namespace Histogram01
 		histo1D["GenTauPt"]          = new TH1D("GenTauPt"           , "Gen Tau p_{T}"                    , 10, 0, 10);			
 		histo1D["GenTauElecPt"]      = new TH1D("GenTauElecPt"       , "Gen Elec from Tau p_{T}"          , 10, 0, 10);
 		histo1D["GenTauMuonPt"]      = new TH1D("GenTauMuonPt"       , "Gen Muon from Tau p_{T}"          , 10, 0, 10);
+		histo1D["GenTauElecPt_10"]   = new TH1D("GenTauElecPt_10"    , "Iso Elec from Tau p_{T}>10"       , 10, 0, 10);
+		histo1D["GenTauMuonPt_10"]   = new TH1D("GenTauMuonPt_10"    , "Iso Muon from Tau p_{T}>10"       , 10, 0, 10);
 		histo1D["IsoTauElecPt_10"]   = new TH1D("IsoTauElecPt_10"    , "Iso Elec from Tau p_{T}>10"       , 10, 0, 10);
 		histo1D["IsoTauMuonPt_10"]   = new TH1D("IsoTauMuonPt_10"    , "Iso Muon from Tau p_{T}>10"       , 10, 0, 10);
+
+
+		// Bins definitions
+		// 2:GenMuonPt  3:GenMuonPt_10  4:GenMuonPt_20 5:IsoMuonPt_10 6:IsoMuonPt_20  
+		// 7:GenElecPt  8:GenElecPt_10  9:GenElecPt_20  10:IsoElecPt_10  11:IsoElecPt_20
+		// 12:GenTauPt  13:GenTauElecPt  14:GenTauMuonPt  15:GenTauElecPt_10  16:GenTauMuonPt_10  17:IsoTauElecPt_10  18:IsoTauMuonPt_10  
+		// 19: NumOf Iso DiMuon MassWindow   20: NumOf NoMuon 21: NumOf Iso Single Muon   22: NumOf Iso DiMuon 23: NumOf Iso 3Muon 
+
+
+		histo1D["WZEstimation"]      = new TH1D("WZEstimation"    , "All variable for WZ estimation" , 30, 0, 30);		
+
 
 
 	}
@@ -1026,12 +1042,15 @@ namespace Histogram01
 		}
 		
 		//---------- ISoMuon index counting for Zmumu---------------------------- 
+
+		bool check1=true;
+		bool check2=true;
 		for(int i=0; i<ev.NPFLep(); i++ )
 		{
-			bool check = true;
+			
 			if( PFLepTightCuts(ev ,i ) )
 			{
-				check=false;
+				check1=false;
 				IsoLepIndex++;
 				//LepCharge = ev.PFLepCharge(i);
 
@@ -1046,8 +1065,10 @@ namespace Histogram01
 					isoLepPnum++;
 				}
 			}
-			if(check)
+			if(check1 && check2)
 			{
+			        check2=false;
+				//IsoLepIndex++;
 				if(ev.PFLepCharge(i)<0)
 				{
 					isoLepMseq[isoLepMnum]=i;
@@ -1066,6 +1087,9 @@ namespace Histogram01
 
 		// ------------Lost mu, e, tau estimation------------------------------
 
+		
+
+
 		bool  checkMuonStatus=false, checkElecStatus=false;
 		bool  checkTauMuonStatus = false, checkTauElecStatus=false;
 
@@ -1073,34 +1097,32 @@ namespace Histogram01
 		{
 			if( abs(ev.GenParId(i))==11 && ev.GenParStatus(i)==3   )
 			{
-				if( ev.GenParPt(i)>10 ) histo1D["GenElecPt_10"]->Fill(  5, w );
-				if( ev.GenParPt(i)>20 && abs(ev.GenParEta(i))<2.5 ) histo1D["GenElecPt_20"]->Fill( 5 , w );
-
-				histo1D["GenElecPt"]->Fill( 5, w );
+				if( ev.GenParPt(i)>10 ) histo1D["WZEstimation"]->Fill(  7 , w );
+				if( ev.GenParPt(i)>20 && abs(ev.GenParEta(i))<2.5 ) histo1D["WZEstimation"]->Fill( 8 , w );
+				histo1D["WZEstimation"]->Fill( 6, w );
 				checkElecStatus=true;
 			}
 			if( abs(ev.GenParId(i))==13 && ev.GenParStatus(i)==3  )
 			{
-				if( ev.GenParPt(i)>10 ) histo1D["GenMuonPt_10"]->Fill( 5, w );
-				if( ev.GenParPt(i)>20 && abs(ev.GenParEta(i))<2.1 ) histo1D["GenMuonPt_20"]->Fill( 5 , w );
-
-				if( ev.GenParPt(i)>0 ) histo1D["GenMuonPt"]->Fill( 5, w );	  
+				if( ev.GenParPt(i)>10 ) histo1D["WZEstimation"]->Fill( 2 , w );
+				if( ev.GenParPt(i)>20 && abs(ev.GenParEta(i))<2.1 ) histo1D["WZEstimation"]->Fill( 3 , w );
+				if( ev.GenParPt(i)>0 ) histo1D["WZEstimation"]->Fill( 1 , w );	  
 				checkMuonStatus=true;
 			}
 			if(abs(ev.GenParId(i) )==15 && ev.GenParStatus(i)==3 )
 			{
-				histo1D["GenTauPt"]->Fill( 5, w );
-			}
-			
+				histo1D["WZEstimation"]->Fill( 11 , w );
+			}		
 			if( abs(ev.GenParId(i))==11 && ev.GenParStatus(i)==1 && abs(ev.GenParDoughterOf(i)) ==15 )
 			{
-				histo1D["GenTauElecPt"]->Fill( 5, w );
+				histo1D["WZEstimation"]->Fill( 12, w );
+				if( ev.GenParPt(i)>10 ) histo1D["WZEstimation"]->Fill( 14 , w );
 				checkTauElecStatus = true;
-
 			}
 			if( abs(ev.GenParId(i))==13 && ev.GenParStatus(i)==1 && abs(ev.GenParDoughterOf(i)) ==15 )
 			{
-				histo1D["GenTauMuonPt"]->Fill( 5, w );
+				histo1D["WZEstimation"]->Fill( 13 ,  w );
+				if( ev.GenParPt(i)>10 ) histo1D["WZEstimation"]->Fill( 15 , w );
 				checkTauMuonStatus = true;
 			}
 		}
@@ -1109,8 +1131,8 @@ namespace Histogram01
 		{
 			if( PFMuonTightCuts(ev ,i, 10., 66.)  )//66  means  no eta cut
 			{  
-				if(checkMuonStatus) histo1D["IsoMuonPt_10"]->Fill( 5 , w );	
-				if(checkTauMuonStatus)  histo1D["IsoTauMuonPt_10"]->Fill( 5 , w );	
+				if(checkMuonStatus) histo1D["WZEstimation"]->Fill( 4 , w );	
+				if(checkTauMuonStatus)  histo1D["WZEstimation"]->Fill( 17 , w );	
 
 			}
 		}
@@ -1119,8 +1141,8 @@ namespace Histogram01
 		{
 			if( PFElecTightCuts(ev ,i, 10., 66.) )  //66  means  no eta cut
 			{  
-				if(checkElecStatus) histo1D["IsoElecPt_10"]->Fill( 5 , w );	
-				if(checkTauElecStatus)  histo1D["IsoTauElecPt_10"]->Fill( 5 , w );	
+				if(checkElecStatus) histo1D["WZEstimation"]->Fill( 9 , w );	
+				if(checkTauElecStatus)  histo1D["WZEstimation"]->Fill( 16 , w );	
 			}
 		}
 
@@ -1194,8 +1216,8 @@ namespace Histogram01
 			
 			if( WlepnuMT>50 && WlepnuMT<100 )
 			{
-				if(checkMuonStatus) histo1D["IsoMuonPt_20"]->Fill( 5 , w );
-				if(checkElecStatus) histo1D["IsoElecPt_20"]->Fill( 5 , w );
+				if(checkMuonStatus) histo1D["WZEstimation"]->Fill( 5 , w );
+				if(checkElecStatus) histo1D["WZEstimation"]->Fill( 10 , w );
 				
 				histo1D["WlepnuPT_50_100"]->Fill( MTPt, w );		  
 				histo1D["WlepnuMT_50_100"]->Fill( WlepnuMT, w );
@@ -1228,8 +1250,8 @@ namespace Histogram01
 		//-------------Zmumu  identification------------------------------------
 	   
 		
-		if( isoLepPnum==1 &&  isoLepMnum==1)
-		//if( (isoLepPnum==1 && isoLepMnum==1) || (isoLepPnum==0 && isoLepMnum==1) || (isoLepPnum==1 && isoLepMnum==0) )
+		//if( isoLepPnum==1 &&  isoLepMnum==1)
+		if( (isoLepPnum==1 && isoLepMnum==1) || (isoLepPnum==0 && isoLepMnum==1) || (isoLepPnum==1 && isoLepMnum==0) )
 		{
 
 			double dilepPhi =0;
@@ -1273,6 +1295,8 @@ namespace Histogram01
 			}
 			if( ZleplepMT>60 && ZleplepMT<120 )
 			{
+				histo1D["WZEstimation"]->Fill( 18, w );
+
 				histo1D["ZleplepMT_60_120"]->Fill( ZleplepMT, w );
 				histo1D["ZleplepPT_60_120"]->Fill( ZPt, w );
 
@@ -1314,6 +1338,18 @@ namespace Histogram01
 	//-------------- End Job-----------------------------------------------------------------------------------
 	hWZAnalysis::~hWZAnalysis() 
 	{	
+
+
+		// Bins definitions
+		// 2:GenMuonPt  3:GenMuonPt_10  4:GenMuonPt_20 5:IsoMuonPt_10 6:IsoMuonPt_20  
+		// 7:GenElecPt  8:GenElecPt_10  9:GenElecPt_20  10:IsoElecPt_10  11:IsoElecPt_20
+		// 12:GenTauPt  13:GenTauElecPt  14:GenTauMuonPt  15:GenTauElecPt_10  16:GenTauMuonPt_10  17:IsoTauElecPt_10  18:IsoTauMuonPt_10  
+		// 19: NumOf Iso DiMuon MassWindow   20: NumOf NoMuon 21: NumOf Iso Single Muon   22: NumOf Iso DiMuon 23: NumOf Iso 3Muon 
+
+		histo1D["WZEstimation"]->SetBinContent( 20 , histo1D["NofLep"]->GetBinContent(1)  );
+		histo1D["WZEstimation"]->SetBinContent( 21 , histo1D["NofLep"]->GetBinContent(2)  );
+		histo1D["WZEstimation"]->SetBinContent( 22 , histo1D["NofLep"]->GetBinContent(3)  );
+		histo1D["WZEstimation"]->SetBinContent( 23 , histo1D["NofLep"]->GetBinContent(4)  );
 
 
 		for(int i=1; i<22; i++)

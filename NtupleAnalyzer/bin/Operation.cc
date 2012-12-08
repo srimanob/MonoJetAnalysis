@@ -1,3 +1,9 @@
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//          Author:  Mehmet Vergili   vergili@cern.ch               //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+
 #include "Operation.h"
 #include "Histogram01.h"
 #include "Histogram02.h"
@@ -1317,12 +1323,14 @@ namespace Operation
 			isoLepPseq[i]=0; isoLepMseq[i]=0;
 		}
 
+		bool  check1=true;
+		bool  check2=true;
 		for(int i=0; i<ev.NPFLep(); i++ )
 		{
-			bool check = true;
+			
 			if( PFLepTightCuts(ev ,i) )
 			{
-				check=false;
+				check1=false;
 				IsoLepIndex++;
 				//LepCharge = ev.PFLepCharge(i);
 
@@ -1337,8 +1345,9 @@ namespace Operation
 					isoLepPnum++;
 				}
 			}
-			if(check)
+			if(check1 && check2)
 			{
+			        check2=false;
 				if(ev.PFLepCharge(i)<0)
 				{
 					isoLepMseq[isoLepMnum]=i;
