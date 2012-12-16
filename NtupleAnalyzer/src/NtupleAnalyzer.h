@@ -208,3 +208,5 @@
 
 #include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+
+#include "DataFormats/TauReco/interface/PFTauDiscriminator.h"
