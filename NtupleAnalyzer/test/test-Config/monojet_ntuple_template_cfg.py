@@ -19,9 +19,9 @@ process.MessageLogger.cerr.PATSummaryTables = cms.untracked.PSet(
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 
-#-- Monojet setting
+############################# Monojet setting #############################
 iRunData       = False #True or False
-iData          = "PromptC2" #No meaning if iRunData = False
+iData          = "Aug24" #No meaning if iRunData = False
                             #Jul13,Aug06,Aug24,PromptC2,PromptD
 iSignal        = False #True or False, if True, PDF will be collected. No meaning if iRunData = True
 iTrigger       = "MET" #MET, SingleMuon, DoubleMuon, SingleElectron, DoubleElectron, Physics, NoTrig
@@ -32,11 +32,11 @@ iFileMC        = '/store/group/phys_higgs/vbfHinv/DataSample/AODSIM_WJetsToLNu.r
 iMaxEvent      = 1000
 iPFElectronTag = "selectedPatElectronsPF"
 iPFMuonTag     = "selectedPatMuonsPF"
-iPFTauTag      = "selectedPatTausPF" 
+iPFTauTag      = "patTausPF"
+iTauTag        = "patTaus" 
 iPFJetTag      = "selectedPatJetsPF" #cleanPatJetsAK5PF
 iPFMETTag      = "patMETsPF"
-
-#iDump       = True
+############################# Monojet setting #############################
 
 
 #-- VarParsing
@@ -197,6 +197,7 @@ else:
 if iSignal == True:
     process.hltHighLevel.HLTPaths = cms.vstring("*")
 
+
 ############################# START Noise Flags ####################################
 ## The good primary vertex filter ____________________________________________||
 process.primaryVertexFilter = cms.EDFilter(
@@ -300,13 +301,7 @@ process.patPFMETtype0CorrPF.correction.par0 = cms.double(0.0)
 ############################# END FIX TYPE0 ####################################
 
 
-##-- Reset random seeds every time
-#from IOMC.RandomEngine.RandomServiceHelper import RandomNumberServiceHelper
-#randSvc = RandomNumberServiceHelper(process.RandomNumberGeneratorService)
-#randSvc.populate()
-
-
-#-- Ntuple Producer Plugin
+############################# Ntuple Producer Plugin #############################
 process.load("MonoJetAnalysis.NtupleAnalyzer.NtupleAnalyzer_cfi")
 process.TFileService                 = cms.Service("TFileService", fileName = cms.string('ntuple.root'))
 process.NtupleAnalyzer               = process.NtupleAnalyzerTemplate.clone()
@@ -354,12 +349,14 @@ else:
 ## Singal run with NoTrig
 if iSignal == True:
     process.NtupleAnalyzer.triggerUsed = cms.double(99)
+############################# Ntuple Producer Plugin #############################
 
 
-#-- Load the PU JetID sequence
+############################# Load the PU JetID sequence #############################
 process.load("CMGTools.External.pujetidsequence_cff")
 process.puJetMva.jets = cms.InputTag(iPFJetTag)
 process.puJetId.jets = cms.InputTag(iPFJetTag)
+############################# Load the PU JetID sequence #############################
 
 
 ############################# START FIX PF COLLECTION ####################################
@@ -377,18 +374,7 @@ process.patElectronsPF.isolationValues = cms.PSet(
 )
 
 #-- Tau & Jet
-#process.pfNoTauPF.enable = cms.bool(False)
-process.pfTausPF.discriminators = cms.VPSet(
-    cms.PSet(
-      discriminator = cms.InputTag("pfTausBaseDiscriminationByLooseCombinedIsolationDBSumPtCorrPF"),
-      selectionCut = cms.double(0.5)
-    ),
-    cms.PSet(
-      discriminator = cms.InputTag("pfTausBaseDiscriminationByDecayModeFindingPF"),
-      selectionCut = cms.double(0.5)
-    )
-)
-process.selectedPatTausPF.cut = cms.string('pt > 15 & abs(eta) < 2.3 & tauID("decayModeFinding") > 0.5 & tauID("byLooseCombinedIsolationDeltaBetaCorr") > 0.5')
+process.pfNoTauPF.enable = cms.bool(False)
 ############################## END FIX PF COLLECTION #####################################
 
 
@@ -406,29 +392,15 @@ process.p9  = cms.Path(process.ecalLaserCorrFilter)
 process.p10 = cms.Path(process.primaryVertexFilter)
 process.p11 = cms.Path(process.hltHighLevel)
 process.p   = cms.Path(process.susyPatDefaultSequence*process.puJetIdSqeuence)
-process.ntp = cms.EndPath(
-    #process.hltHighLevel
-    #* process.susyPatDefaultSequence
-    #* process.puJetIdSqeuence
-    process.NtupleAnalyzer
-    )
+process.ntp = cms.EndPath(process.NtupleAnalyzer)
 
 if iSignal == True:
     process.ntp.replace(process.NtupleAnalyzer,process.pdfWeights1*process.NtupleAnalyzer)
 
+
 #-- Remove SUSYPAT.root
 del(process.out)
 del(process.outpath)
-
-#-- TEST only
-#process.p = cms.Path(
-#    process.hltHighLevel
-#    * process.primaryVertexFilter
-#    * process.noscraping
-#    * process.susyPatDefaultSequence
-#    * process.puJetIdSqeuence
-#    * process.NtupleAnalyzer
-#    )
 
 
 #-- Dump config

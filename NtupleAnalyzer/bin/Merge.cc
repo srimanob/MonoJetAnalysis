@@ -8,7 +8,8 @@
 #include <iostream>
 #include <vector>
 
-#include "/uscms_data/d2/vergili/april/CMSSW_4_2_8_patch7/src/MonoJetAnalysis/NtupleAnalyzer/bin/tdrStyle.C"
+//#include "/uscms_data/d2/vergili/april/CMSSW_4_2_8_patch7/src/MonoJetAnalysis/NtupleAnalyzer/bin/tdrStyle.C"
+#include "tdrStyle.C"
 
 #include "MergePlots.h"
 

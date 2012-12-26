@@ -25,5 +25,4 @@
 <use   name="CondFormats/JetMETObjects"/>
 <use   name="RecoEgamma/EgammaTools"/>
 <use   name="lhapdf"/> 
-<export>
-</export>
+

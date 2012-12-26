@@ -10,7 +10,9 @@
 #include "Operation.h"
 #include <map>
 
-#include "/uscmst1/prod/sw/cms/slc5_amd64_gcc434/external/lhapdf/5.8.5-cms2/include/LHAPDF/LHAPDF.h"
+//#include "/uscmst1/prod/sw/cms/slc5_amd64_gcc434/external/lhapdf/5.8.5-cms2/include/LHAPDF/LHAPDF.h"
+//#include "/afs/cern.ch/cms/slc5_amd64_gcc462/external/lhapdf/5.8.5-cms/include/LHAPDF/LHAPDF.h"
+#include <LHAPDF/LHAPDF.h>
 
 using namespace std;
 using namespace Operation;

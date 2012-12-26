@@ -16,7 +16,7 @@
 <use     name="lhapdf"/> 
 
 
-<bin   name="AnaTrigger" file="AnaTrigger.cc"></bin>
+#<bin   name="AnaTrigger" file="AnaTrigger.cc"></bin>
 
 
 <bin   name="AnaMonoJet" file="AnaMonoJet.cc"></bin>
@@ -40,7 +40,7 @@
 <bin   name="Merge"  file="Merge.cc"></bin>
 <bin   name="Merge2" file="Merge2.cc"></bin>
 <bin   name="Table"  file="Table.cc"></bin>
-<bin   name="TableLep"  file="TableLep.cc"></bin>
+#<bin   name="TableLep"  file="TableLep.cc"></bin>
 
 
 <bin   name="TransferFile" file="TransferFile.cc"></bin>
@@ -49,7 +49,7 @@
 <bin   name="SubmitCondor" file="SubmitCondor.cc"> </bin>
 <bin   name="SkimEvent" file="SkimEvent.cc"> </bin>
 
-<bin   name="ProducePyFile" file="ProducePyFile.cc"> </bin>
+#<bin   name="ProducePyFile" file="ProducePyFile.cc"> </bin>
 #<bin   name="Limit" file="Limit.cc"> </bin>
 
 

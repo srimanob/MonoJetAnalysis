@@ -28,7 +28,8 @@ NtupleAnalyzerTemplate = cms.EDAnalyzer(
     PFElectronTag           = cms.untracked.InputTag("selectedPatElectronsPF"),
     PFMuonTag               = cms.untracked.InputTag("selectedPatMuonsPF"),
     PFTauTag                = cms.untracked.InputTag("selectedPatTausPF"),
-    PFJetTag                = cms.untracked.InputTag("cleanPatJetsAK5PF"),
+    TauTag                  = cms.untracked.InputTag("selectedPatTaus"),
+    PFJetTag                = cms.untracked.InputTag("selectedPatJetsPF"),
     PFMETTag                = cms.untracked.InputTag("patMETsPF")
 )
 
