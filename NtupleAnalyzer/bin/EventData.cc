@@ -8,10 +8,8 @@
 #include "time.h"
 #include <TH1D.h>
 #include "Operation.h"
+#include "string.h"
 #include <map>
-
-//#include "/uscmst1/prod/sw/cms/slc5_amd64_gcc434/external/lhapdf/5.8.5-cms2/include/LHAPDF/LHAPDF.h"
-//#include "/afs/cern.ch/cms/slc5_amd64_gcc462/external/lhapdf/5.8.5-cms/include/LHAPDF/LHAPDF.h"
 #include <LHAPDF/LHAPDF.h>
 
 using namespace std;
@@ -20,114 +18,302 @@ using namespace LHAPDF;
 
 EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDataSet("undefined") 
 {
+  string fileDirectory  = "root://eoscms//eos/cms/store/group/phys_exotica/monojet/ntuple-2012-v6A/";
 
-	mydataset["met1"]   = "/uscms_data/d2/lpcjm/DATA/2012/Data2012A_part1.root";
-	mydataset["met2"]   = "/uscms_data/d2/lpcjm/DATA/2012/Data2012A_part2.root";
-	mydataset["met3"]   = "/uscms_data/d2/lpcjm/DATA/2012/Data2012B_part1.root";
-	mydataset["met4"]   = "/uscms_data/d2/lpcjm/DATA/2012/Data2012B_part2.root";
-	mydataset["met5"]   = "/uscms_data/d2/lpcjm/DATA/2012/Data2012C_part1.root";
-	mydataset["met6"]   = "/uscms_data/d2/lpcjm/DATA/2012/Data2012C_part2.root";
-	mydataset["met7"]   = "/uscms_data/d2/lpcjm/DATA/2012/Data2012C_part3.root";
+  // Pileup
+  mydataset["pileup"]   = "/afs/cern.ch/user/s/srimanob/public/ForMonoJet/PUHist/pileup_monojet_20130101_All2012_v6A.root";
+  
+  // Data
+  mydataset["met1"]     = fileDirectory + "Data_V6A_2012A_part1.root";
+  mydataset["met2"]     = fileDirectory + "Data_V6A_2012A_part2.root";
+  mydataset["met3"]     = fileDirectory + "Data_V6A_2012A_part3.root";
+  mydataset["met4"]     = fileDirectory + "Data_V6A_2012B_part1.root";
+  mydataset["met5"]     = fileDirectory + "Data_V6A_2012B_part2.root";
+  mydataset["met6"]     = fileDirectory + "Data_V6A_2012B_part3.root";
+  mydataset["met7"]     = fileDirectory + "Data_V6A_2012B_part4.root";
+  mydataset["met8"]     = fileDirectory + "Data_V6A_2012B_part5.root";
+  mydataset["met9"]     = fileDirectory + "Data_V6A_2012C_part1.root";
+  mydataset["met10"]    = fileDirectory + "Data_V6A_2012C_part2.root";
+  mydataset["met11"]    = fileDirectory + "Data_V6A_2012C_part3.root";
+  mydataset["met12"]    = fileDirectory + "Data_V6A_2012C_part4.root";
+  mydataset["met13"]    = fileDirectory + "Data_V6A_2012C_part5.root";
+  mydataset["met14"]    = fileDirectory + "Data_V6A_2012C_part6.root";
+  mydataset["met15"]    = fileDirectory + "Data_V6A_2012C_part7.root";
+  mydataset["met16"]    = fileDirectory + "Data_V6A_2012C_part8.root";
+  mydataset["met17"]    = fileDirectory + "Data_V6A_2012D_part1.root";
+  mydataset["met18"]    = fileDirectory + "Data_V6A_2012D_part2.root";
+  mydataset["met19"]    = fileDirectory + "Data_V6A_2012D_part3.root";
+  mydataset["met20"]    = fileDirectory + "Data_V6A_2012D_part4.root";
+  mydataset["met21"]    = fileDirectory + "Data_V6A_2012D_part5.root";
+  mydataset["met22"]    = fileDirectory + "Data_V6A_2012D_part6.root";
+  mydataset["met23"]    = fileDirectory + "Data_V6A_2012D_part7.root";
+  mydataset["met24"]    = fileDirectory + "Data_V6A_2012D_part8.root";
+  mydataset["met25"]    = fileDirectory + "Data_V6A_2012D_part9.root";
+  mylumi["met1"]        = 19461.;
+  mylumi["met2"]        = 19461.;
+  mylumi["met3"]        = 19461.;
+  mylumi["met4"]        = 19461.;
+  mylumi["met5"]        = 19461.;
+  mylumi["met6"]        = 19461.;
+  mylumi["met7"]        = 19461.;   
+  mylumi["met8"]        = 19461.;
+  mylumi["met9"]        = 19461.;
+  mylumi["met10"]       = 19461.;
+  mylumi["met11"]       = 19461.;
+  mylumi["met12"]       = 19461.;
+  mylumi["met13"]       = 19461.;
+  mylumi["met14"]       = 19461.;
+  mylumi["met15"]       = 19461.;
+  mylumi["met16"]       = 19461.;
+  
+  // Znunu S10
+  mydataset["znunu50"]    = fileDirectory + "MC_S10_V6A_ZJetsToNuNu_50_HT_100_10601pb.root";
+  mydataset["znunu100"]   = fileDirectory + "MC_S10_V6A_ZJetsToNuNu_100_HT_200_27552pb.root";
+  mydataset["znunu200p1"] = fileDirectory + "MC_S10_V6A_ZJetsToNuNu_200_HT_400_part1_121829pb.root";
+  mydataset["znunu200p2"] = fileDirectory + "MC_S10_V6A_ZJetsToNuNu_200_HT_400_part2_121829pb.root";
+  mydataset["znunu400"]   = fileDirectory + "MC_S10_V6A_ZJetsToNuNu_400_HT_inf_189986pb.root";
+  mylumi["znunu50"]       = 10601.;
+  mylumi["znunu100"]      = 27552.;
+  mylumi["znunu200"]      = 121829.;
+  mylumi["znunu400"]      = 189986.; 
+   
+  // W+Jets S10
+  mydataset["wjets1"]    = fileDirectory + "MC_S10_V6A_WJetsToLNu_PtW-100_part1_55668pb.root";
+  mydataset["wjets2"]    = fileDirectory + "MC_S10_V6A_WJetsToLNu_PtW-100_part2_55668pb.root";
+  mydataset["wjets3"]    = fileDirectory + "MC_S10_V6A_WJetsToLNu_PtW-100_part3_55668pb.root";
+  mydataset["wjets4"]    = fileDirectory + "MC_S10_V6A_WJetsToLNu_PtW-100_part4_55668pb.root";
+  mydataset["wjets5"]    = fileDirectory + "MC_S10_V6A_WJetsToLNu_PtW-100_part5_55668pb.root";
+  mylumi["wjets1"]       = 55668.;
+  mylumi["wjets2"]       = 55668.;
+  mylumi["wjets3"]       = 55668.;
+  mylumi["wjets4"]       = 55668.;
+  mylumi["wjets5"]       = 55668.;
+  
+  // Z+Jets S10
+  mydataset["zjets1"]     = fileDirectory + "MC_S10_V6A_DYJetsToLL_M-50_8624pb.root";
+  mydataset["zjets2"]     = fileDirectory + "MC_S10_V6A_DYJetsToLL_PtZ-100_77335pb.root";
+  mylumi["zjets1"]        = 8624.;
+  mylumi["zjets2"]        = 77335.;
+  
+  // TTbar S10
+  mydataset["ttbar"]     = fileDirectory + "MC_S10_V6A_TTbar_MassiveBin_50798pb.root";
+  mylumi["ttbar"]        = 50798.;
+  
+  // QCD S10
+  mydataset["qcd300"]   = fileDirectory + "MC_S10_V6A_QCD_Pt-300to470_3398pb.root";
+  mydataset["qcd470"]   = fileDirectory + "MC_S10_V6A_QCD_Pt-470to600_35080pb.root";
+  mydataset["qcd600"]   = fileDirectory + "MC_S10_V6A_QCD_Pt-600to800_148032pb.root";
+  mydataset["qcd800"]   = fileDirectory + "MC_S10_V6A_QCD_Pt-800to1000_1110712pb.root";
+  mydataset["qcd1000"]  = fileDirectory + "MC_S10_V6A_QCD_Pt-1000to1400_2654173pb.root";
+  mydataset["qcd1400"]  = fileDirectory + "MC_S10_V6A_QCD_Pt-1400to1800_58090059pb.root";
+  mydataset["qcd1800"]  = fileDirectory + "MC_S10_V6A_QCD_Pt-1800toInf_543103333pb.root";
+  mylumi["qcd300"]      = 3398.;
+  mylumi["qcd470"]      = 35080.;
+  mylumi["qcd600"]      = 148032.;
+  mylumi["qcd800"]      = 1110712.;
+  mylumi["qcd1000"]     = 2654173.;
+  mylumi["qcd1400"]     = 58090059.;
+  mylumi["qcd1800"]     = 543103333.;
+  
+  // Single-t S10
+  mydataset["sints"]       = fileDirectory + "MC_S10_V6A_SingleT_s_92843pb.root";
+  mydataset["sintt"]       = fileDirectory + "MC_S10_V6A_SingleT_t_79430pb.root";
+  mydataset["sinttw"]      = fileDirectory + "MC_S10_V6A_SingleT_tw_44524pb.root";
+  mydataset["sintbars"]    = fileDirectory + "MC_S10_V6A_SingleTbar_s_87484pb.root";
+  mydataset["sintbart"]    = fileDirectory + "MC_S10_V6A_SingleTbar_t_77403pb.root";
+  mydataset["sintbartw"]   = fileDirectory + "MC_S10_V6A_SingleTbar_tw_44148pb.root";
+  mylumi["sints"]          = 92843.;
+  mylumi["sintt"]          = 79430.;
+  mylumi["sinttw"]         = 44524.;
+  mylumi["sintbars"]       = 87484.;
+  mylumi["sintbart"]       = 77403.;
+  mylumi["sintbartw"]      = 44148.;
+  
+  // VBF-Invisible Higgs
+  mydataset["vbf"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/VBF_InvisibleHiggs.root";
+  mylumi["vbf"]  = 12100.;
+  
+  
+  // DM-Stop / DM-Higgs
+  mydataset["dmstop"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/DarkMatter/DM_Stop_mass210GeV_M230GeV_Lumi_98948pb.root";
+  mydataset["dmhiggs"]  = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/DarkMatter/DM_Higgs_massXXXGeV_M125GeV_Lumi_8336pb.root";
+  mylumi["dmstop"]      = 60803.;
+  mylumi["dmhiggs"]     = 8336.;
+  
+  
+  // Unparticles
+  mydataset["unp_S0_dU1p5_LU6000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p5_LU6000_v3_8045pb.root";
+  mydataset["unp_S0_dU1p5_LU7000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p5_LU7000_v3_9433pb.root";
+  mydataset["unp_S0_dU1p5_LU8000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p5_LU8000_v3_10902pb.root";
+  mydataset["unp_S0_dU1p5_LU9000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p5_LU9000_v3_12176pb.root";
+  mydataset["unp_S0_dU1p6_LU4000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p6_LU4000_v3_15913pb.root";
+  mydataset["unp_S0_dU1p6_LU5000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p6_LU5000_v3_21272pb.root";
+  mydataset["unp_S0_dU1p6_LU6000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p6_LU6000_v3_27159pb.root";
+  mydataset["unp_S0_dU1p6_LU7000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p6_LU7000_v3_33367pb.root";
+  mydataset["unp_S0_dU1p7_LU1000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p7_LU1000_v3_2784pb.root";
+  mydataset["unp_S0_dU1p7_LU2000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p7_LU2000_v3_13802pb.root";
+  mydataset["unp_S0_dU1p7_LU3000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p7_LU3000_v3_29718pb.root"; 
+  mydataset["unp_S0_dU1p8_LU1000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p8_LU1000_v3_6139pb.root";
+  mydataset["unp_S0_dU1p8_LU2000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p8_LU2000_v3_35561pb.root";
+  mydataset["unp_S0_dU1p8_LU3000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p8_LU3000_v3_86132pb.root"; 
+  mydataset["unp_S0_dU1p9_LU1000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p9_LU1000_v3_13526pb.root";
+  mydataset["unp_S0_dU1p9_LU2000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p9_LU2000_v3_95602pb.root";
+  mydataset["unp_S0_dU1p9_LU3000"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p9_LU3000_v3_244798pb.root";
+  //
+  mylumi["unp_S0_dU1p5_LU6000"] = 8045.;
+  mylumi["unp_S0_dU1p5_LU7000"] = 9433.;
+  mylumi["unp_S0_dU1p5_LU8000"] = 10902.;
+  mylumi["unp_S0_dU1p5_LU9000"] = 12176.;
+  mylumi["unp_S0_dU1p6_LU4000"] = 15913.;
+  mylumi["unp_S0_dU1p6_LU5000"] = 21272.;
+  mylumi["unp_S0_dU1p6_LU6000"] = 27159.;
+  mylumi["unp_S0_dU1p6_LU7000"] = 33367.;
+  mylumi["unp_S0_dU1p7_LU1000"] = 2784.;
+  mylumi["unp_S0_dU1p7_LU2000"] = 13802.;
+  mylumi["unp_S0_dU1p7_LU3000"] = 29718.;
+  mylumi["unp_S0_dU1p8_LU1000"] = 6139.;
+  mylumi["unp_S0_dU1p8_LU2000"] = 35561.;
+  mylumi["unp_S0_dU1p8_LU3000"] = 86132.;
+  mylumi["unp_S0_dU1p9_LU1000"] = 13526.;
+  mylumi["unp_S0_dU1p9_LU2000"] = 95602.;
+  mylumi["unp_S0_dU1p9_LU3000"] = 244798.; 
 
-	mydataset["sinmu1"] =  "/uscms_data/d1/lpcjm/DATA/2012/SinMu2012.root";
+  //mydataset["unp_S0_dU1p5_LU6000_ft0"]   = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/UNP_8TeV_v3/Unparticle_S0_dU1p5_LU6000_v3_8045pb_fixType0.root";
+  //mylumi["unp_S0_dU1p5_LU6000_ft0"] = 8045.; 
+  
+  // ADD Model Samples 
+  mydataset["d2md3"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D2_MD3000_v3_13065pb.root";
+  mydataset["d2md4"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D2_MD4000_v3_40866pb.root";
+  mydataset["d2md5"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D2_MD5000_v3_101419pb.root";
+  mydataset["d2md6"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D2_MD6000_v3_206611pb.root";
+  mydataset["d3md2"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D3_MD2000_v3_5219pb.root";
+  mydataset["d3md3"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D3_MD3000_v3_37807pb.root";
+  mydataset["d3md4"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D3_MD4000_v3_159438pb.root";
+  mydataset["d3md5"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D3_MD5000_v3_465116pb.root"; 
+  mydataset["d4md2"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D4_MD2000_v3_8045pb.root";
+  mydataset["d4md3"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D4_MD3000_v3_77101pb.root"; 
+  mydataset["d4md4"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D4_MD4000_v3_408163pb.root";
+  mydataset["d4md5"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D4_MD5000_v3_1612903pb.root";
+  mydataset["d5md1"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D5_MD1000_v3_298pb.root";
+  mydataset["d5md2"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D5_MD2000_v3_11222pb.root";
+  mydataset["d5md3"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D5_MD3000_v3_134048pb.root";
+  mydataset["d5md4"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D5_MD4000_v3_937207pb.root";
+  mydataset["d6md1"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D6_MD1000_v3_283pb.root";
+  mydataset["d6md2"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D6_MD2000_v3_12692pb.root"; 
+  mydataset["d6md3"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D6_MD3000_v3_190476pb.root";
+  mydataset["d6md4"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/ADD_8TeV_v3/ADD_D6_MD4000_v3_1724137pb.root"; 
+  //
+  mylumi["d2md3"]    = 13065.;
+  mylumi["d2md4"]    = 40866.;
+  mylumi["d2md5"]    = 101419.;
+  mylumi["d2md6"]    = 206611.;
+  mylumi["d3md2"]    = 5219.;
+  mylumi["d3md3"]    = 37807.;
+  mylumi["d3md4"]    = 159438.;
+  mylumi["d3md5"]    = 465116.; 
+  mylumi["d4md2"]    = 8045.;
+  mylumi["d4md3"]    = 77101.; 
+  mylumi["d4md4"]    = 408163.;
+  mylumi["d4md5"]    = 1612903.;
+  mylumi["d5md1"]    = 298.;
+  mylumi["d5md2"]    = 11222.;
+  mylumi["d5md3"]    = 134048.;
+  mylumi["d5md4"]    = 937207.;
+  mylumi["d6md1"]    = 283.;
+  mylumi["d6md2"]    = 12692.; 
+  mylumi["d6md3"]    = 190476.;
+  mylumi["d6md4"]    = 1724137.;
 
- 	mydataset["znunu50"]  = "/uscms_data/d1/lpcjm/DATA/2012/ZJetsToNuNu_50_HT_100.root";
-	mydataset["znunu100"] = "/uscms_data/d1/lpcjm/DATA/2012/ZJetsToNuNu_100_HT_200.root";
-	mydataset["znunu200"] = "/uscms_data/d1/lpcjm/DATA/2012/ZJetsToNuNu_200_HT_400.root";
-	mydataset["znunu400"] = "/uscms_data/d1/lpcjm/DATA/2012/ZJetsToNuNu_400_HT_inf.root";
+  
+  //Dark Matter
+  mydataset["dmavd001"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass001GeV_M40TeV_madgraph.root";
+  mydataset["dmavd01"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass01GeV_M40TeV_madgraph.root";
+  mydataset["dmavd1"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass1GeV_M40TeV_madgraph.root";
+  mydataset["dmavd10"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass10GeV_M40TeV_madgraph.root";
+  mydataset["dmavd100"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass100GeV_M40TeV_madgraph.root";
+  mydataset["dmavd200"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass200GeV_M40TeV_madgraph.root";
+  mydataset["dmavd300"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass300GeV_M40TeV_madgraph.root";
+  mydataset["dmavd400"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass400GeV_M40TeV_madgraph.root";
+  mydataset["dmavd700"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass700GeV_M40TeV_madgraph.root";
+  mydataset["dmavd1000"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVd_mass1000GeV_M40TeV_madgraph.root";
+  //
+  mydataset["dmavu001"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass001GeV_M40TeV_madgraph.root";
+  mydataset["dmavu01"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass01GeV_M40TeV_madgraph.root";
+  mydataset["dmavu1"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass1GeV_M40TeV_madgraph.root";
+  mydataset["dmavu10"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass10GeV_M40TeV_madgraph.root";
+  mydataset["dmavu100"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass100GeV_M40TeV_madgraph.root";
+  mydataset["dmavu200"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass200GeV_M40TeV_madgraph.root";
+  mydataset["dmavu300"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass300GeV_M40TeV_madgraph.root";
+  mydataset["dmavu400"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass400GeV_M40TeV_madgraph.root";
+  mydataset["dmavu700"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass700GeV_M40TeV_madgraph.root";
+  mydataset["dmavu1000"]  = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_AVu_mass1000GeV_M40TeV_madgraph.root";
+  //
+  mydataset["dmvd001"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass001GeV_M40TeV_madgraph.root";
+  mydataset["dmvd01"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass01GeV_M40TeV_madgraph.root";
+  mydataset["dmvd1"]      = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass1GeV_M40TeV_madgraph.root";
+  mydataset["dmvd10"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass10GeV_M40TeV_madgraph.root";
+  mydataset["dmvd100"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass100GeV_M40TeV_madgraph.root";
+  mydataset["dmvd200"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass200GeV_M40TeV_madgraph.root";
+  mydataset["dmvd300"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass300GeV_M40TeV_madgraph.root";
+  mydataset["dmvd400"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass400GeV_M40TeV_madgraph.root";
+  mydataset["dmvd700"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass700GeV_M40TeV_madgraph.root";
+  mydataset["dmvd1000"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vd_mass1000GeV_M40TeV_madgraph.root";
+  //
+  mydataset["dmvu001"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass001GeV_M40TeV_madgraph.root";
+  mydataset["dmvu01"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass01GeV_M40TeV_madgraph.root";
+  mydataset["dmvu1"]      = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass1GeV_M40TeV_madgraph.root";
+  mydataset["dmvu10"]     = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass10GeV_M40TeV_madgraph.root";
+  mydataset["dmvu100"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass100GeV_M40TeV_madgraph.root";
+  mydataset["dmvu200"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass200GeV_M40TeV_madgraph.root";
+  mydataset["dmvu300"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass300GeV_M40TeV_madgraph.root";
+  mydataset["dmvu400"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass400GeV_M40TeV_madgraph.root";
+  mydataset["dmvu700"]    = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass700GeV_M40TeV_madgraph.root";
+  mydataset["dmvu1000"]   = "/uscms_data/d1/lpcjm/DATA/DarkMatter/DM_Vu_mass1000GeV_M40TeV_madgraph.root";
+  //
+  mylumi["dmavd001"]  = 8000.;
+  mylumi["dmavd01"]   = 8000.;  
+  mylumi["dmavd1"]    = 8000.; 
+  mylumi["dmavd10"]   = 8000.;
+  mylumi["dmavd100"]  = 8000.;
+  mylumi["dmavd200"]  = 8000.;
+  mylumi["dmavd300"]  = 8000.;
+  mylumi["dmavd400"]  = 8000.;
+  mylumi["dmavd700"]  = 8000.;
+  mylumi["dmavd1000"] = 8000.;
+  //
+  mylumi["dmavu001"]  = 8000.;
+  mylumi["dmavu01"]   = 8000.;
+  mylumi["dmavu1"]    = 8000.;
+  mylumi["dmavu10"]   = 8000.;
+  mylumi["dmavu100"]  = 8000.;
+  mylumi["dmavu200"]  = 8000.;
+  mylumi["dmavu300"]  = 8000.;
+  mylumi["dmavu400"]  = 8000.;
+  mylumi["dmavu700"]  = 8000.;
+  mylumi["dmavu1000"] = 8000.;
+  //
+  mylumi["dmvd001"]  =  8000.;
+  mylumi["dmvd01"]   =  8000.;
+  mylumi["dmvd1"]    =  8000.;
+  mylumi["dmvd10"]   =  8000.;
+  mylumi["dmvd100"]  =  8000.;
+  mylumi["dmvd200"]  =  8000.;
+  mylumi["dmvd300"]  =  8000.;
+  mylumi["dmvd400"]  =  8000.;
+  mylumi["dmvd700"]  =  8000.;
+  mylumi["dmvd1000"] =  8000.;
+  //
+  mylumi["dmvu001"]  =  8000.;
+  mylumi["dmvu01"]   =  8000.;
+  mylumi["dmvu1"]    =  8000.;
+  mylumi["dmvu10"]   =  8000.;
+  mylumi["dmvu100"]  =  8000.;
+  mylumi["dmvu200"]  =  8000.;
+  mylumi["dmvu300"]  =  8000.;
+  mylumi["dmvu400"]  =  8000.;
+  mylumi["dmvu700"]  =  8000.;
+  mylumi["dmvu1000"] =  8000.;
 
-	mydataset["wjets1"]    = "/uscms_data/d1/lpcjm/DATA/2012/WJetsToLNu_PtW-100_part1.root";
-	mydataset["wjets2"]    = "/uscms_data/d1/lpcjm/DATA/2012/WJetsToLNu_PtW-100_part2.root";
-	mydataset["wjets3"]    = "/uscms_data/d1/lpcjm/DATA/2012/WJetsToLNu_PtW-100_part3.root";
-
-	mydataset["zjets"]    = "/uscms_data/d1/lpcjm/DATA/2012/DYJetsToLL_M-50.root";
-	mydataset["ttbar"]    = "/uscms_data/d1/lpcjm/DATA/2012/TTJets.root";
-
-	mydataset["qcd300"]   = "/uscms_data/d1/lpcjm/DATA/2012/QCD_Pt-300to470.root";
-	mydataset["qcd470"]   = "/uscms_data/d1/lpcjm/DATA/2012/QCD_Pt-470to600.root";
-	mydataset["qcd600"]   = "/uscms_data/d1/lpcjm/DATA/2012/QCD_Pt-600to800.root";
-	mydataset["qcd800"]   = "/uscms_data/d1/lpcjm/DATA/2012/QCD_Pt-800to1000.root";
-	mydataset["qcd1000"]  = "/uscms_data/d1/lpcjm/DATA/2012/QCD_Pt-1000to1400.root";
-	mydataset["qcd1400"]  = "/uscms_data/d1/lpcjm/DATA/2012/QCD_Pt-1400to1800.root";
-	mydataset["qcd1800"]  = "/uscms_data/d1/lpcjm/DATA/2012/QCD_Pt-1800-inf.root";
-
-	mydataset["sintbars"]    = "/uscms_data/d1/lpcjm/DATA/2012/Tbar_s-channel.root";
-	mydataset["sintbart"]    = "/uscms_data/d1/lpcjm/DATA/2012/Tbar_t-channel.root";
-	mydataset["sintbartw"]   = "/uscms_data/d1/lpcjm/DATA/2012/Tbar_tW-channel.root";
-	mydataset["sints"]		 ="/uscms_data/d1/lpcjm/DATA/2012/T_s-channel.root";
-	mydataset["sintt"]       = "/uscms_data/d1/lpcjm/DATA/2012/T_t-channel.root";
-	mydataset["sinttw"]      = "/uscms_data/d1/lpcjm/DATA/2012/T_tW-channel.root";
-
-	
-	//ADD Model Samples 
-
-	mydataset["md2d3"]    ="/uscms_data/d2/lpcjm/DATA/2012/ADD_8TeV_v3/ADD_D2_MD3000_v3_13065pb.root";
-	
-	//Zp  Model Sample
-	mydataset["dmav1"]   = "/uscms_data/d2/lpcjm/DATA/2012/DM_8TeV_M40TeV/DM_40TeV_AV_1_Inc1_2Jets.root";
-
-	//Higgs Model Sample
-	mydataset["dmhigvbf"]   ="/uscms_data/d2/lpcjm/DATA/2012/VBF_InvisibleHiggs.root";
-
-	//Stop Model Sample
-	mydataset["dmstop"]   ="/uscms_data/d2/lpcjm/DATA/2012/Stop_8TeV_Ntuple.root";
-
-    mydataset["pileup"]    = "/uscms_data/d3/kangal/pileup/CMSSW_5_3_4_cand1/src/RecoLuminosity/LumiDB/scripts/newpileup.root";
-
-
-	mylumi["met1"]     = 12100.;
-	mylumi["met2"]     = 12100.;  
-	mylumi["met3"]     = 12100.;
-	mylumi["met4"]     = 12100.;
-	mylumi["met5"]     = 12100.;
-	mylumi["met6"]     = 12100.;
-	mylumi["met7"]     = 12100.;
-
-	mylumi["sinmu1"]   = 3950.;
-
-
-	mylumi["znunu50"]  = 10634.;
-	mylumi["znunu100"] = 27552.;
-	mylumi["znunu200"] = 122087.;
-	mylumi["znunu400"] = 189986.;
-	
-
-	mylumi["wjets1"]    = 55772.;
-	mylumi["wjets2"]    = 55772. ;
-	mylumi["wjets3"]    = 55772. ;
-
-
-	mylumi["zjets"]    = 10257.;
-	mylumi["ttbar"]    = 48910.;
-
-
-	mylumi["qcd300"]   = 3369.;
-	mylumi["qcd470"]   = 35079.;
-	mylumi["qcd600"]   = 147880.;
-	mylumi["qcd800"]   = 1103308.;
-	mylumi["qcd1000"]  = 2654173.;
-	mylumi["qcd1400"]  = 58825353;
-	mylumi["qcd1800"]  = 543103333.;
-					
-	mylumi["sintbars"]    = 87484.;
-	mylumi["sintbart"]    = 77177.;
-	mylumi["sintbartw"]   = 45810.;
-	mylumi["sints"]       = 92843.;
-	mylumi["sintt"]       = 506.;
-	mylumi["sinttw"]      = 46510.;
-
-
-	//ADD Model Samples 
-	mylumi["md2d3"] = 13065.;
-
-	//susy model
-	mylumi["dmstop"]  = 62000.;
-
-	//Higgs Model
-	mylumi["dmhigvbf"] = 1063829.;
-
-	//Zp Samples
-	mylumi["dmav1"]  = 12100.;
 	
 
 	mEvent = 0;
