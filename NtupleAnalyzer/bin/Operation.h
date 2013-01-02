@@ -21,8 +21,9 @@ namespace Operation
   
 	bool    IsIsoMuon(int i , EventData & eventData);
 	bool    IsIsoMuonWithoutEta(int i , EventData & eventData);
-	bool    LepInJet(double JetEta , double JetPhi ,   EventData & eventData);
+	bool    LepInJet(double JetEta , double JetPhi , EventData & eventData);
 	bool    LepInJet2(int i , EventData & ev);
+	bool    LepInJet3(double JetEta , double JetPhi , int pf , EventData & eventData);
 
 	double  MetLepPt(double MetPx , double MetPy , EventData & eventData);
 
@@ -301,6 +302,19 @@ namespace Operation
 			std::ostream& Description(std::ostream& ostrm);
 		private:
 			double mCut;
+		
+	};
+
+//-----------------------Tau  CUT-----------------------------------------------------------
+	class CutTau : public Operation::_Base 
+	{
+		public:
+	                CutTau(int pf, int againstLepton);
+			~CutTau();
+			bool Process(EventData & eventData);
+			std::ostream& Description(std::ostream& ostrm);
+		private:
+			double mPF, mAgainstLepton;
 		
 	};
 	

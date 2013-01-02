@@ -30,78 +30,147 @@ namespace Operation
 	vector<double> generate_flat10_weights(TH1D* data_npu_estimated)
 	{
 	  
-	    //Array for 1D  reweight 
-		const double npu_probs[60] = 
-		{
-		  3.0066e-05,
-		  6.16847e-05,
-		  0.000128875,
-		  0.000269747,
-		  0.000450567,
-		  0.000716926,
-		  0.0010533,
-		  0.00157797,
-		  0.00225834,
-		  0.00316597,
-		  0.00436889,
-		  0.0059542,
-		  0.00781646,
-		  0.0101815,
-		  0.0126519,
-		  0.0156465,
-		  0.0186337,
-		  0.021965,
-		  0.0251456,
-		  0.0283688,
-		  0.0313802,
-		  0.0342184,
-		  0.0365446,
-		  0.0386875,
-		  0.0402083,
-		  0.0413358,
-		  0.042339,
-		  0.0426038,
-		  0.0426671,
-		  0.0420323,
-		  0.0411957,
-		  0.0398011,
-		  0.0384753,
-		  0.036454,
-		  0.034453,
-		  0.0321174,
-		  0.02968,
-		  0.0270858,
-		  0.0245988,
-		  0.0219999,
-		  0.0194784,
-		  0.0170617,
-		  0.0149901,
-		  0.0127694,
-		  0.0109517,
-		  0.0091755,
-		  0.00765088,
-		  0.00629721,
-		  0.00516557,
-		  0.00422096,
-		  0.00337558,
-		  0.00266176,
-		  0.00209516,
-		  0.0016254,
-		  0.00125981,
-		  0.000948703,
-		  0.000712127,
-		  0.000533284,
-		  0.00040568,
-		  0.000297272
-		
-		}; 
+	  //Array for 1D  reweight
+	  //S7 - Modify
+	  /*
+	  const double npu_probs[60] = 
+	  {
+	  3.0066e-05,
+	  6.16847e-05,
+	  0.000128875,
+	  0.000269747,
+	  0.000450567,
+	  0.000716926,
+	  0.0010533,
+	  0.00157797,
+	  0.00225834,
+	  0.00316597,
+	  0.00436889,
+	  0.0059542,
+	  0.00781646,
+	  0.0101815,
+	  0.0126519,
+	  0.0156465,
+	  0.0186337,
+	  0.021965,
+	  0.0251456,
+	  0.0283688,
+	  0.0313802,
+	  0.0342184,
+	  0.0365446,
+	  0.0386875,
+	  0.0402083,
+	  0.0413358,
+	  0.042339,
+	  0.0426038,
+	  0.0426671,
+	  0.0420323,
+	  0.0411957,
+	  0.0398011,
+	  0.0384753,
+	  0.036454,
+	  0.034453,
+	  0.0321174,
+	  0.02968,
+	  0.0270858,
+	  0.0245988,
+	  0.0219999,
+	  0.0194784,
+	  0.0170617,
+	  0.0149901,
+	  0.0127694,
+	  0.0109517,
+	  0.0091755,
+	  0.00765088,
+	  0.00629721,
+	  0.00516557,
+	  0.00422096,
+	  0.00337558,
+	  0.00266176,
+	  0.00209516,
+	  0.0016254,
+	  0.00125981,
+	  0.000948703,
+	  0.000712127,
+	  0.000533284,
+	  0.00040568,
+	  0.000297272
+	  }; 
+	  */
+	  
+	  //Official Pileup 
+	  //S10
+	  const double npu_probs[60] = 
+	    {
+	      2.56e-06,
+	      5.239e-06,
+	      1.42e-05,
+	      5.005e-05,
+	      0.0001001,
+	      0.0002705,
+	      0.001999,
+	      0.006097,
+	      0.01046,
+	      0.01383,
+	      0.01685,
+	      0.02055,
+	      0.02572,
+	      0.03262,
+	      0.04121,
+	      0.04977,
+	      0.05539,
+	      0.05725,
+	      0.05607,
+	      0.05312,
+	      0.05008,
+	      0.04763,
+	      0.04558,
+	      0.04363,
+	      0.04159,
+	      0.03933,
+	      0.03681,
+	      0.03406,
+	      0.03116,
+	      0.02818,
+	      0.02519,
+	      0.02226,
+	      0.01946,
+	      0.01682,
+	      0.01437,
+	      0.01215,
+	      0.01016,
+	      0.0084,
+	      0.006873,
+	      0.005564,
+	      0.004457,
+	      0.003533,
+	      0.002772,
+	      0.002154,
+	      0.001656,
+	      0.001261,
+	      0.0009513,
+	      0.0007107,
+	      0.0005259,
+	      0.0003856,
+	      0.0002801,
+	      0.0002017,
+	      0.0001439,
+	      0.0001017,
+	      7.126e-05,
+	      4.948e-05,
+	      3.405e-05,
+	      2.322e-05,
+	      1.57e-05,
+	      5.005e-06,
+	    };
+	  
 
-		//Official Pileup 
-
-		
-		/*const double npu_probs[60] = 
-		{
-			2.344E-05,
+	  //Official Pileup 
+	  //S7
+	  /*
+	    const double npu_probs[60] = 
+	    {
+	    2.344E-05,
             2.344E-05,
             2.344E-05,
             2.344E-05,
@@ -161,7 +230,8 @@ namespace Operation
             2.221E-07,
             6.947E-08,
             2.047E-08
-	    }; */
+	    }; 
+	  */
 
 		vector<double> result(60);
 
@@ -450,6 +520,56 @@ namespace Operation
 		return send;
 	}
 
+        bool LepInJet3(double JetEta , double JetPhi , int pf , EventData & ev)
+	{
+	  bool send=false;
+	  
+	  for(int i=0; i<ev.NPFMuon(); i++ ){
+	    if( PFMuonTightCuts(ev ,i) &&  deltaR( JetEta , JetPhi , ev.PFMuonEta(i) , ev.PFMuonPhi(i) ) < 0.5)
+	      {	
+		send= true;  // this jet has iso muon
+	      }
+	  }
+	  
+	  for(int i=0; i<ev.NPFElec(); i++ ){
+	    if( PFElecTightCuts(ev ,i) &&  deltaR( JetEta , JetPhi , ev.PFElecEta(i) , ev.PFElecPhi(i) ) < 0.5)
+	      {	
+		send= true;  // this jet has iso elec
+	      }
+	  }
+	  
+	  if(pf==1){
+	    for(int i = 0; i<ev.NPFTau(); i++){
+	      if(ev.PFTauPt(i) > 20.0 
+		 && fabs(ev.PFTauEta(i)) < 2.3 
+		 && ev.PFTauDisByLooseCombinedIsolationDeltaBetaCorr(i) > 0.5 
+		 && ev.PFTauDisDecayModeFinding(i) > 0.5 
+		 && ev.PFTauDisAgainstElectronLoose(i) > 0.5 
+		 && ev.PFTauDisAgainstMuonTight2(i) > 0.5
+		 && deltaR(JetEta , JetPhi , ev.PFTauEta(i) , ev.PFTauPhi(i)) < 0.5)
+		{
+		  send= true;  // this jet is (as) tau
+		}
+	    }
+	  }
+	  else{
+	    for(int i = 0; i<ev.NTau(); i++){
+	      if(ev.TauPt(i) > 20.0 
+		 && fabs(ev.TauEta(i)) < 2.3 
+		 && ev.TauDisByLooseCombinedIsolationDeltaBetaCorr(i) > 0.5 
+		 && ev.TauDisDecayModeFinding(i) > 0.5 
+		 && ev.TauDisAgainstElectronLoose(i) > 0.5 
+		 && ev.TauDisAgainstMuonTight2(i) > 0.5
+		 && deltaR(JetEta , JetPhi , ev.TauEta(i) , ev.TauPhi(i)) < 0.5)
+		{
+		  send= true;  // this jet is (as) tau
+		}
+	    }
+	  }
+    
+	  return send;
+	}
+
 	
 	///-------------------MET+mu-----------------------------------------------------------------
 
@@ -519,8 +639,11 @@ namespace Operation
 			int njets=0;
 			for (int i=0; i<ev.NPFAK5Jets(); i++)
 			{
-				if( ev.PFAK5JetPtCor(i)>ev.SecJetCut() && abs(ev.PFAK5JetEta(i))< 4.5
-					 && LepInJet2(i , ev )==false )
+				if( ev.PFAK5JetPtCor(i)>ev.SecJetCut() 
+				    && abs(ev.PFAK5JetEta(i))< 4.5
+				    && LepInJet2(i , ev )==false 
+				    //&& LepInJet3(ev.PFAK5JetEta(i), ev.PFAK5JetPhi(i),0 ,ev)==false
+				    )
 				{
 					if(njets==ind)send=i;
 					njets++ ;
@@ -551,8 +674,11 @@ namespace Operation
 		{
 			for (int i=0; i<ev.NPFAK5Jets(); i++)
 			{
-				if( ev.PFAK5JetPtCor(i)>ev.SecJetCut() && abs(ev.PFAK5JetEta(i)) < 4.5
-					&& LepInJet2(i, ev )==false )
+				if( ev.PFAK5JetPtCor(i)>ev.SecJetCut() 
+				    && abs(ev.PFAK5JetEta(i)) < 4.5
+				    && LepInJet2(i, ev )==false 
+				    //&& LepInJet3(ev.PFAK5JetEta(i), ev.PFAK5JetPhi(i),0 ,ev)==false
+				    )
 				{
 					njets++ ;
 				}
@@ -759,26 +885,37 @@ namespace Operation
 	CutHLT::~CutHLT() {}
 
 	bool CutHLT::Process(EventData & ev) 
-	{
+	{ 
 
-		//int flg_trg=0;
-		//string strtrg = ev.HLTNames();
-		//if (strtrg.find("HLT_CentralPFJet80_CaloMET50_dPhi1_PFMHT80")!=string::npos ) flg_trg=1;
-
-		//to see  NoiseFlag array  look at  test/monojet...cfg.py   
-
-	        if( ev.NoiseFlag(0)==0 ||  ev.NoiseFlag(1)==0 ||  ev.NoiseFlag(2)==0 ||  ev.NoiseFlag(4)==0 ||
-                    ev.NoiseFlag(5)==0 ||  ev.NoiseFlag(6)==0 ||  ev.NoiseFlag(7)==0 ||  ev.NoiseFlag(8)==0 )
-		{
-			return false;
-		} 
-		else 
-		{
-			return true;
-		}
-
-
-
+	  bool check;
+	  if(mBit==0){
+	    if(ev.NoiseFlag(10)==0) 
+	      check = false;
+	    else 
+	      check = true;
+	  }
+	  else if(mBit==1){
+	    if(ev.NoiseFlag(0)==0 || ev.NoiseFlag(1)==0 || ev.NoiseFlag(2)==0 ||  
+	       ev.NoiseFlag(4)==0 || ev.NoiseFlag(5)==0 || ev.NoiseFlag(6)==0 ||  
+	       ev.NoiseFlag(7)==0 || ev.NoiseFlag(8)==0 || ev.NoiseFlag(9)==0){
+	      //if(ev.NoiseFlag(0)==0) std::cout<<"Run = "<<ev.run()<<", LS = "<<ev.lumi()<<", Event = "<<ev.event()<<", --Noise0"<<std::endl;
+	      //if(ev.NoiseFlag(1)==0) std::cout<<"Run = "<<ev.run()<<", LS = "<<ev.lumi()<<", Event = "<<ev.event()<<", --Noise1"<<std::endl; 
+	      //if(ev.NoiseFlag(2)==0) std::cout<<"Run = "<<ev.run()<<", LS = "<<ev.lumi()<<", Event = "<<ev.event()<<", --Noise2"<<std::endl;
+	      //if(ev.NoiseFlag(4)==0) std::cout<<"Run = "<<ev.run()<<", LS = "<<ev.lumi()<<", Event = "<<ev.event()<<", --Noise4"<<std::endl;
+	      //if(ev.NoiseFlag(5)==0) std::cout<<"Run = "<<ev.run()<<", LS = "<<ev.lumi()<<", Event = "<<ev.event()<<", --Noise5"<<std::endl; 
+	      //if(ev.NoiseFlag(6)==0) std::cout<<"Run = "<<ev.run()<<", LS = "<<ev.lumi()<<", Event = "<<ev.event()<<", --Noise6"<<std::endl;
+	      //if(ev.NoiseFlag(7)==0) std::cout<<"Run = "<<ev.run()<<", LS = "<<ev.lumi()<<", Event = "<<ev.event()<<", --Noise7"<<std::endl;
+	      //if(ev.NoiseFlag(8)==0) std::cout<<"Run = "<<ev.run()<<", LS = "<<ev.lumi()<<", Event = "<<ev.event()<<", --Noise8"<<std::endl;
+	      //if(ev.NoiseFlag(9)==0) std::cout<<"Run = "<<ev.run()<<", LS = "<<ev.lumi()<<", Event = "<<ev.event()<<", --Noise9"<<std::endl;
+	      check = false;
+	    } 
+	    else
+	      check = true;
+	  }
+	  else check = true;
+	  
+	  return check;
+	  
 	}
 	std::ostream& CutHLT::Description(std::ostream &ostrm) 
 	{
@@ -1488,6 +1625,49 @@ namespace Operation
 		return ostrm;
 	}		
 
+
+  
+  ///--------------------------Tau Cut----------------------------------------------------------------------
+  CutTau::CutTau(int pf, int againstLepton) : mPF(pf), mAgainstLepton(againstLepton) {} 
+  CutTau::~CutTau() {}
+  
+  bool CutTau::Process(EventData & ev) 
+  {	
+    bool send=false;
+    int ntaus = 0;
+    if(mPF==1){
+      for(int i = 0; i < ev.NPFTau(); i++){
+	if(ev.PFTauPt(i) < 20.0) continue;
+	if(fabs(ev.PFTauEta(i)) > 2.3) continue;
+	if(ev.PFTauDisByLooseCombinedIsolationDeltaBetaCorr(i) < 0.5) continue; 
+	if(ev.PFTauDisDecayModeFinding(i) < 0.5) continue;
+	if(mAgainstLepton==1 && ev.PFTauDisAgainstElectronLoose(i)<0.5) continue;
+	if(mAgainstLepton==1 && ev.PFTauDisAgainstMuonTight2(i)<0.5) continue;
+	ntaus++;
+      }
+    }
+    else{
+      for(int i = 0; i < ev.NTau(); i++){
+	if(ev.TauPt(i) < 20.0) continue;
+	if(fabs(ev.TauEta(i)) > 2.3) continue;
+	if(ev.TauDisByLooseCombinedIsolationDeltaBetaCorr(i) < 0.5) continue; 
+	if(ev.TauDisDecayModeFinding(i) < 0.5) continue;
+	if(mAgainstLepton==1 && ev.TauDisAgainstElectronLoose(i)<0.5) continue;
+	if(mAgainstLepton==1 && ev.TauDisAgainstMuonTight2(i)<0.5) continue;
+	ntaus++;
+      }
+    }
+
+    if(ntaus < 1) send = true;
+    
+    return send; 
+  }
+  std::ostream& CutTau::Description(std::ostream &ostrm) 
+  {
+    ostrm << "  Cut Tau............";
+    return ostrm;
+  }
+  
 
 
 }

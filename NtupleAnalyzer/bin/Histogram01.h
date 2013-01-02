@@ -118,6 +118,29 @@ namespace Histogram01
 			map<string, TH1D*> histo1D;
 			map<string, TH2D*> histo2D;
 	};
+
+	//--- hTauAnalysis ---
+	class hTauAnalysis : public Operation::_Base 
+	{
+	public:
+	  hTauAnalysis(const std::string & fileName);
+	  ~hTauAnalysis();
+	  bool Process(EventData & ev);
+	  
+	  std::ostream& Description(std::ostream& ostrm);
+	  
+	private:
+	  const std::string mFileName;
+	  
+	  // Output file
+	  TFile* fileOut;
+	  
+	  //------------------------
+	  // Declare the histograms
+	  //------------------------
+	  map<string, TH1D*> histo1D;
+	  map<string, TH2D*> histo2D;
+	};
 }
 
 #include "Histogram01.cc"

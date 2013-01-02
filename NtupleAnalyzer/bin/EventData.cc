@@ -482,6 +482,15 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mDataTree->SetBranchAddress("TauLeadTrackHCAL3x3hottesthitDEta"     ,mTauLeadTrackHCAL3x3hottesthitDEta    ); 
 	mDataTree->SetBranchAddress("TauLeadTrackHCAL3x3hitsEtSum"          ,mTauLeadTrackHCAL3x3hitsEtSum         ); 
 	mDataTree->SetBranchAddress("TauLeadTracksignedSipt"                ,mTauLeadTracksignedSipt               ); 
+
+	mDataTree->SetBranchAddress("TauDisByLooseCombinedIsolationDeltaBetaCorr" ,mTauDisByLooseCombinedIsolationDeltaBetaCorr);
+	mDataTree->SetBranchAddress("TauDisDecayModeFinding"                      ,mTauDisDecayModeFinding);
+	mDataTree->SetBranchAddress("TauDisAgainstElectronLoose"                  ,mTauDisAgainstElectronLoose);
+	mDataTree->SetBranchAddress("TauDisAgainstMuonTight2"                     ,mTauDisAgainstMuonTight2);
+	
+	mDataTree->SetBranchAddress("TauJetPt"                                    ,mTauJetPt);
+	mDataTree->SetBranchAddress("TauJetEta"                                   ,mTauJetEta);
+	mDataTree->SetBranchAddress("TauJetPhi"                                   ,mTauJetPhi); 
 	
 	mDataTree->SetBranchAddress("NPFTau"                                ,&mNPFTau                              ); 
 	mDataTree->SetBranchAddress("PFTauE"                                ,mPFTauE                               ); 
@@ -515,6 +524,23 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
 	mDataTree->SetBranchAddress("PFTauLeadTrackPtCut"                   ,mPFTauLeadTrackPtCut                  );
 	mDataTree->SetBranchAddress("PFTauByIso"                            ,mPFTauByIso                           );
 	mDataTree->SetBranchAddress("PFTauByTaNCfrHalfPercent"              ,mPFTauByTaNCfrHalfPercent             );
+
+	mDataTree->SetBranchAddress("PFTauDisByLooseCombinedIsolationDeltaBetaCorr" ,mPFTauDisByLooseCombinedIsolationDeltaBetaCorr);
+	mDataTree->SetBranchAddress("PFTauDisDecayModeFinding"                      ,mPFTauDisDecayModeFinding);
+	mDataTree->SetBranchAddress("PFTauDisAgainstElectronLoose"                  ,mPFTauDisAgainstElectronLoose);
+	mDataTree->SetBranchAddress("PFTauDisAgainstMuonTight2"                     ,mPFTauDisAgainstMuonTight2);
+	
+	mDataTree->SetBranchAddress("PFTauJetPt"                                    ,mPFTauJetPt);
+	mDataTree->SetBranchAddress("PFTauJetEta"                                   ,mPFTauJetEta);
+	mDataTree->SetBranchAddress("PFTauJetPhi"                                   ,mPFTauJetPhi);
+	
+	mDataTree->SetBranchAddress("WTauDecayMode"                                 ,&mWTauDecayMode);
+	mDataTree->SetBranchAddress("WTauN"                                         ,&mWTauN);
+	mDataTree->SetBranchAddress("WTauDecayId"                                   ,mWTauDecayId);
+	mDataTree->SetBranchAddress("WTauDecayPt"                                   ,mWTauDecayPt);
+	mDataTree->SetBranchAddress("WTauDecayEta"                                  ,mWTauDecayEta);
+	mDataTree->SetBranchAddress("WTauDecayPhi"                                  ,mWTauDecayPhi); 
+	mDataTree->SetBranchAddress("WTauDecayMass"                                 ,mWTauDecayMass);
 
 																							
 	mDataTree->SetBranchAddress("NPhot"                                 ,&mNPhot                                ); 
@@ -1197,6 +1223,15 @@ Double_t        EventData::TauIsolationTracksPtSum(UInt_t id)                {  
 Double_t        EventData::TauLeadTrackHCAL3x3hottesthitDEta(UInt_t id)      {   return  mTauLeadTrackHCAL3x3hottesthitDEta[id];   }
 Double_t        EventData::TauLeadTrackHCAL3x3hitsEtSum(UInt_t id)           {   return  mTauLeadTrackHCAL3x3hitsEtSum[id];        }
 Double_t        EventData::TauLeadTracksignedSipt(UInt_t id)                 {   return  mTauLeadTracksignedSipt[id];              }
+
+Double_t        EventData::TauDisByLooseCombinedIsolationDeltaBetaCorr(UInt_t id)  { return mTauDisByLooseCombinedIsolationDeltaBetaCorr[id]; }
+Double_t        EventData::TauDisDecayModeFinding(UInt_t id)                       { return mTauDisDecayModeFinding[id]; }
+Double_t        EventData::TauDisAgainstElectronLoose(UInt_t id)                   { return mTauDisAgainstElectronLoose[id]; }
+Double_t        EventData::TauDisAgainstMuonTight2(UInt_t id)                      { return mTauDisAgainstMuonTight2[id]; }
+
+Double_t        EventData::TauJetPt(UInt_t id)                                     { return mTauJetPt[id];  }
+Double_t        EventData::TauJetEta(UInt_t id)                                    { return mTauJetEta[id]; }
+Double_t        EventData::TauJetPhi(UInt_t id)                                    { return mTauJetPhi[id]; }
 						
 Int_t           EventData::NPFTau()                                          {   return  mNPFTau;                                  }
 Double_t        EventData::PFTauE(UInt_t id)                                 {   return  mPFTauE[id];                              }
@@ -1231,6 +1266,23 @@ Double_t        EventData::PFTauLeadTrackPtCut(UInt_t id)                    {  
 Double_t        EventData::PFTauByIso(UInt_t id)                             {   return  mPFTauByIso[id];                          }
 Double_t        EventData::PFTauByTaNCfrHalfPercent(UInt_t id)               {   return  mPFTauByTaNCfrHalfPercent[id];            }
 
+Double_t        EventData::PFTauDisByLooseCombinedIsolationDeltaBetaCorr(UInt_t id) { return mPFTauDisByLooseCombinedIsolationDeltaBetaCorr[id]; }
+Double_t        EventData::PFTauDisDecayModeFinding(UInt_t id)                      { return mPFTauDisDecayModeFinding[id]; }
+Double_t        EventData::PFTauDisAgainstElectronLoose(UInt_t id)                  { return mPFTauDisAgainstElectronLoose[id]; }
+Double_t        EventData::PFTauDisAgainstMuonTight2(UInt_t id)                     { return mPFTauDisAgainstMuonTight2[id]; }
+
+Double_t        EventData::PFTauJetPt(UInt_t id)                                    { return mPFTauJetPt[id];  }
+Double_t        EventData::PFTauJetEta(UInt_t id)                                   { return mPFTauJetEta[id]; }
+Double_t        EventData::PFTauJetPhi(UInt_t id)                                   { return mPFTauJetPhi[id]; }
+
+
+Int_t           EventData::WTauDecayMode()                                   {   return mWTauDecayMode;         }
+Int_t           EventData::WTauN()                                           {   return mWTauN;                 }
+Int_t           EventData::WTauDecayId(UInt_t id)                            {   return mWTauDecayId[id];       }
+Double_t        EventData::WTauDecayPt(UInt_t id)                            {   return mWTauDecayPt[id];       }
+Double_t        EventData::WTauDecayEta(UInt_t id)                           {   return mWTauDecayEta[id];      }
+Double_t        EventData::WTauDecayPhi(UInt_t id)                           {   return mWTauDecayPhi[id];      }
+Double_t        EventData::WTauDecayMass(UInt_t id)                          {   return mWTauDecayMass[id];     }
 
 						
 Int_t           EventData::NPhot()                                           {   return  mNPhot;                                   }

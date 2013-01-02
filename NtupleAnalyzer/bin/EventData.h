@@ -17,6 +17,7 @@
 #define MAXJET 30
 #define MAXPHOT 30
 #define MAXGENPAR 1500
+#define MAXGENTAU 20
 
 
 using namespace std;
@@ -359,6 +360,15 @@ class EventData
 		Double_t        TauLeadTrackHCAL3x3hottesthitDEta(UInt_t id);    
 		Double_t        TauLeadTrackHCAL3x3hitsEtSum(UInt_t id);    
 		Double_t        TauLeadTracksignedSipt(UInt_t id);    
+		//
+		Double_t        TauDisByLooseCombinedIsolationDeltaBetaCorr(UInt_t id);
+		Double_t        TauDisDecayModeFinding(UInt_t id);
+		Double_t        TauDisAgainstElectronLoose(UInt_t id);
+		Double_t        TauDisAgainstMuonTight2(UInt_t id);
+		//
+		Double_t        TauJetPt(UInt_t id);
+		Double_t        TauJetEta(UInt_t id);
+		Double_t        TauJetPhi(UInt_t id);   
 
 		Int_t           NPFTau();
 		Double_t        PFTauE(UInt_t id);    
@@ -390,7 +400,24 @@ class EventData
 
 		Double_t        PFTauLeadTrackPtCut(UInt_t id); 
 		Double_t        PFTauByIso(UInt_t id);    
-		Double_t        PFTauByTaNCfrHalfPercent(UInt_t id);    
+		Double_t        PFTauByTaNCfrHalfPercent(UInt_t id);
+		
+		Double_t        PFTauDisByLooseCombinedIsolationDeltaBetaCorr(UInt_t id);
+		Double_t        PFTauDisDecayModeFinding(UInt_t id);
+		Double_t        PFTauDisAgainstElectronLoose(UInt_t id);
+		Double_t        PFTauDisAgainstMuonTight2(UInt_t id);
+
+		Double_t        PFTauJetPt(UInt_t id);
+		Double_t        PFTauJetEta(UInt_t id);
+		Double_t        PFTauJetPhi(UInt_t id);
+
+		Int_t           WTauDecayMode();
+		Int_t           WTauN();
+		Int_t           WTauDecayId(UInt_t id);
+		Double_t        WTauDecayPt(UInt_t id);
+		Double_t        WTauDecayEta(UInt_t id);
+		Double_t        WTauDecayPhi(UInt_t id);
+		Double_t        WTauDecayMass(UInt_t id);    
 
 
 		Int_t           NPhot();
@@ -829,7 +856,14 @@ class EventData
 		Double_t        mTauIsolationTracksPtSum[MAXTAU];    
 		Double_t        mTauLeadTrackHCAL3x3hottesthitDEta[MAXTAU];    
 		Double_t        mTauLeadTrackHCAL3x3hitsEtSum[MAXTAU];    
-		Double_t        mTauLeadTracksignedSipt[MAXTAU];    
+		Double_t        mTauLeadTracksignedSipt[MAXTAU];
+		Double_t        mTauDisByLooseCombinedIsolationDeltaBetaCorr[MAXTAU];
+		Double_t        mTauDisDecayModeFinding[MAXTAU];
+		Double_t        mTauDisAgainstElectronLoose[MAXTAU];
+		Double_t        mTauDisAgainstMuonTight2[MAXTAU];
+		Double_t        mTauJetPt[MAXTAU]; 
+		Double_t        mTauJetEta[MAXTAU]; 
+		Double_t        mTauJetPhi[MAXTAU];     
 
 		Int_t           mNPFTau;
 		Double_t        mPFTauE[MAXTAU];    
@@ -857,13 +891,26 @@ class EventData
 		Double_t        mPFTauElectronPreIDDecision[MAXTAU];    
 		Double_t        mPFTauCaloComp[MAXTAU];    
 		Double_t        mPFTauSegComp[MAXTAU];    
-		Double_t        mPFTauMuonDecision[MAXTAU];    
-
+		Double_t        mPFTauMuonDecision[MAXTAU];
 		Double_t        mPFTauLeadTrackPtCut[MAXTAU];    
 		Double_t        mPFTauByIso[MAXTAU];    
-		Double_t        mPFTauByTaNCfrHalfPercent[MAXTAU];    
-
-
+		Double_t        mPFTauByTaNCfrHalfPercent[MAXTAU];
+		Double_t        mPFTauDisByLooseCombinedIsolationDeltaBetaCorr[MAXTAU];
+		Double_t        mPFTauDisDecayModeFinding[MAXTAU];
+		Double_t        mPFTauDisAgainstElectronLoose[MAXTAU];
+		Double_t        mPFTauDisAgainstMuonTight2[MAXTAU];
+		Double_t        mPFTauJetPt[MAXTAU]; 
+		Double_t        mPFTauJetEta[MAXTAU]; 
+		Double_t        mPFTauJetPhi[MAXTAU]; 		
+		
+		
+		Int_t           mWTauDecayMode;
+		Int_t           mWTauN;
+		Int_t           mWTauDecayId[MAXGENTAU];
+		Double_t        mWTauDecayPt[MAXGENTAU];
+		Double_t        mWTauDecayEta[MAXGENTAU];
+		Double_t        mWTauDecayPhi[MAXGENTAU];
+		Double_t        mWTauDecayMass[MAXGENTAU];
 
 		Int_t           mNPhot;
 		Double_t        mPhotE[MAXPHOT];    

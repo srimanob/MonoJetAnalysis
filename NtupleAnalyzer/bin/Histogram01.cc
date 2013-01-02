@@ -1479,7 +1479,170 @@ namespace Histogram01
 		delete fileOut;	
 	}
 	
+  
+  ///---------------------------Hadronic Tau Analysis -----------------------------------------------------------------------
+  hTauAnalysis::hTauAnalysis(const std::string & fileName):
+    mFileName(fileName)
+  {
+    fileOut = new TFile(mFileName.c_str(),"recreate");
+    histo1D["GenTauPt1_had"]                = new TH1D("GenTauPt1_had",         "GenTauPt_had",       100, 0, 1000);
+    histo1D["GenTauPt1_had_A"]              = new TH1D("GenTauPt1_had_A",       "GenTauPt_had_A",     100, 0, 1000);
+    histo1D["TauPt1_HPS"]                   = new TH1D("TauPt1_HPS",            "TauPt_HPS",          100, 0, 1000);
+    histo1D["TauPt1PF_HPS"]                 = new TH1D("TauPt1PF_HPS",          "TauPt_HPS",          100, 0, 1000);
+    histo1D["TauPt1_HPS_NoAgainstLepton"]   = new TH1D("TauPt1_HPS_NoAgainstLepton",            "TauPt_HPS",          100, 0, 1000);
+    histo1D["TauPt1PF_HPS_NoAgainstLepton"] = new TH1D("TauPt1PF_HPS_NoAgainstLepton",          "TauPt_HPS",          100, 0, 1000);
+
+    histo1D["GenTauPt2_had"]                = new TH1D("GenTauPt2_had",         "GenTauPt_had",       100, 0, 1000);
+    histo1D["GenTauPt2_had_A"]              = new TH1D("GenTauPt2_had_A",       "GenTauPt_had_A",     100, 0, 1000);
+    histo1D["TauPt2_HPS"]                   = new TH1D("TauPt2_HPS",            "TauPt_HPS",          100, 0, 1000);
+    histo1D["TauPt2_HPS_NoAgainstLepton"]   = new TH1D("TauPt2_HPS_NoAgainstLepton",            "TauPt_HPS",          100, 0, 1000);
+
+    histo1D["GenTauPt3_had"]                = new TH1D("GenTauPt3_had",         "GenTauPt_had",       100, 0, 1000);
+    histo1D["GenTauPt3_had_A"]              = new TH1D("GenTauPt3_had_A",       "GenTauPt_had_A",     100, 0, 1000);
+    histo1D["TauPt3_HPS"]                   = new TH1D("TauPt3_HPS",            "TauPt_HPS",          100, 0, 1000);
+    histo1D["TauPt3_HPS_NoAgainstLepton"]   = new TH1D("TauPt3_HPS_NoAgainstLepton",          "TauPt_HPS",          100, 0, 1000);
+  }
+  
+  bool hTauAnalysis::Process(EventData & ev) 
+  {
+    
+    double w     = ev.Weight();
+    //int    njets = JetNumber(ev);
+    //int    t = ev.MetType(); 
+    
+    if(ev.WTauDecayMode()>=13 || ev.WTauDecayMode()==-10 || ev.WTauDecayMode()==-20){
+
+      //Calculate tau from each step:
+      //Gen Tau
+      double_t tau_pt = -99.;
+      for(Int_t i = 0; i<ev.NGenPar(); i++){
+	if(std::abs(ev.GenParId(i))!=15) continue;
+	if(std::abs(ev.GenParStatus(i))!=3) continue;
+	tau_pt = ev.GenParPt(i);
+	break;
+      }
+      
+      //Visible Tau (from GEN)
+      TLorentzVector visTau(0.,0.,0.,0.);
+      TLorentzVector comTau(0.,0.,0.,0.);
+      //double_t tau_pt_vis = -99.;
+      for(Int_t i = 0; i<ev.WTauN(); i++){
+	if(std::abs(ev.WTauDecayId(i))==16) continue;
+	comTau.SetPtEtaPhiM(ev.WTauDecayPt(i),ev.WTauDecayEta(i),ev.WTauDecayPhi(i),ev.WTauDecayMass(i));
+	visTau += comTau;
+      }
+      //if(visTau.Pt()>0) tau_pt_vis = visTau.Pt();
+      
+      //Visible Tau (from GENJet, patTaus)
+      double_t genJetTau_pt_vis = -99.;
+      for(Int_t i = 0; i<ev.NTau(); i++){
+	if(ev.TauJetPt(i)<20.) continue;
+	if(fabs(ev.TauJetEta(i)) > 2.3) continue;
+	genJetTau_pt_vis = ev.TauJetPt(i);
+	break;
+      }
+      
+      //Visible Tau (from GENJet, patTausPF)
+      double_t genJetTauPF_pt_vis = -99.;
+      for(Int_t i = 0; i<ev.NPFTau(); i++){
+	if(ev.PFTauJetPt(i)<20.) continue;
+	if(fabs(ev.PFTauJetEta(i)) > 2.3) continue;
+	genJetTauPF_pt_vis = ev.PFTauJetPt(i);
+	break;
+      }
+      
+      //RecoTau
+      double recoTau_pt = -99;
+      for(Int_t i = 0; i<ev.NTau(); i++){
+	if(ev.TauPt(i)<20.) continue;
+	if(fabs(ev.TauEta(i)) > 2.3) continue;
+	if(ev.TauDisByLooseCombinedIsolationDeltaBetaCorr(i) < 0.5) continue;
+	if(ev.TauDisDecayModeFinding(i) < 0.5) continue;
+	if(ev.TauDisAgainstElectronLoose(i) < 0.5) continue;
+	if(ev.TauDisAgainstMuonTight2(i) < 0.5) continue;
+	recoTau_pt = ev.TauPt(i);
+	break;
+      }
+      double recoTau_pt_noAgainstLepton = -99;
+      for(Int_t i = 0; i<ev.NTau(); i++){
+	if(ev.TauPt(i)<20.) continue;
+	if(fabs(ev.TauEta(i)) > 2.3) continue;
+	if(ev.TauDisByLooseCombinedIsolationDeltaBetaCorr(i) < 0.5) continue;
+	if(ev.TauDisDecayModeFinding(i) < 0.5) continue;
+	recoTau_pt_noAgainstLepton = ev.TauPt(i);
+	break;
+      }
+      
+      //RecoTauPF
+      double recoTauPF_pt = -99;
+      for(Int_t i = 0; i<ev.NPFTau(); i++){
+	if(ev.PFTauPt(i)<20.) continue;
+	if(fabs(ev.PFTauEta(i)) > 2.3) continue;
+	if(ev.PFTauDisByLooseCombinedIsolationDeltaBetaCorr(i) < 0.5) continue;
+	if(ev.PFTauDisDecayModeFinding(i) < 0.5) continue;
+	if(ev.PFTauDisAgainstElectronLoose(i) < 0.5) continue;
+	if(ev.PFTauDisAgainstMuonTight2(i) < 0.5) continue;
+	recoTauPF_pt = ev.PFTauPt(i);
+	break;
+      }
+      double recoTauPF_pt_noAgainstLepton = -99;
+      for(Int_t i = 0; i<ev.NPFTau(); i++){
+	if(ev.PFTauPt(i)<20.) continue;
+	if(fabs(ev.PFTauEta(i)) > 2.3) continue;
+	if(ev.PFTauDisByLooseCombinedIsolationDeltaBetaCorr(i) < 0.5) continue;
+	if(ev.PFTauDisDecayModeFinding(i) < 0.5) continue;
+	recoTauPF_pt_noAgainstLepton = ev.PFTauPt(i);
+	break;
+      }
+      
+      if(tau_pt>0.){
+	//Using visible GEN daughter of tau
+	histo1D["GenTauPt1_had"]->Fill(tau_pt, w);
+	if(std::fabs(visTau.Eta())<2.3 && visTau.Pt()>20.){
+	  histo1D["GenTauPt1_had_A"]->Fill(tau_pt, w);
+	  if(recoTau_pt>0.)                   histo1D["TauPt1_HPS"]->Fill(recoTau_pt,w);
+	  if(recoTau_pt_noAgainstLepton>0.)   histo1D["TauPt1_HPS_NoAgainstLepton"]->Fill(recoTau_pt_noAgainstLepton,w);
+	  if(recoTauPF_pt>0.)                 histo1D["TauPt1PF_HPS"]->Fill(recoTauPF_pt,w);
+	  if(recoTauPF_pt_noAgainstLepton>0.) histo1D["TauPt1PF_HPS_NoAgainstLepton"]->Fill(recoTauPF_pt_noAgainstLepton,w);
+	}
 	
+	//Using matched GENJet, patTaus
+	histo1D["GenTauPt2_had"]->Fill(tau_pt, w);
+	if(genJetTau_pt_vis>0.){
+	  histo1D["GenTauPt2_had_A"]->Fill(tau_pt, w);
+	  if(recoTau_pt>0.)                   histo1D["TauPt2_HPS"]->Fill(recoTau_pt,w);
+	  if(recoTau_pt_noAgainstLepton>0.)   histo1D["TauPt2_HPS_NoAgainstLepton"]->Fill(recoTau_pt_noAgainstLepton,w);
+	}
+	
+	//Using matched GENJet, patTausPF
+	histo1D["GenTauPt3_had"]->Fill(tau_pt, w);
+	if(genJetTauPF_pt_vis>0.){
+	  histo1D["GenTauPt3_had_A"]->Fill(tau_pt, w);
+	  if(recoTauPF_pt>0.)                 histo1D["TauPt3_HPS"]->Fill(recoTauPF_pt,w);
+	  if(recoTauPF_pt_noAgainstLepton>0.) histo1D["TauPt3_HPS_NoAgainstLepton"]->Fill(recoTauPF_pt_noAgainstLepton,w);
+	}
+	
+      }//End of if(tau_pt>0.)
+    }//End of Hadronic decay 
+    
+    return true;
+  }
+  
+  std::ostream& hTauAnalysis::Description(std::ostream &ostrm) 
+  {
+    ostrm << "  Tau Analysis (output in " << mFileName << "):";
+    return ostrm;
+  }
+  
+  //--------------MuonAnalysis End Job-----------------------------------------------------------------------------------
+  hTauAnalysis::~hTauAnalysis() 
+  {	
+    
+    //histo1D["WplusRminus"]->Divide( histo1D["WplusPT"], histo1D["WminusPT"] );
+    
+    fileOut->Write();
+    delete fileOut;	
+  }
 
 
 ///============================================================================================================================================
