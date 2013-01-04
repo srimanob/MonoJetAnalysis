@@ -8,7 +8,6 @@
 #include "Histogram02.h"
 #include "Constants.h"
 
-
 // ROOT includes
 #include <TStyle.h>
 #include <TROOT.h>
@@ -73,24 +72,22 @@ int main(int argc, char ** argv)
 	vector<int> abrun;
 	vector<int> abevt;
 	
-	
-	
+	CutHLT             CHLT(0); manager.Add(&CHLT);
 	CutAbnormalEvents  CAbnormalEvents(abrun , abevt);  manager.Add(&CAbnormalEvents);	
 	hDataMcMatching    DataMcMatching0(histFile+"_AnaMonoJet_0.root"); manager.Add(&DataMcMatching0);
-  
+  	
 	CutMet             CMet(200); manager.Add(&CMet);
  	hDataMcMatching    DataMcMatching1(histFile+"_AnaMonoJet_1.root"); manager.Add(&DataMcMatching1);
  
-	CutHLT             CHLT(0); manager.Add(&CHLT);
  	CutNoiseClean      CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99); manager.Add(&CNoiseClean);
- 	//CutHLT             CHLT1(1); manager.Add(&CHLT1);
+ 	CutHLT             CHLT1(1); manager.Add(&CHLT1);
 	hDataMcMatching    DataMcMatching2(histFile+"_AnaMonoJet_2.root"); manager.Add(&DataMcMatching2);
 
 	CutJet1            CJet1( 110 , 2.4,  0.02, 0.98); manager.Add(&CJet1);
  	hDataMcMatching    DataMcMatching3(histFile+"_AnaMonoJet_3.root"); manager.Add(&DataMcMatching3);
  
 	hHLTEff            HLTEff1(histFile+"_HLTEff1.root"); manager.Add(&HLTEff1);
- 	
+	
 	CutNJet            CNJet(3); manager.Add(&CNJet);
 	hDataMcMatching    DataMcMatching4(histFile+"_AnaMonoJet_4.root"); manager.Add(&DataMcMatching4);
  
@@ -113,20 +110,20 @@ int main(int argc, char ** argv)
 	hDataMcMatching    DataMcMatching9(histFile+"_AnaMonoJet_9.root"); manager.Add(&DataMcMatching9);
 		
 	CutMet             CMet3(300); manager.Add(&CMet3);
-	hDataMcMatching    DataMcMatching10(histFile+"_AnaMonoJet_10.root"); manager.Add(&DataMcMatching10);
+	hDataMcMatching    DataMcMatching10(histFile+"_AnaMonoJet_10.root"); manager.Add(&DataMcMatching10);	
 	
 	CutMet             CMet4(350); manager.Add(&CMet4);
-	hDataMcMatching    DataMcMatching11(histFile+"_AnaMonoJet_11.root"); manager.Add(&DataMcMatching11);
+	hDataMcMatching    DataMcMatching11(histFile+"_AnaMonoJet_11.root"); manager.Add(&DataMcMatching11);	
 	
 	CutMet             CMet5(400); manager.Add(&CMet5);
 	hDataMcMatching    DataMcMatching12(histFile+"_AnaMonoJet_12.root"); manager.Add(&DataMcMatching12);
-
+	
 	CutMet             CMet6(450); manager.Add(&CMet6);
-	hDataMcMatching    DataMcMatching13(histFile+"_AnaMonoJet_13.root"); manager.Add(&DataMcMatching13);
+	hDataMcMatching    DataMcMatching13(histFile+"_AnaMonoJet_13.root"); manager.Add(&DataMcMatching13);	
 	
 	CutMet             CMet7(500); manager.Add(&CMet7);
 	hDataMcMatching    DataMcMatching14(histFile+"_AnaMonoJet_14.root"); manager.Add(&DataMcMatching14);
-
+	
 	CutMet             CMet8(550); manager.Add(&CMet8);
 	hDataMcMatching    DataMcMatching15(histFile+"_AnaMonoJet_15.root"); manager.Add(&DataMcMatching15);
 	

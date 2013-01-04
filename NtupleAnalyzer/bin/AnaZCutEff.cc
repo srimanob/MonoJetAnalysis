@@ -74,7 +74,10 @@ int main(int argc, char ** argv)
 	
 		
 	
-	//CutAbnormalEvents  CAbnormalEvents(abrun , abevt);            
+	CutAbnormalEvents  CAbnormalEvents(abrun , abevt); 
+	CutHLT             CHLT(0);
+	CutHLT             CHLT1(1);             
+	
 	CutNoiseClean      CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99); 
 	CutJet1            CJet1( 110 , 2.4,  0.02, 0.98); 
 	CutNJet            CNJet(3);
@@ -82,13 +85,16 @@ int main(int argc, char ** argv)
 	CutMet             CMet(200);
 	ZSelection         CZSelection(1.0); 
 
-	//manager.Add(&CAbnormalEvents);
+	manager.Add(&CAbnormalEvents);
+	manager.Add(&CHLT);
+	manager.Add(&CHLT1);
+	
 	if(sel!=1) manager.Add(&CNoiseClean); 
 	if(sel!=2) manager.Add(&CJet1);       
 	if(sel!=3) manager.Add(&CNJet);         
 	if(sel!=4) manager.Add(&CDeltaPhi3);  
 	if(sel!=5) manager.Add(&CMet);        
-	if(sel!=6) manager.Add( & CZSelection );
+	if(sel!=6) manager.Add(&CZSelection);
 
 
 	hDataMcMatching  DataMcMatching(histFile+"_AnaMuonCutEff_" +selName + ".root");  manager.Add(&DataMcMatching);
