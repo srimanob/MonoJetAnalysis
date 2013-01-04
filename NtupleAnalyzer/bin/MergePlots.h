@@ -2,7 +2,7 @@
 #define MergePlots_h
 
 //#include "Operation.hh"
-
+#include <iostream>
 #include <TString.h>
 #include <TFile.h>
 #include <TGraphErrors.h>
@@ -24,7 +24,7 @@ public:
   /**
    * \brief This method plots histograms named "histname" into a Canvas (name=histname) and writes to the outFile
    */
-  void mergeHist(char* histname, std::string titlex, std::string titley, bool legend=false, TString drawOpt="" );
+  void mergeHist(char* histname, std::string titlex, std::string titley, TString kind="", TString mc="", TString data="", bool legend=false, TString drawOpt="");
 
   void mergeCanvas(char* histname,  bool legend=false, TString drawOpt="");
 
@@ -41,6 +41,7 @@ private:
   std::vector<TString> dataNameVec;
   std::vector<TString> drawOptVec;
   std::vector<TString> legendVec;
+  std::vector<TString> data;
 
 };
 

@@ -31,7 +31,7 @@ void MergePlots::addDataSet(std::string dataSet, string dataName )
 	
 	//rootFile->Print();
 	dataFileVec.push_back(rootFile);
-	
+
 	// Add dataset variables to other vectors
 	drawOptVec.push_back(myOptions->drawOpt);
 	
@@ -45,10 +45,13 @@ void MergePlots::addDataSet(std::string dataSet, string dataName )
 	legendVec.push_back(dataName);
 }
 
-void MergePlots::mergeHist(char* histname, string titlex, string titley, bool legend, TString drawOpt )
+void MergePlots::mergeHist(char* histname, string titlex, string titley, TString kind, TString mc, TString data, bool legend, TString drawOpt)
 {
 	TCanvas *myCanvas = new TCanvas ("", "");
-	
+	myCanvas->Divide(1, 2, 0,0,0);
+	myCanvas->cd(1);
+    TPad* p11_1 = (TPad*) myCanvas->GetPad(1);
+	p11_1->SetPad(0.01,0.3,0.99,0.98);
 	TLegend myLegend(0.63, 0.57, 0.89, 0.93);
 
 	myLegend.SetBorderSize(0);
@@ -59,7 +62,7 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 	myLegend.SetFillStyle(0);
 
 
-	myCanvas->SetLogy();
+	p11_1->SetLogy();
 	//myCanvas->SetGridx();
 	//myCanvas->SetGridy();
 	
@@ -130,7 +133,7 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 
 		if(legend ==false)
 		{
-			gPad->Update();
+			p11_1->Update();
 			TPaveStats *st = (TPaveStats*)((TH1D*)(*tfileIt)->Get(histname))->FindObject("stats");
 	
 			st->SetTextColor( fillcolorVec[it] );
@@ -146,6 +149,8 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 		((TH1D*)(*tfileIt)->Get(histname))->GetXaxis()->SetTitle( titlex.c_str() );
 		((TH1D*)(*tfileIt)->Get(histname))->GetYaxis()->SetTitle( titley.c_str() );
 		
+		((TH1D*)(*tfileIt)->Get(histname))->GetYaxis()->SetTitleFont(42);
+		((TH1D*)(*tfileIt)->Get(histname))->GetYaxis()->SetLabelSize(0.06);
 
 		((TH1D*)(*tfileIt)->Get(histname))->GetXaxis()->SetTitleFont(42);
 		((TH1D*)(*tfileIt)->Get(histname))->GetXaxis()->SetTitleSize(0.06);
@@ -156,7 +161,7 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 		((TH1D*)(*tfileIt)->Get(histname))->GetXaxis()->SetTitleOffset(0.9);
 		((TH1D*)(*tfileIt)->Get(histname))->GetYaxis()->SetTitleOffset(1.25);
 		
-
+		
 		
 		//Float_t labelSize = 0.05;
 
@@ -225,14 +230,14 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 		it++;
 	}
 	
-	gPad->RedrawAxis();
+	p11_1->RedrawAxis();
 
 
 	if(legend==true) myLegend.Draw();
 	TString filename = histname;
 	
 
-	myCanvas->cd()->SetRightMargin(0.04);
+	p11_1->SetRightMargin(0.04);
 
 
 	TLatex *text1, *text2, *text3;
@@ -258,27 +263,83 @@ void MergePlots::mergeHist(char* histname, string titlex, string titley, bool le
 	text2->Draw();
 
 
-        text3 = new TLatex(3.570061,23.08044,"#intL dt = 12.0 fb^{-1}");
-        text3->SetNDC();
+    text3 = new TLatex(3.570061,23.08044,"#intL dt = 18.0 fb^{-1}");
+    text3->SetNDC();
 	text3->SetTextAlign(13);
-        text3->SetX(0.20);
-        text3->SetY(0.79);
+    text3->SetX(0.20);
+    text3->SetY(0.79);
 	//text3->SetLineWidth(2);
 	text3->SetTextFont(42);
-        text3->SetTextSize(0.040);// dflt=28
+    text3->SetTextSize(0.040);// dflt=28
 	text3->Draw();
+	
+	p11_1->Update(); 
+	myCanvas->cd(2);
+	TPad* p11_2 = (TPad*) myCanvas->GetPad(2);
+	p11_2->SetPad(0.01,0.01,0.99,0.29);
+	p11_2->SetBottomMargin(0.3);
 
-	
-	gPad->Update();
-	
-	
+	char mchis[300], dthis[300];
+	sprintf(mchis,mc+".root");
+	sprintf(dthis,data+".root");
+	TFile f1(mchis);
+	TFile f2(dthis);
+	TH1D* h1 =(TH1D*) f1.Get(kind);
+	TH1D* h2 =(TH1D*) f2.Get(kind);
+	Int_t nbinsW = h1->GetNbinsX();
 
-	
+	TF1 *h4 =(TF1*) f2.Get(kind);
+	double binminX = h4->GetXaxis()->GetXmin();
+	double binmaxX = h4->GetXaxis()->GetXmax();
+	cout<<binminX<<" "<<binmaxX<<endl;
+	TH1D* h3= new TH1D("h3",kind,nbinsW,binminX,binmaxX);
 
+    for(int j=1; j<nbinsW+1; j++  )
+	{  
+		double  t1=0. , t2=0.;
+		t1= t1+ h1->GetBinContent(j); 
+		t2= t2+ h2->GetBinContent(j); 
+		if(t2!=0&&t1!=0)
+		{
+				if(t2/t1 < 2.)
+				{
+					h3->SetBinContent(j,t2/t1);
+					h3->SetBinError(j,(t2/t1)*sqrt(pow(t2,-1.)+pow(t1,-1)));
+				}
+				else if(t2/t1 > 2.)
+				{
+					h3->SetBinContent(j,0.0);
+					h3->SetBinError(j,0.0);
+				}
+		}
+		else if(t2==0||t1==0)
+		{
+			h3->SetBinContent(j,0.0);
+			h3->SetBinError(j,0.0);
+		}
+	}
+	h3->SetMarkerSize(0.7);
 
+	h3->GetXaxis()->SetTitle(kind);
+	h3->GetXaxis()->SetTitleSize(0.13);
+	h3->GetXaxis()->SetLabelSize(0.10);
+    h3->GetXaxis()->SetTitleOffset(1.12);
+	h3->GetXaxis()->SetLabelOffset(0.073);
+	
+	h3->GetYaxis()->SetTitle("Data / MC");
+	h3->GetYaxis()->SetTitleSize(0.13);
+	h3->GetYaxis()->SetLabelSize(0.12);
+    h3->GetYaxis()->SetTitleOffset(0.60);
+	h3->SetTickLength(-0.08, "x"); 
+	h3->SetStats(0);
+	h3->SetTitle("");
+    h3->Draw();
 
-	
-	
+	p11_2->SetGridx();
+	p11_2->SetGridy();
+   	p11_2->SetRightMargin(0.04);
+	p11_2->Update();
+
 	TString outFileName = "output.root";
 	
 	TFile* rootFile = new TFile(outFileName,"update");
