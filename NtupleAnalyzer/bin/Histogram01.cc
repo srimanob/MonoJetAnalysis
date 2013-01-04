@@ -816,68 +816,64 @@ namespace Histogram01
 
 	std::ostream& hDataMcMatching::Description(std::ostream &ostrm) 
 	{
-	  
-		double a1=0, a2=0;
-	  	for(int i=41; i>0; i--)
-		{		
-
-			a1=a1+histo1D["MetLep1"]->GetBinContent(i);
-			histo1D["MetLepThrs1"]->SetBinContent( i , a1 );
-
-			a2=a2+histo1D["Jet1Pt"]->GetBinContent(i);
-			histo1D["Jet1PtThrs"]->SetBinContent( i , a2 );
-		}
-
-		double a5=0;
-		for(int i=33; i>0; i--)
-		{
-			a5=a5+histo1D["MetLep2"]->GetBinContent(i);
-			histo1D["MetLepThrs2"]->SetBinContent( i , a5 );
-
-		}
-		for(int i=1; i<33 ; i++)
-		{	
-			double a6= histo1D["MetLep4"]->GetBinContent(i);
-		    histo1D["MetLep3"]->SetBinContent( i , a6 );
-		}
-
-		for(int i=1; i<41 ; i++)
-		{	
-			double a7= histo1D["Jet1Pt3"]->GetBinContent(i);
-		    histo1D["Jet1Pt2"]->SetBinContent( i , a7 );
-		}
-		
-
-		histo1D["NJet5"]->SetBinContent( 1 , histo1D["NJet55"]->GetBinContent(1) );
-		histo1D["NJet5"]->SetBinContent( 2 , histo1D["NJet55"]->GetBinContent(2) );
-		histo1D["NJet5"]->SetBinContent( 3 , histo1D["NJet55"]->GetBinContent(3) );
-		histo1D["NJet5"]->SetBinContent( 4 , histo1D["NJet55"]->GetBinContent(4) );
-		histo1D["NJet5"]->SetBinContent( 5 , histo1D["NJet55"]->GetBinContent(5) + histo1D["NJet55"]->GetBinContent(6) );
-
-
-		histo1D["NJet6"]->SetBinContent( 1 , histo1D["NJet66"]->GetBinContent(1) );
-		histo1D["NJet6"]->SetBinContent( 2 , histo1D["NJet66"]->GetBinContent(2) );
-		histo1D["NJet6"]->SetBinContent( 3 , histo1D["NJet66"]->GetBinContent(3) );
-		histo1D["NJet6"]->SetBinContent( 4 , histo1D["NJet66"]->GetBinContent(4) );
-		histo1D["NJet6"]->SetBinContent( 5 , histo1D["NJet66"]->GetBinContent(5) );
-		histo1D["NJet6"]->SetBinContent( 6 , histo1D["NJet66"]->GetBinContent(6) + histo1D["NJet55"]->GetBinContent(7) );
-
-
-
-
-		//histo1D["MetLep1_eff"]->Divide( histo1D["MetLep1_cm"], histo1D["MetLep1"] , 1.0, 1.0 ); 
-
-
-		ostrm << "  DataMcMatching (output in " << mFileName << "):";
-		return ostrm;
+	  ostrm << "  DataMcMatching (output in " << mFileName << "):";
+	  return ostrm;
 	}
 
 
 
 	hDataMcMatching::~hDataMcMatching() 
-	{	  
-		fileOut->Write();
-		delete fileOut;	
+	{		
+
+	  double a1=0, a2=0;
+	  for(int i=41; i>0; i--)
+	    {		
+	      
+	      a1=a1+histo1D["MetLep1"]->GetBinContent(i);
+	      histo1D["MetLepThrs1"]->SetBinContent( i , a1 );
+	      
+	      a2=a2+histo1D["Jet1Pt"]->GetBinContent(i);
+	      histo1D["Jet1PtThrs"]->SetBinContent( i , a2 );
+	    }
+	  
+	  double a5=0;
+	  for(int i=33; i>0; i--)
+	    {
+	      a5=a5+histo1D["MetLep2"]->GetBinContent(i);
+	      histo1D["MetLepThrs2"]->SetBinContent( i , a5 );
+	      
+	    }
+	  for(int i=1; i<33 ; i++)
+	    {	
+	      double a6= histo1D["MetLep4"]->GetBinContent(i);
+	      histo1D["MetLep3"]->SetBinContent( i , a6 );
+	    }
+	  
+	  for(int i=1; i<41 ; i++)
+	    {	
+	      double a7= histo1D["Jet1Pt3"]->GetBinContent(i);
+	      histo1D["Jet1Pt2"]->SetBinContent( i , a7 );
+	    }
+	  
+	  
+	  histo1D["NJet5"]->SetBinContent( 1 , histo1D["NJet55"]->GetBinContent(1) );
+	  histo1D["NJet5"]->SetBinContent( 2 , histo1D["NJet55"]->GetBinContent(2) );
+	  histo1D["NJet5"]->SetBinContent( 3 , histo1D["NJet55"]->GetBinContent(3) );
+	  histo1D["NJet5"]->SetBinContent( 4 , histo1D["NJet55"]->GetBinContent(4) );
+	  histo1D["NJet5"]->SetBinContent( 5 , histo1D["NJet55"]->GetBinContent(5) + histo1D["NJet55"]->GetBinContent(6) );
+	  
+	  
+	  histo1D["NJet6"]->SetBinContent( 1 , histo1D["NJet66"]->GetBinContent(1) );
+	  histo1D["NJet6"]->SetBinContent( 2 , histo1D["NJet66"]->GetBinContent(2) );
+	  histo1D["NJet6"]->SetBinContent( 3 , histo1D["NJet66"]->GetBinContent(3) );
+	  histo1D["NJet6"]->SetBinContent( 4 , histo1D["NJet66"]->GetBinContent(4) );
+	  histo1D["NJet6"]->SetBinContent( 5 , histo1D["NJet66"]->GetBinContent(5) );
+	  histo1D["NJet6"]->SetBinContent( 6 , histo1D["NJet66"]->GetBinContent(6) + histo1D["NJet55"]->GetBinContent(7) );
+
+	  //histo1D["MetLep1_eff"]->Divide( histo1D["MetLep1_cm"], histo1D["MetLep1"] , 1.0, 1.0 ); 	  
+	  
+	  fileOut->Write();
+	  delete fileOut;	
 	}
 
 
@@ -1041,13 +1037,13 @@ namespace Histogram01
 			isoLepPseq[i]=0; isoLepMseq[i]=0;
 		}
 		
-		//---------- ISoMuon index counting for Zmumu---------------------------- 
+		//---------- IsoMuon index counting for Zmumu---------------------------- 
+		
 
-		bool check1=true;
 		bool check2=true;
 		for(int i=0; i<ev.NPFLep(); i++ )
 		{
-			
+		        bool check1=true;	
 			if( PFLepTightCuts(ev ,i ) )
 			{
 				check1=false;
@@ -1250,8 +1246,8 @@ namespace Histogram01
 		//-------------Zmumu  identification------------------------------------
 	   
 		
-		//if( isoLepPnum==1 &&  isoLepMnum==1)
-		if( (isoLepPnum==1 && isoLepMnum==1) || (isoLepPnum==0 && isoLepMnum==1) || (isoLepPnum==1 && isoLepMnum==0) )
+		if( isoLepPnum==1 &&  isoLepMnum==1)
+		//if( (isoLepPnum==1 && isoLepMnum==1) || (isoLepPnum==0 && isoLepMnum==1) || (isoLepPnum==1 && isoLepMnum==0) )
 		{
 
 			double dilepPhi =0;

@@ -1460,11 +1460,11 @@ namespace Operation
 			isoLepPseq[i]=0; isoLepMseq[i]=0;
 		}
 
-		bool  check1=true;
+		
 		bool  check2=true;
 		for(int i=0; i<ev.NPFLep(); i++ )
 		{
-			
+			bool  check1=true;
 			if( PFLepTightCuts(ev ,i) )
 			{
 				check1=false;
@@ -1497,9 +1497,9 @@ namespace Operation
 				}
 			}
 		}
-
-
-		if( (isoLepPnum==1 && isoLepMnum==1) || (isoLepPnum==0 && isoLepMnum==1) || (isoLepPnum==1 && isoLepMnum==0) )
+		
+		//if( (isoLepPnum==1 && isoLepMnum==1) || (isoLepPnum==0 && isoLepMnum==1) || (isoLepPnum==1 && isoLepMnum==0) )
+		if(isoLepPnum==1 && isoLepMnum==1)
 		{
 			//double dimuPhi =0;
 			double ZmumuMT=0;
