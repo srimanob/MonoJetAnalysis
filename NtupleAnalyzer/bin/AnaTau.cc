@@ -75,13 +75,13 @@ int main(int argc, char ** argv)
   vector<int> abrun;
   vector<int> abevt;
   
+  CutHLT             CHLT(0);  manager.Add(&CHLT);
   CutAbnormalEvents  CAbnormalEvents(abrun , abevt);  manager.Add(&CAbnormalEvents);
   hTauAnalysis       TauAnalysis0(histFile+"_AnaHadronicTau_0.root"); manager.Add(&TauAnalysis0);   
 
   CutMet             CMet(200); manager.Add(&CMet);
   hTauAnalysis       TauAnalysis1(histFile+"_AnaHadronicTau_1.root"); manager.Add(&TauAnalysis1); 
   
-  CutHLT             CHLT(0);  manager.Add(&CHLT);
   CutNoiseClean      CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99); manager.Add(&CNoiseClean);
   CutHLT             CHLT1(1); manager.Add(&CHLT1);
   hTauAnalysis       TauAnalysis2(histFile+"_AnaHadronicTau_2.root"); manager.Add(&TauAnalysis2);
@@ -107,25 +107,25 @@ int main(int argc, char ** argv)
   //CutTau             CTau(20); manager.Add(&CTau);
   //hTauAnalysis       TauAnalysis8(histFile+"_AnaHadronicTau_8.root"); manager.Add(&TauAnalysis8);
 
-  CutMet             CMet1(250); manager.Add(&CMet1);
+  CutMet             CMet2(250); manager.Add(&CMet2);
   hTauAnalysis       TauAnalysis9(histFile+"_AnaHadronicTau_9.root"); manager.Add(&TauAnalysis9);
   
-  CutMet             CMet2(300); manager.Add(&CMet2);
+  CutMet             CMet3(300); manager.Add(&CMet3);
   hTauAnalysis       TauAnalysis10(histFile+"_AnaHadronicTau_10.root"); manager.Add(&TauAnalysis10);
   
-  CutMet             CMet3(350); manager.Add(&CMet3);
+  CutMet             CMet4(350); manager.Add(&CMet4);
   hTauAnalysis       TauAnalysis11(histFile+"_AnaHadronicTau_11.root"); manager.Add(&TauAnalysis11);
   
-  CutMet             CMet4(400); manager.Add(&CMet4);
+  CutMet             CMet5(400); manager.Add(&CMet5);
   hTauAnalysis       TauAnalysis12(histFile+"_AnaHadronicTau_12.root"); manager.Add(&TauAnalysis12);
   
-  CutMet             CMet5(450); manager.Add(&CMet5);
+  CutMet             CMet6(450); manager.Add(&CMet6);
   hTauAnalysis       TauAnalysis13(histFile+"_AnaHadronicTau_13.root"); manager.Add(&TauAnalysis13);
   
-  CutMet             CMet6(500); manager.Add(&CMet6);
+  CutMet             CMet7(500); manager.Add(&CMet7);
   hTauAnalysis       TauAnalysis14(histFile+"_AnaHadronicTau_14.root"); manager.Add(&TauAnalysis14);
   
-  CutMet             CMet7(550); manager.Add(&CMet7);
+  CutMet             CMet8(550); manager.Add(&CMet8);
   hTauAnalysis       TauAnalysis15(histFile+"_AnaHadronicTau_15.root"); manager.Add(&TauAnalysis15);
   
   //-------------------------------------------------------------------------------------------------------------------------
