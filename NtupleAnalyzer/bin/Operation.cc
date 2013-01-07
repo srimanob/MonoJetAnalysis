@@ -294,6 +294,26 @@ namespace Operation
 	
 		return pass; 
 	
+	}
+
+        bool PFMuonLooseCuts(EventData& ev , int i, double pt, double eta)
+	{
+
+		bool  pass    = false;
+		bool  passKin = false;
+		bool  passID  = false;
+		
+		if(ev.PFMuonPt(i) > pt && fabs(ev.PFMuonEta(i)) < eta )  
+		  passKin = true;
+		
+		if( ev.PFMuonIsTracker(i)==1 || ev.PFMuonIsGlobal(i)==1 )  
+		  passID = true; 
+		
+		if(passKin && passID) 
+		  pass = true;
+	
+		return pass; 
+	
 	}	
 
 	///-------------------PF  Lepton selection----------------------------------------------
@@ -307,8 +327,8 @@ namespace Operation
 		float cutE_etagap[2]       = {1.4442,1.5666};
 		
 		//WP80 ID
-		float cutE_EB_hadem        = 0.04;
-		float cutE_EE_hadem        = 0.025;
+		float cutE_EB_hadem        = 0.12;
+		float cutE_EE_hadem        = 0.10;
 		
 		//float cutE_EB_combiso      = 0.07;
 		//float cutE_EE_combiso      = 0.06;
@@ -323,7 +343,7 @@ namespace Operation
 		float cutE_EE_dphi         = 0.03;
 		
 		float cutE_dxy             = 0.02;
-		float cutE_dz              = 1.0;
+		float cutE_dz              = 0.10;
 		
 		//conversion rejection
 		int cutE_innerhits         = 0;
@@ -423,7 +443,88 @@ namespace Operation
 
 		return pass;
 	
-	}	
+	}
+
+        bool PFElecVetoCuts(EventData& ev , int i, double pt, double eta)
+	{
+	  
+		// kinematic and fiducial
+		float cutE_pt              = pt;
+		float cutE_eta             = eta;
+		float cutE_etagap[2]       = {1.4442,1.5666};
+		
+		// Veto WP95
+		float cutE_EB_hadem        = 0.15;
+		float cutE_EE_hadem        = 999.; //N/A for endcap
+		
+		float cutE_EB_ietaieta     = 0.01;
+		float cutE_EE_ietaieta     = 0.03;
+		
+		float cutE_EB_deta         = 0.007;
+		float cutE_EE_deta         = 0.01;
+		
+		float cutE_EB_dphi         = 0.8;
+		float cutE_EE_dphi         = 0.7;
+		
+		float cutE_dxy             = 0.04;
+		float cutE_dz              = 0.2;
+		
+		//PF ID
+		float cutE_EB_combiso_PF   = 0.2;
+		//float cutE_EE_combiso_PF   = 0.11;
+		
+		//float cutE_EB_MVA_PF       = 0.34;
+		//float cutE_EE_MVA_PF       = 0.32;
+
+	
+
+		
+
+		bool pass      = false;
+		bool passID    = false;
+		bool passIso   = false;
+		bool passKin   = false;
+
+		//bool conv      = false;
+		bool passVtx   = false;
+		float Iso      = 0.0;
+		float dxy      = ev.PFElecdxy(i);
+		float dz       = ev.PFElecdz(i);
+		//int innerhits  = ev.PFElecInnerHits(i);
+		float ietaieta = ev.PFElecietaieta(i);
+		float deltaphi = ev.PFElecDPhiSuTrAtVtx(i);
+		float deltaeta = ev.PFElecDEtaSuTrAtVtx(i);
+		float hadEm    = ev.PFElecHcalOverEcal(i);
+		
+		Iso = (ev.PFElecNeuHadIso(i) + ev.PFElecCharHadIso(i) + ev.PFElecPhoIso(i) )/ev.PFElecPt(i);
+		if(Iso < cutE_EB_combiso_PF) 
+		  passIso = true;
+		
+		if(ev.PFElecPt(i) > cutE_pt && fabs(ev.PFElecEta(i) ) < cutE_eta && (fabs(ev.PFElecEta(i)) < cutE_etagap[0] || 
+										     fabs(ev.PFElecEta(i)) > cutE_etagap[1]))
+		  passKin = true;
+		
+		if((ev.PFElecIsEB(i) == 1 && 
+		    ietaieta < cutE_EB_ietaieta && 
+		    fabs(deltaphi) <  cutE_EB_dphi &&
+		    fabs(deltaeta) < cutE_EB_deta && 
+		    hadEm < cutE_EB_hadem) ||
+		   (ev.PFElecIsEB(i) != 1 && 
+		    ietaieta < cutE_EE_ietaieta && 
+		    fabs(deltaphi) < cutE_EE_dphi &&
+		    fabs(deltaeta) <  cutE_EE_deta && 
+		    hadEm <  cutE_EE_hadem))
+		  passID = true;
+		
+		if(fabs(dxy) < cutE_dxy && fabs(dz) < cutE_dz)
+		  passVtx = true;
+		
+		if(passIso && passID && passKin && passVtx) 
+		  pass = true;
+
+		return pass;
+	
+	}		
 
 
 	///-------------------PF  Lepton selection----------------------------------------------
@@ -1581,6 +1682,7 @@ namespace Operation
 		for(int i=0; i<ev.NPFMuon(); i++ )
 		{
 			if(  PFMuonTightCuts(ev , i,  mPt, mEta) == true ) send =false ;
+			//if(  PFMuonLooseCuts(ev , i,  mPt, mEta) == true ) send =false ;
 
 		}
 
@@ -1614,7 +1716,7 @@ namespace Operation
 		for(int i=0; i<ev.NPFElec(); i++ )
 		{
 			if(  PFElecTightCuts(ev , i,  mPt, mEta) == true ) send =false ;
-
+			//if(  PFElecVetoCuts(ev , i,  mPt, mEta) == true ) send =false ;
 		}
 
 		return send;

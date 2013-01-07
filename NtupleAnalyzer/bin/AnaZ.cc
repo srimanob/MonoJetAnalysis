@@ -75,7 +75,7 @@ int main(int argc, char ** argv)
 	CutMet             CMet(200); manager.Add(&CMet);
 	hDataMcMatching    DataMcMatching1(histFile+"_AnaMuon_1.root"); manager.Add(&DataMcMatching1);
 	
-	CutHLT             CHLT1(1); manager.Add(&CHLT1);
+	//CutHLT             CHLT1(1); manager.Add(&CHLT1);
 	CutNoiseClean      CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99); manager.Add(&CNoiseClean);
 	hDataMcMatching    DataMcMatching2(histFile+"_AnaMuon_2.root"); manager.Add(&DataMcMatching2);
 		

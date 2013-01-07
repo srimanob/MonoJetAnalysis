@@ -74,7 +74,10 @@ int main(int argc, char ** argv)
 	
 	
 	
-	//CutAbnormalEvents  CAbnormalEvents(abrun , abevt);            
+	CutAbnormalEvents  CAbnormalEvents(abrun , abevt); 
+	CutHLT             CHLT(0);
+        //CutHLT             CHLT1(1);             
+	
 	CutNoiseClean      CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99); 
 	CutJet1            CJet1( 110 , 2.4,  0.02, 0.98); 
 	CutNJet            CNJet(3);
@@ -82,7 +85,9 @@ int main(int argc, char ** argv)
 	CutMet             CMet(350);
 	WsignSelection     CWsignSelection(-1.0);
 
-	//manager.Add(&CAbnormalEvents);
+	manager.Add(&CAbnormalEvents);
+	manager.Add(&CHLT);
+	
 	if(sel!=1) manager.Add(&CNoiseClean); 
 	if(sel!=2) manager.Add(&CJet1);       
 	if(sel!=3) manager.Add(&CNJet);         

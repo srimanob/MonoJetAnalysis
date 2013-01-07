@@ -33,7 +33,9 @@ namespace Operation
 
 	bool    PFLepTightCuts(EventData&  ev , int i, double pt=20., double eta=2.1);
 	bool    PFMuonTightCuts(EventData& ev , int i, double pt=20., double eta=2.1);
+	bool    PFMuonLooseCuts(EventData& ev , int i, double pt=20., double eta=2.1);
 	bool    PFElecTightCuts(EventData& ev , int i, double pt=20., double eta=2.5);
+	bool    PFElecVetoCuts(EventData& ev , int i, double pt=20., double eta=2.5);
 
 
 
