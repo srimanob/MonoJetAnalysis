@@ -83,7 +83,7 @@ int main(int argc, char ** argv)
   hTauAnalysis       TauAnalysis1(histFile+"_AnaHadronicTau_1.root"); manager.Add(&TauAnalysis1); 
   
   CutNoiseClean      CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99); manager.Add(&CNoiseClean);
-  //CutHLT             CHLT1(1); manager.Add(&CHLT1);
+  CutHLT             CHLT1(1); manager.Add(&CHLT1);
   hTauAnalysis       TauAnalysis2(histFile+"_AnaHadronicTau_2.root"); manager.Add(&TauAnalysis2);
   
   CutJet1            CJet1( 110 , 2.4,  0.02, 0.98); manager.Add(&CJet1);

@@ -80,7 +80,7 @@ int main(int argc, char ** argv)
  	hDataMcMatching    DataMcMatching1(histFile+"_AnaMonoJet_1.root"); manager.Add(&DataMcMatching1);
  
  	CutNoiseClean      CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99); manager.Add(&CNoiseClean);
- 	//CutHLT             CHLT1(1); manager.Add(&CHLT1);
+ 	CutHLT             CHLT1(1); manager.Add(&CHLT1);
 	hDataMcMatching    DataMcMatching2(histFile+"_AnaMonoJet_2.root"); manager.Add(&DataMcMatching2);
 
 	CutJet1            CJet1( 110 , 2.4,  0.02, 0.98); manager.Add(&CJet1);
@@ -102,8 +102,8 @@ int main(int argc, char ** argv)
 	NoPFElec           CNoPFElec(10., 66.);  manager.Add(&CNoPFElec); // no cut on eta
 	hDataMcMatching    DataMcMatching7(histFile+"_AnaMonoJet_7.root"); manager.Add(&DataMcMatching7);
 	
-	CutTIV             CTIV(0.01); manager.Add(&CTIV);
-	//CutTau             CTau(1,1); manager.Add(&CTau);
+	//CutTIV             CTIV(0.01); manager.Add(&CTIV);
+	CutTau             CTau(1,1); manager.Add(&CTau);
 	hDataMcMatching    DataMcMatching8(histFile+"_AnaMonoJet_8.root"); manager.Add(&DataMcMatching8);
 		
 	CutMet             CMet2(250); manager.Add(&CMet2);

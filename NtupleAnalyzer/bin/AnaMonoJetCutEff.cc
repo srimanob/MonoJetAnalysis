@@ -75,29 +75,29 @@ int main(int argc, char ** argv)
 	
 	CutAbnormalEvents  CAbnormalEvents(abrun , abevt); 
 	CutHLT             CHLT(0);
-	//CutHLT             CHLT1(1);           
+	CutHLT             CHLT1(1);           
 	
 	CutNoiseClean      CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99);
 	CutJet1            CJet1( 110 , 2.4,  0.02, 0.98); 
 	CutNJet            CNJet(3);
 	CutDeltaPhi3       CDeltaPhi3(2.5); 
 	CutMet             CMet(250);
-	CutTIV             CTIV(0.01);
-	//CutTau             CTau(1,1); 
+	//CutTIV             CTIV(0.01);
+	CutTau             CTau(1,1); 
 	NoPFMuon           CNoPFMuon(10., 66.);
 	NoPFElec           CNoPFElec(10., 66.);
 
 	manager.Add(&CAbnormalEvents);
 	manager.Add(&CHLT);
-	//manager.Add(&CHLT1);
+	manager.Add(&CHLT1);
 	
 	if(sel!=1) manager.Add(&CNoiseClean);
 	if(sel!=2) manager.Add(&CJet1);
 	if(sel!=3) manager.Add(&CNJet); 
 	if(sel!=4) manager.Add(&CDeltaPhi3);
 	if(sel!=5) manager.Add(&CMet);
-	if(sel!=6) manager.Add(&CTIV);
-	//if(sel!=6) manager.Add(&CTau);
+	//if(sel!=6) manager.Add(&CTIV);
+	if(sel!=6) manager.Add(&CTau);
 	if(sel!=7) manager.Add(&CNoPFMuon);
 	if(sel!=8) manager.Add(&CNoPFElec);
 

@@ -1681,8 +1681,8 @@ namespace Operation
 
 		for(int i=0; i<ev.NPFMuon(); i++ )
 		{
-			if(  PFMuonTightCuts(ev , i,  mPt, mEta) == true ) send =false ;
-			//if(  PFMuonLooseCuts(ev , i,  mPt, mEta) == true ) send =false ;
+		  //if(  PFMuonTightCuts(ev , i,  mPt, mEta) == true ) send =false ;
+		  if(  PFMuonLooseCuts(ev , i,  mPt, mEta) == true ) send =false ;
 
 		}
 
@@ -1715,8 +1715,8 @@ namespace Operation
 
 		for(int i=0; i<ev.NPFElec(); i++ )
 		{
-			if(  PFElecTightCuts(ev , i,  mPt, mEta) == true ) send =false ;
-			//if(  PFElecVetoCuts(ev , i,  mPt, mEta) == true ) send =false ;
+		  //if(  PFElecTightCuts(ev , i,  mPt, mEta) == true ) send =false ;
+		  if(  PFElecVetoCuts(ev , i,  mPt, mEta) == true ) send =false ;
 		}
 
 		return send;

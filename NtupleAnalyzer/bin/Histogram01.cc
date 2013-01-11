@@ -1125,8 +1125,9 @@ namespace Histogram01
 
 		for(int i=0; i<ev.NPFMuon(); i++ )
 		{
-			if( PFMuonTightCuts(ev ,i, 10., 66.)  )//66  means  no eta cut
-			{  
+		        //if( PFMuonTightCuts(ev ,i, 10., 66.)  )//66  means  no eta cut
+			if( PFMuonLooseCuts(ev ,i, 10., 66.)  )//66  means  no eta cut   
+			{
 				if(checkMuonStatus) histo1D["WZEstimation"]->Fill( 4 , w );	
 				if(checkTauMuonStatus)  histo1D["WZEstimation"]->Fill( 17 , w );	
 
@@ -1135,7 +1136,8 @@ namespace Histogram01
 
 		for(int i=0; i<ev.NPFElec(); i++ )
 		{
-			if( PFElecTightCuts(ev ,i, 10., 66.) )  //66  means  no eta cut
+		        //if( PFElecTightCuts(ev ,i, 10., 66.) )  //66  means  no eta cut
+		        if( PFElecVetoCuts(ev ,i, 10., 66.)  )//66  means  no eta cut 
 			{  
 				if(checkElecStatus) histo1D["WZEstimation"]->Fill( 9 , w );	
 				if(checkTauElecStatus)  histo1D["WZEstimation"]->Fill( 16 , w );	
