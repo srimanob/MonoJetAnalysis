@@ -80,7 +80,7 @@ int main(int argc, char ** argv)
  	hDataMcMatching    DataMcMatching1(histFile+"_AnaMonoJet_1.root"); manager.Add(&DataMcMatching1);
  
  	CutNoiseClean      CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99); manager.Add(&CNoiseClean);
- 	CutHLT             CHLT1(1); manager.Add(&CHLT1);
+ 	//CutHLT             CHLT1(1); manager.Add(&CHLT1);
 	hDataMcMatching    DataMcMatching2(histFile+"_AnaMonoJet_2.root"); manager.Add(&DataMcMatching2);
 
 	CutJet1            CJet1( 110 , 2.4,  0.02, 0.98); manager.Add(&CJet1);

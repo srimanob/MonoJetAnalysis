@@ -99,21 +99,21 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
   mydataset["wjets3"]     = fileDirectory + "MC_S10_V6A_WJetsToLNu_PtW-100_part3_55668pb.root";
   mydataset["wjets4"]     = fileDirectory + "MC_S10_V6A_WJetsToLNu_PtW-100_part4_55668pb.root";
   mydataset["wjets5"]     = fileDirectory + "MC_S10_V6A_WJetsToLNu_PtW-100_part5_55668pb.root";
-  mylumi["wjets1"]        = 55668./1.159;
-  mylumi["wjets2"]        = 55668./1.159;
-  mylumi["wjets3"]        = 55668./1.159;
-  mylumi["wjets4"]        = 55668./1.159;
-  mylumi["wjets5"]        = 55668./1.159;
+  mylumi["wjets1"]        = 55668.;
+  mylumi["wjets2"]        = 55668.;
+  mylumi["wjets3"]        = 55668.;
+  mylumi["wjets4"]        = 55668.;
+  mylumi["wjets5"]        = 55668.;
   
   // Z+Jets S10
   mydataset["zjets"]      = fileDirectory + "MC_S10_V6A_DYJetsToLL_PtZ-100_77335pb.root";
-  mylumi["zjets"]         = 77335./1.036;
-  //mydataset["oldzjets"]      = fileDirectory + "MC_S10_V6A_DYJetsToLL_M-50_8624pb.root";
-  //mylumi["oldzjets"]         = 8624.; //NLO
+  mylumi["zjets"]         = 77335.;
+  //mydataset["zjets"]      = fileDirectory + "MC_S10_V6A_DYJetsToLL_M-50_8624pb.root";
+  //mylumi["zjets"]         = 8624.; //NLO
   
   // TTbar S10
   mydataset["ttbar"]      = fileDirectory + "MC_S10_V6A_TTbar_MassiveBin_50798pb.root";
-  mylumi["ttbar"]         = 50798./1.65;
+  mylumi["ttbar"]         = 50798.;
   
   // QCD S10
   mydataset["qcd300"]     = fileDirectory + "MC_S10_V6A_QCD_Pt-300to470_3398pb.root";
@@ -123,13 +123,13 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
   mydataset["qcd1000"]    = fileDirectory + "MC_S10_V6A_QCD_Pt-1000to1400_2654173pb.root";
   mydataset["qcd1400"]    = fileDirectory + "MC_S10_V6A_QCD_Pt-1400to1800_58090059pb.root";
   mydataset["qcd1800"]    = fileDirectory + "MC_S10_V6A_QCD_Pt-1800toInf_543103333pb.root";
-  mylumi["qcd300"]        = 3398./1.27;
-  mylumi["qcd470"]        = 35080./1.27;
-  mylumi["qcd600"]        = 148032./1.27;
-  mylumi["qcd800"]        = 1110712./1.27;
-  mylumi["qcd1000"]       = 2654173./1.27;
-  mylumi["qcd1400"]       = 58090059./1.27;
-  mylumi["qcd1800"]       = 543103333./1.27;
+  mylumi["qcd300"]        = 3398.;
+  mylumi["qcd470"]        = 35080.;
+  mylumi["qcd600"]        = 148032.;
+  mylumi["qcd800"]        = 1110712.;
+  mylumi["qcd1000"]       = 2654173.;
+  mylumi["qcd1400"]       = 58090059.;
+  mylumi["qcd1800"]       = 543103333.;
   
   // Single-t S10
   mydataset["sints"]      = fileDirectory + "MC_S10_V6A_SingleT_s_92843pb.root";
@@ -138,11 +138,11 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
   mydataset["sintbars"]   = fileDirectory + "MC_S10_V6A_SingleTbar_s_87484pb.root";
   mydataset["sintbart"]   = fileDirectory + "MC_S10_V6A_SingleTbar_t_77403pb.root";
   mydataset["sintbartw"]  = fileDirectory + "MC_S10_V6A_SingleTbar_tw_44148pb.root";
-  mylumi["sints"]         = 92843./1.17;
-  mylumi["sintt"]         = 79430./1.17;
+  mylumi["sints"]         = 92843.;
+  mylumi["sintt"]         = 79430.;
   mylumi["sinttw"]        = 44524.; //NLO
-  mylumi["sintbars"]      = 87484./1.17;
-  mylumi["sintbart"]      = 77403./1.17;
+  mylumi["sintbars"]      = 87484.;
+  mylumi["sintbart"]      = 77403.;
   mylumi["sintbartw"]     = 44148.; //NLO
   
   // VBF-Invisible Higgs

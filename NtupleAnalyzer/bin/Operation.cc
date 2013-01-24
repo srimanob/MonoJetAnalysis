@@ -476,10 +476,6 @@ namespace Operation
 		//float cutE_EB_MVA_PF       = 0.34;
 		//float cutE_EE_MVA_PF       = 0.32;
 
-	
-
-		
-
 		bool pass      = false;
 		bool passID    = false;
 		bool passIso   = false;
@@ -500,8 +496,10 @@ namespace Operation
 		if(Iso < cutE_EB_combiso_PF) 
 		  passIso = true;
 		
-		if(ev.PFElecPt(i) > cutE_pt && fabs(ev.PFElecEta(i) ) < cutE_eta && (fabs(ev.PFElecEta(i)) < cutE_etagap[0] || 
-										     fabs(ev.PFElecEta(i)) > cutE_etagap[1]))
+		if(ev.PFElecPt(i) > cutE_pt 
+		   && fabs(ev.PFElecEta(i) ) < cutE_eta 
+		   && (fabs(ev.PFElecEta(i)) < cutE_etagap[0] || 
+		       fabs(ev.PFElecEta(i)) > cutE_etagap[1]))
 		  passKin = true;
 		
 		if((ev.PFElecIsEB(i) == 1 && 
@@ -1540,7 +1538,8 @@ namespace Operation
 		ostrm << "  W Selection  Sign:" << mCharge << " :.................";
 		return ostrm;
 	}
-///---------------------------- Z Selection------------------------------------------------------------------
+  
+  ///---------------------------- Z Selection------------------------------------------------------------------
 
 	ZSelection::ZSelection(double charge) : mCharge(charge){} 
 	ZSelection::~ZSelection() {}
