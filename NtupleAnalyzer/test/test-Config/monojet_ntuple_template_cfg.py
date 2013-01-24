@@ -4,8 +4,8 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 
 #-- Meta data to be logged in DBS
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.42 $'),
-    name = cms.untracked.string('$Source: /local/reps/CMSSW/CMSSW/PhysicsTools/Configuration/test/SUSY_pattuple_cfg.py,v $'),
+    version = cms.untracked.string('$Revision: 1.2 $'),
+    name = cms.untracked.string('$Source: /local/reps/CMSSW/UserCode/vergili/MonoJetAnalysis/NtupleAnalyzer/test/test-Config/monojet_ntuple_template_cfg.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
 
@@ -22,7 +22,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 ############################# Monojet setting #############################
 iRunData       = False #True or False
 iData          = "Aug24" #No meaning if iRunData = False
-                            #Jul13,Aug06,Aug24,PromptC2,PromptD
+                            #Jul13,Aug06,Aug24,PromptC2,PromptD,Dec11
 iSignal        = False #True or False, if True, PDF will be collected. No meaning if iRunData = True
 iTrigger       = "MET" #MET, SingleMuon, DoubleMuon, SingleElectron, DoubleElectron, Physics, NoTrig
                           #(If isSignal, trigger will be set to NoTrig automatically)
@@ -85,6 +85,8 @@ if iRunData == True:
         options.GlobalTag = "GR_P_V41_AN3::All"
     elif (iData.find("PromptD")==0):
         options.GlobalTag = "GR_P_V42_AN3::All"
+    elif (iData.find("Dec11")==0):
+        options.GlobalTag = "FT_P_V42C_AN3::All"
     else:
         options.GlobalTag = "GR_P_V42_AN3::All"
 else:
