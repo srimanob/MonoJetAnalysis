@@ -4,8 +4,8 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 
 #-- Meta data to be logged in DBS
 process.configurationMetadata = cms.untracked.PSet(
-    version = cms.untracked.string('$Revision: 1.2 $'),
-    name = cms.untracked.string('$Source: /local/reps/CMSSW/UserCode/vergili/MonoJetAnalysis/NtupleAnalyzer/test/test-Config/monojet_ntuple_template_cfg.py,v $'),
+    version = cms.untracked.string('$Revision: 1.42 $'),
+    name = cms.untracked.string('$Source: /local/reps/CMSSW/CMSSW/PhysicsTools/Configuration/test/SUSY_pattuple_cfg.py,v $'),
     annotation = cms.untracked.string('SUSY pattuple definition')
 )
 
@@ -21,15 +21,17 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 ############################# Monojet setting #############################
 iRunData       = False #True or False
-iData          = "Aug24" #No meaning if iRunData = False
-                            #Jul13,Aug06,Aug24,PromptC2,PromptD,Dec11
+iFullSim       = False #No meaning if iRunData = True
+iData          = "PromptD" #No meaning if iRunData = False
+                            #Jul13,Aug06,Aug24,PromptC2,PromptD
 iSignal        = False #True or False, if True, PDF will be collected. No meaning if iRunData = True
-iTrigger       = "MET" #MET, SingleMuon, DoubleMuon, SingleElectron, DoubleElectron, Physics, NoTrig
+iTrigger       = "NoTrig" #MET, SingleMuon, DoubleMuon, SingleElectron, DoubleElectron, Physics, NoTrig
                           #(If isSignal, trigger will be set to NoTrig automatically)
 iFileData      = '/store/data/Run2012C/MET/AOD/PromptReco-v2/000/203/002/04BCEC26-AA02-E211-A81D-003048CF99BA.root'
-iFileMC        = '/store/group/phys_higgs/vbfHinv/DataSample/AODSIM_WJetsToLNu.root'
+#iFileMC        = '/store/group/phys_higgs/vbfHinv/DataSample/AODSIM_WJetsToLNu.root'
 #iFileMC        = '/store/group/phys_higgs/vbfHinv/DataSample/AODSIM_DYJetsToLL.root'
-iMaxEvent      = 1000
+iFileMC        = 'file:/afs/cern.ch/user/s/srimanob/public/ForMonoJet/FastSim/aodsim1.root'
+iMaxEvent      = -1
 iPFElectronTag = "selectedPatElectronsPF"
 iPFMuonTag     = "selectedPatMuonsPF"
 iPFTauTag      = "patTausPF"
@@ -85,8 +87,6 @@ if iRunData == True:
         options.GlobalTag = "GR_P_V41_AN3::All"
     elif (iData.find("PromptD")==0):
         options.GlobalTag = "GR_P_V42_AN3::All"
-    elif (iData.find("Dec11")==0):
-        options.GlobalTag = "FT_P_V42C_AN3::All"
     else:
         options.GlobalTag = "GR_P_V42_AN3::All"
 else:
@@ -312,6 +312,7 @@ process.NtupleAnalyzer.Tracks        = cms.untracked.InputTag("generalTracks")
 process.NtupleAnalyzer.PFElectronTag = cms.untracked.InputTag(iPFElectronTag)
 process.NtupleAnalyzer.PFMuonTag     = cms.untracked.InputTag(iPFMuonTag)
 process.NtupleAnalyzer.PFTauTag      = cms.untracked.InputTag(iPFTauTag)
+process.NtupleAnalyzer.TauTag        = cms.untracked.InputTag(iTauTag)
 process.NtupleAnalyzer.PFJetTag      = cms.untracked.InputTag(iPFJetTag)
 process.NtupleAnalyzer.PFMETTag      = cms.untracked.InputTag(iPFMETTag)
 process.NtupleAnalyzer.jetPtCut      = cms.double(15)
@@ -381,16 +382,31 @@ process.pfNoTauPF.enable = cms.bool(False)
 
 
 #-- Execution path
-process.p0  = cms.Path(process.noscraping)
-process.p1  = cms.Path(process.HBHENoiseFilter)
-process.p2  = cms.Path(process.CSCTightHaloFilter)
-process.p3  = cms.Path(process.CSCLooseHaloFilter)
-process.p4  = cms.Path(process.hcalLaserEventFilter)
-process.p5  = cms.Path(process.EcalDeadCellTriggerPrimitiveFilter) 
-process.p6  = cms.Path(process.goodVertices * process.trackingFailureFilter)
-process.p7  = cms.Path(process.eeBadScFilter)
-process.p8  = cms.Path(process.greedyMuonPFCandidateFilter*process.inconsistentMuonPFCandidateFilter)
-process.p9  = cms.Path(process.ecalLaserCorrFilter)
+#-- Run Full Noise analysis for Data, and MC-FullSim
+if iRunData == True:
+    iFullSim = True
+if iFullSim == True:
+    process.p0  = cms.Path(process.noscraping)
+    process.p1  = cms.Path(process.HBHENoiseFilter)
+    process.p2  = cms.Path(process.CSCTightHaloFilter)
+    process.p3  = cms.Path(process.CSCLooseHaloFilter)
+    process.p4  = cms.Path(process.hcalLaserEventFilter)
+    process.p5  = cms.Path(process.EcalDeadCellTriggerPrimitiveFilter) 
+    process.p6  = cms.Path(process.goodVertices * process.trackingFailureFilter)
+    process.p7  = cms.Path(process.eeBadScFilter)
+    process.p8  = cms.Path(process.greedyMuonPFCandidateFilter*process.inconsistentMuonPFCandidateFilter)
+    process.p9  = cms.Path(process.ecalLaserCorrFilter)
+else:
+    process.p0  = cms.Path(process.primaryVertexFilter)
+    process.p1  = cms.Path(process.primaryVertexFilter)
+    process.p2  = cms.Path(process.primaryVertexFilter)
+    process.p3  = cms.Path(process.primaryVertexFilter)
+    process.p4  = cms.Path(process.primaryVertexFilter)
+    process.p5  = cms.Path(process.primaryVertexFilter)
+    process.p6  = cms.Path(process.primaryVertexFilter)
+    process.p7  = cms.Path(process.primaryVertexFilter)
+    process.p8  = cms.Path(process.primaryVertexFilter)
+    process.p9  = cms.Path(process.primaryVertexFilter)
 process.p10 = cms.Path(process.primaryVertexFilter)
 process.p11 = cms.Path(process.hltHighLevel)
 process.p   = cms.Path(process.susyPatDefaultSequence*process.puJetIdSqeuence)
@@ -416,6 +432,10 @@ else:
         iFileName += "_MCSignal_"
     else:
         iFileName += "_MC_"
+    if iFullSim == True:
+        iFileName += "Full_"
+    else:
+        iFileName += "Fast_"
 iFileName += iTrigger
 iFileName += "_cfg.py"
 file = open(iFileName,'w')

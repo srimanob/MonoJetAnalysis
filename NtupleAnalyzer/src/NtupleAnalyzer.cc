@@ -2570,9 +2570,14 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   ///--------------------------------------------------------------------------
   Handle<reco::BeamHaloSummary> beamHaloSummary;
   iEvent.getByLabel("BeamHaloSummary" , beamHaloSummary);
-  
-  mbeamHaloTight = beamHaloSummary->CSCTightHaloId();
-  mbeamHaloLoose = beamHaloSummary->CSCLooseHaloId();
+  if(beamHaloSummary.isValid()){
+    mbeamHaloTight = beamHaloSummary->CSCTightHaloId();
+    mbeamHaloLoose = beamHaloSummary->CSCLooseHaloId();
+  }
+  else{
+    mbeamHaloTight = 0;
+    mbeamHaloLoose = 0;
+  }
   
   
   ///-------------------------------------------------------------------------- 
