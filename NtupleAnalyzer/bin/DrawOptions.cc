@@ -24,6 +24,16 @@ DrawOptions::DrawOptions(TString dataSet_)
       drawOpt="qcd";
       search=-1;
     }
+  else if(dataSet_ == "DiBoson")
+    {
+      reweight=1;
+      color=1;
+      linewidth=1;
+      fillcolor=kRed;
+      linestyle=1;
+      drawOpt="diboson";
+      search=-1;
+    }
   else if(dataSet_ == "t#bar{t}")
     {
       reweight=1;
@@ -76,9 +86,9 @@ DrawOptions::DrawOptions(TString dataSet_)
       drawOpt="signal";
       search=1;
     } 
-   else if(dataSet_ == "DM #Lambda = 599 GeV, m = 1 GeV")
+   else if(dataSet_ == "DM #Lambda = 0.9 TeV, M_{#chi} = 1 GeV")
     {
-      reweight=1;
+      reweight=0.1682;
       color=102;
       linewidth=1;
       fillcolor=113;
@@ -106,10 +116,18 @@ DrawOptions::DrawOptions(TString dataSet_)
        drawOpt="signal";
        search=1;
      }
-
-
-  else if(dataSet_ == "Data")
-    {
+   else if(dataSet_ == "UNP d_{U}=1.7, #Lambda_{U} = 2 TeV")
+     {
+      reweight=1;
+      color=102;
+      linewidth=1;
+      fillcolor=116;
+      linestyle=2;
+      drawOpt="signal";
+      search=1;
+     } 
+   else if(dataSet_ == "Data")
+     {
       reweight=1;
       color=4;
       linewidth=1;

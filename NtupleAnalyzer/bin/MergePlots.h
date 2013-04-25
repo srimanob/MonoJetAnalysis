@@ -24,7 +24,7 @@ public:
   /**
    * \brief This method plots histograms named "histname" into a Canvas (name=histname) and writes to the outFile
    */
-  void mergeHist(char* histname, std::string titlex, std::string titley, TString kind="", TString mc="", TString data="", bool legend=false, TString drawOpt="");
+  void mergeHist(char* histname, std::string titlex, std::string titley, TString kind="", TString mc="", TString data="", bool legend=false, TString drawOpt="", bool withScale=false);
 
   void mergeCanvas(char* histname,  bool legend=false, TString drawOpt="");
 
@@ -38,6 +38,7 @@ private:
   std::vector<int> linewidthVec;
   std::vector<int> fillcolorVec;
   std::vector<int> linestyleVec;
+  std::vector<double> reweightVec;
   std::vector<TString> dataNameVec;
   std::vector<TString> drawOptVec;
   std::vector<TString> legendVec;

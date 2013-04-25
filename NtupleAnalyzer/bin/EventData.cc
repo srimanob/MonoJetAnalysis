@@ -19,142 +19,149 @@ using namespace LHAPDF;
 EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDataSet("undefined") 
 {
   // CERN
-  string fileDirectory  = "root://eoscms//eos/cms/store/group/phys_exotica/monojet/ntuple-2012-v6A/";
-  //string fileDirectory  = "file:/data0/srimanob/Data/monojet/ntuple-2012-v6A/";
+  string fileDirectory  = "root://eoscms//eos/cms/store/user/srimanob/monojet/ntuple-2012-v6B/";
+  //string fileDirectory  = "file:/data0/srimanob/Data/monojet/ntuple-2012-v6B/";
   // FNAL
   //string fileDirectory  = "file:/uscms_data/d2/lpcjm/DATA/2012/ntuple_v6A_temp";
   
   // Pileup - CERN
   mydataset["pileup"]   = "/afs/cern.ch/user/s/srimanob/public/ForMonoJet/PUHist/pileup_monojet_20130101_All2012_v6A_69300.root";
   // Pileup - FNAL
-  //mydataset["pileup"]   = "/uscms_data/d3/srimanob/ntuple_v6A/pileup_monojet_20130101_All2012_v6A_69300.root";
+  //mydataset["pileup"]   = "/uscms_data/d3/srimanob/ntuple_v6A/pileup_monojet_20130101_All2012_v6A_69300.root";  
+
+  // Check me before run
+  mEvent       = 0;
+  mMaxEvents   = maxEvents;
+  mFileName    = fileName; 
+  misMC        = isMC;
+  mJetType     = "pf";
+  mLepType     = "m";
+  mMetType     = 10;
+  mEnergyScale = 0.;
+  mSecJetCut   = 30;
   
   // Data
-  mydataset["met1"]     = fileDirectory + "Data_V6A_2012A_part1.root";
-  mydataset["met2"]     = fileDirectory + "Data_V6A_2012A_part2.root";
-  mydataset["met3"]     = fileDirectory + "Data_V6A_2012A_part3.root";
-  mydataset["met4"]     = fileDirectory + "Data_V6A_2012B_part1.root";
-  mydataset["met5"]     = fileDirectory + "Data_V6A_2012B_part2.root";
-  mydataset["met6"]     = fileDirectory + "Data_V6A_2012B_part3.root";
-  mydataset["met7"]     = fileDirectory + "Data_V6A_2012B_part4.root";
-  mydataset["met8"]     = fileDirectory + "Data_V6A_2012B_part5.root";
-  mydataset["met9"]     = fileDirectory + "Data_V6A_2012C_part1.root";
-  mydataset["met10"]    = fileDirectory + "Data_V6A_2012C_part2.root";
-  mydataset["met11"]    = fileDirectory + "Data_V6A_2012C_part3.root";
-  mydataset["met12"]    = fileDirectory + "Data_V6A_2012C_part4.root";
-  mydataset["met13"]    = fileDirectory + "Data_V6A_2012C_part5.root";
-  mydataset["met14"]    = fileDirectory + "Data_V6A_2012C_part6.root";
-  mydataset["met15"]    = fileDirectory + "Data_V6A_2012C_part7.root";
-  mydataset["met16"]    = fileDirectory + "Data_V6A_2012C_part8.root";
-  mydataset["met17"]    = fileDirectory + "Data_V6A_2012D_part1.root";
-  mydataset["met18"]    = fileDirectory + "Data_V6A_2012D_part2.root";
-  mydataset["met19"]    = fileDirectory + "Data_V6A_2012D_part3.root";
-  mydataset["met20"]    = fileDirectory + "Data_V6A_2012D_part4.root";
-  mydataset["met21"]    = fileDirectory + "Data_V6A_2012D_part5.root";
-  mydataset["met22"]    = fileDirectory + "Data_V6A_2012D_part6.root";
-  mydataset["met23"]    = fileDirectory + "Data_V6A_2012D_part7.root";
-  mydataset["met24"]    = fileDirectory + "Data_V6A_2012D_part8.root";
-  mydataset["met25"]    = fileDirectory + "Data_V6A_2012D_part9.root";
-  mylumi["met1"]        = 19461.;
-  mylumi["met2"]        = 19461.;
-  mylumi["met3"]        = 19461.;
-  mylumi["met4"]        = 19461.;
-  mylumi["met5"]        = 19461.;
-  mylumi["met6"]        = 19461.;
-  mylumi["met7"]        = 19461.;   
-  mylumi["met8"]        = 19461.;
-  mylumi["met9"]        = 19461.;
-  mylumi["met10"]       = 19461.;
-  mylumi["met11"]       = 19461.;
-  mylumi["met12"]       = 19461.;
-  mylumi["met13"]       = 19461.;
-  mylumi["met14"]       = 19461.;
-  mylumi["met15"]       = 19461.;
-  mylumi["met16"]       = 19461.;
-  mylumi["met17"]       = 19461.;   
-  mylumi["met18"]       = 19461.;
-  mylumi["met19"]       = 19461.;
-  mylumi["met20"]       = 19461.;
-  mylumi["met21"]       = 19461.;
-  mylumi["met22"]       = 19461.;
-  mylumi["met23"]       = 19461.;
-  mylumi["met24"]       = 19461.;
-  mylumi["met25"]       = 19461.;
+  mydataset["met1"]       = fileDirectory + "Data_V6B_2012A_part1.root";
+  mydataset["met2"]       = fileDirectory + "Data_V6B_2012A_part2.root";
+  mydataset["met3"]       = fileDirectory + "Data_V6B_2012B_part1.root";
+  mydataset["met4"]       = fileDirectory + "Data_V6B_2012B_part2.root";
+  mydataset["met5"]       = fileDirectory + "Data_V6B_2012B_part3.root";
+  mydataset["met6"]       = fileDirectory + "Data_V6B_2012C_part1.root";
+  mydataset["met7"]       = fileDirectory + "Data_V6B_2012C_part2.root";
+  mydataset["met8"]       = fileDirectory + "Data_V6B_2012C_part3.root";
+  mydataset["met9"]       = fileDirectory + "Data_V6B_2012C_part4.root";
+  mydataset["met10"]      = fileDirectory + "Data_V6B_2012C_part5.root";
+  mydataset["met11"]      = fileDirectory + "Data_V6B_2012C_part6.root";
+  mydataset["met12"]      = fileDirectory + "Data_V6B_2012D_part1.root";
+  mydataset["met13"]      = fileDirectory + "Data_V6B_2012D_part2.root";
+  mydataset["met14"]      = fileDirectory + "Data_V6B_2012D_part3.root";
+  mydataset["met15"]      = fileDirectory + "Data_V6B_2012D_part4.root";
+  mydataset["met16"]      = fileDirectory + "Data_V6B_2012D_part5.root";
+  mylumi["met1"]          = 19596.;
+  mylumi["met2"]          = 19596.;
+  mylumi["met3"]          = 19596.;
+  mylumi["met4"]          = 19596.;
+  mylumi["met5"]          = 19596.;
+  mylumi["met6"]          = 19596.;
+  mylumi["met7"]          = 19596.;   
+  mylumi["met8"]          = 19596.;
+  mylumi["met9"]          = 19596.;
+  mylumi["met10"]         = 19596.;
+  mylumi["met11"]         = 19596.;
+  mylumi["met12"]         = 19596.;
+  mylumi["met13"]         = 19596.;
+  mylumi["met14"]         = 19596.;
+  mylumi["met15"]         = 19596.;
+  mylumi["met16"]         = 19596.;
   
   // Znunu S10
-  mydataset["znunu50"]    = fileDirectory + "MC_S10_V6A_ZJetsToNuNu_50_HT_100_10601pb.root";
-  mydataset["znunu100"]   = fileDirectory + "MC_S10_V6A_ZJetsToNuNu_100_HT_200_27552pb.root";
-  mydataset["znunu200p1"] = fileDirectory + "MC_S10_V6A_ZJetsToNuNu_200_HT_400_part1_121829pb.root";
-  mydataset["znunu200p2"] = fileDirectory + "MC_S10_V6A_ZJetsToNuNu_200_HT_400_part2_121829pb.root";
-  mydataset["znunu400"]   = fileDirectory + "MC_S10_V6A_ZJetsToNuNu_400_HT_inf_189986pb.root";
-  mylumi["znunu50"]       = 10601.;
+  mydataset["znunu50"]    = fileDirectory + "MC_S10_V6B_ZJetsToNuNu_050_HT_100_10600pb.root";
+  mydataset["znunu100"]   = fileDirectory + "MC_S10_V6B_ZJetsToNuNu_100_HT_200_27552pb.root";
+  mydataset["znunu200"]   = fileDirectory + "MC_S10_V6B_ZJetsToNuNu_200_HT_400_121858pb.root"; 
+  mydataset["znunu400"]   = fileDirectory + "MC_S10_V6B_ZJetsToNuNu_400_HT_inf_190923pb.root";
+  mylumi["znunu50"]       = 10600.;
   mylumi["znunu100"]      = 27552.;
-  mylumi["znunu200p1"]    = 121829.;
-  mylumi["znunu200p2"]    = 121829.;
-  mylumi["znunu400"]      = 189986.; 
-   
+  mylumi["znunu200"]      = 121858.;
+  mylumi["znunu400"]      = 190923.;
+  
   // W+Jets S10
-  mydataset["wjets1"]     = fileDirectory + "MC_S10_V6A_WJetsToLNu_PtW-100_part1_55668pb.root";
-  mydataset["wjets2"]     = fileDirectory + "MC_S10_V6A_WJetsToLNu_PtW-100_part2_55668pb.root";
-  mydataset["wjets3"]     = fileDirectory + "MC_S10_V6A_WJetsToLNu_PtW-100_part3_55668pb.root";
-  mydataset["wjets4"]     = fileDirectory + "MC_S10_V6A_WJetsToLNu_PtW-100_part4_55668pb.root";
-  mydataset["wjets5"]     = fileDirectory + "MC_S10_V6A_WJetsToLNu_PtW-100_part5_55668pb.root";
-  mylumi["wjets1"]        = 55668.;
-  mylumi["wjets2"]        = 55668.;
-  mylumi["wjets3"]        = 55668.;
-  mylumi["wjets4"]        = 55668.;
-  mylumi["wjets5"]        = 55668.;
+  mydataset["wjets1"]     = fileDirectory + "MC_S10_V6B_WJetsToLNu_PtW-100_part1_55449pb.root";
+  mydataset["wjets2"]     = fileDirectory + "MC_S10_V6B_WJetsToLNu_PtW-100_part2_55449pb.root";
+  mydataset["wjets3"]     = fileDirectory + "MC_S10_V6B_WJetsToLNu_PtW-100_part3_55449pb.root";
+  mydataset["wjets4"]     = fileDirectory + "MC_S10_V6B_WJetsToLNu_PtW-100_part4_55449pb.root";
+  mydataset["wjets5"]     = fileDirectory + "MC_S10_V6B_WJetsToLNu_PtW-100_part5_55449pb.root";
+  mydataset["w4jets"]     = fileDirectory + "MC_S10_V6B_W4JetsToLNu_50598pb.root";
+  mylumi["wjets1"]        = 55449.;
+  mylumi["wjets2"]        = 55449.;
+  mylumi["wjets3"]        = 55449.;
+  mylumi["wjets4"]        = 55449.; 
+  mylumi["wjets5"]        = 55449.;
+  mylumi["w4jets"]        = 50598.;
   
   // Z+Jets S10
-  mydataset["zjets"]      = fileDirectory + "MC_S10_V6A_DYJetsToLL_PtZ-100_77335pb.root";
-  mylumi["zjets"]         = 77335.;
-  //mydataset["zjets"]      = fileDirectory + "MC_S10_V6A_DYJetsToLL_M-50_8624pb.root";
-  //mylumi["zjets"]         = 8624.; //NLO
+  mydataset["zjets"]      = fileDirectory + "MC_S10_V6B_DYJetsToLL_PtZ-100_72790pb.root";
+  mylumi["zjets"]         = 72790.;
   
-  // TTbar S10
-  mydataset["ttbar"]      = fileDirectory + "MC_S10_V6A_TTbar_MassiveBin_50798pb.root";
-  mylumi["ttbar"]         = 50798.;
+  // TTbar S10 (NNLO - No factor need)
+  mydataset["ttbar"]      = fileDirectory + "MC_S10_V6B_TTbar_MassiveBin_21929pb.root";
+  mylumi["ttbar"]         = 21929.;
   
-  // QCD S10
-  mydataset["qcd300"]     = fileDirectory + "MC_S10_V6A_QCD_Pt-300to470_3398pb.root";
-  mydataset["qcd470"]     = fileDirectory + "MC_S10_V6A_QCD_Pt-470to600_35080pb.root";
-  mydataset["qcd600"]     = fileDirectory + "MC_S10_V6A_QCD_Pt-600to800_148032pb.root";
-  mydataset["qcd800"]     = fileDirectory + "MC_S10_V6A_QCD_Pt-800to1000_1110712pb.root";
-  mydataset["qcd1000"]    = fileDirectory + "MC_S10_V6A_QCD_Pt-1000to1400_2654173pb.root";
-  mydataset["qcd1400"]    = fileDirectory + "MC_S10_V6A_QCD_Pt-1400to1800_58090059pb.root";
-  mydataset["qcd1800"]    = fileDirectory + "MC_S10_V6A_QCD_Pt-1800toInf_543103333pb.root";
-  mylumi["qcd300"]        = 3398.;
-  mylumi["qcd470"]        = 35080.;
-  mylumi["qcd600"]        = 148032.;
-  mylumi["qcd800"]        = 1110712.;
-  mylumi["qcd1000"]       = 2654173.;
-  mylumi["qcd1400"]       = 58090059.;
-  mylumi["qcd1800"]       = 543103333.;
+  // QCD S10 (1.24 from DiJet resonance analysis)
+  mydataset["qcd50"]      = fileDirectory + "MC_S10_V6B_QCD_Pt-0050to0080_0p7681pb.root";
+  mydataset["qcd80"]      = fileDirectory + "MC_S10_V6B_QCD_Pt-0080to0120_6p54pb.root";
+  mydataset["qcd120"]     = fileDirectory + "MC_S10_V6B_QCD_Pt-0120to0170_42pb.root";
+  mydataset["qcd170"]     = fileDirectory + "MC_S10_V6B_QCD_Pt-0170to0300_170pb.root"; 
+  mydataset["qcd300"]     = fileDirectory + "MC_S10_V6B_QCD_Pt-0300to0470_3384pb.root"; 
+  mydataset["qcd470"]     = fileDirectory + "MC_S10_V6B_QCD_Pt-0470to0600_35080pb.root"; 
+  mydataset["qcd600"]     = fileDirectory + "MC_S10_V6B_QCD_Pt-0600to0800_148075pb.root";
+  mydataset["qcd800"]     = fileDirectory + "MC_S10_V6B_QCD_Pt-0800to1000_1126344pb.root"; 
+  mydataset["qcd1000"]    = fileDirectory + "MC_S10_V6B_QCD_Pt-1000to1400_2661929pb.root";
+  mydataset["qcd1400"]    = fileDirectory + "MC_S10_V6B_QCD_Pt-1400to1800_59663538pb.root";
+  mydataset["qcd1800"]    = fileDirectory + "MC_S10_V6B_QCD_Pt-1800_534490611pb.root";
+  mylumi["qcd50"]         = 0.7681/1.24;
+  mylumi["qcd80"]         = 6.54/1.24;
+  mylumi["qcd120"]        = 42./1.24;
+  mylumi["qcd170"]        = 170./1.24;
+  mylumi["qcd300"]        = 3384./1.24;
+  mylumi["qcd470"]        = 35080./1.24;
+  mylumi["qcd600"]        = 148075./1.24;
+  mylumi["qcd800"]        = 1126344./1.24;
+  mylumi["qcd1000"]       = 2661929./1.24;
+  mylumi["qcd1400"]       = 59663538./1.24;
+  mylumi["qcd1800"]       = 534490611./1.24;
   
-  // Single-t S10
-  mydataset["sints"]      = fileDirectory + "MC_S10_V6A_SingleT_s_92843pb.root";
-  mydataset["sintt"]      = fileDirectory + "MC_S10_V6A_SingleT_t_79430pb.root";
-  mydataset["sinttw"]     = fileDirectory + "MC_S10_V6A_SingleT_tw_44524pb.root";
-  mydataset["sintbars"]   = fileDirectory + "MC_S10_V6A_SingleTbar_s_87484pb.root";
-  mydataset["sintbart"]   = fileDirectory + "MC_S10_V6A_SingleTbar_t_77403pb.root";
-  mydataset["sintbartw"]  = fileDirectory + "MC_S10_V6A_SingleTbar_tw_44148pb.root";
-  mylumi["sints"]         = 92843.;
-  mylumi["sintt"]         = 79430.;
-  mylumi["sinttw"]        = 44524.; //NLO
-  mylumi["sintbars"]      = 87484.;
-  mylumi["sintbart"]      = 77403.;
-  mylumi["sintbartw"]     = 44148.; //NLO
+  // Single-t S10 (NLO - No factor need)
+  mydataset["sints"]      = fileDirectory + "MC_S10_V6B_SingleT_s_68591pb.root";
+  mydataset["sintt"]      = fileDirectory + "MC_S10_V6B_SingleT_t_66635pb.root";
+  mydataset["sinttw"]     = fileDirectory + "MC_S10_V6B_SingleT_tw_31320pb.root";
+  mydataset["sintbars"]   = fileDirectory + "MC_S10_V6B_SingleTbar_s_79531pb.root";
+  mydataset["sintbart"]   = fileDirectory + "MC_S10_V6B_SingleTbar_t_63032pb.root";
+  mydataset["sintbartw"]  = fileDirectory + "MC_S10_V6B_SingleTbar_tw_30942pb.root";
+  mylumi["sints"]         = 68591.;
+  mylumi["sintt"]         = 66635.;
+  mylumi["sinttw"]        = 31320.;
+  mylumi["sintbars"]      = 79531.;
+  mylumi["sintbart"]      = 63032.; 
+  mylumi["sintbartw"]     = 30942.;
   
+  // Diboson (NLO - No factor need)
+  mydataset["dibosonWW"]  = fileDirectory + "MC_S10_V6B_WW_179171pb.root";
+  mydataset["dibosonWZ"]  = fileDirectory + "MC_S10_V6B_WZ_240597pb.root";
+  mydataset["dibosonZZ"]  = fileDirectory + "MC_S10_V6B_ZZ_373848pb.root";
+  mylumi["dibosonWW"]     = 179171.;
+  mylumi["dibosonWZ"]     = 240597.;
+  mylumi["dibosonZZ"]     = 373848.;
+
   // VBF-Invisible Higgs
   //mydataset["vbf"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/VBF_InvisibleHiggs.root";
   //mylumi["vbf"]  = 12100.;
   
   // DM-Stop
-  mydataset["dmstop"]     = fileDirectory + "Signal_Stop/Signal_S10_V6A_Stop_72096pb.root";
+  mydataset["dmstop"]     = fileDirectory + "Signal_Stop/Signal_S10_V6B_Stop_72096pb.root";
   mylumi["dmstop"]        = 72096.;
   
   // DM-Higgs
-  mydataset["dmhigggf"]   = fileDirectory + "Signal_HiggsPortal/Signal_S10_V6A_HiggsPortal_58448pb.root";
+  mydataset["dmhigggf"]   = fileDirectory + "Signal_HiggsPortal/Signal_S10_V6B_HiggsPortal_58448pb.root";
   mylumi["dmhigggf"]      = 58448.;
   
   // Unparticles
@@ -175,24 +182,23 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
   mydataset["unp_S0_dU1p9_LU1000"]   = fileDirectory + "Signal_UNP/Signal_S10_V6A_UNP_dU1p9_LU1000_13526pb.root";
   mydataset["unp_S0_dU1p9_LU2000"]   = fileDirectory + "Signal_UNP/Signal_S10_V6A_UNP_dU1p9_LU2000_95602pb.root";
   mydataset["unp_S0_dU1p9_LU3000"]   = fileDirectory + "Signal_UNP/Signal_S10_V6A_UNP_dU1p9_LU3000_244798pb.root";
-  //
-  mylumi["unp_S0_dU1p5_LU6000"] = 8045.;
-  mylumi["unp_S0_dU1p5_LU7000"] = 9433.;
-  mylumi["unp_S0_dU1p5_LU8000"] = 10902.;
-  mylumi["unp_S0_dU1p5_LU9000"] = 12176.;
-  mylumi["unp_S0_dU1p6_LU4000"] = 15913.;
-  mylumi["unp_S0_dU1p6_LU5000"] = 21272.;
-  mylumi["unp_S0_dU1p6_LU6000"] = 27159.;
-  mylumi["unp_S0_dU1p6_LU7000"] = 33367.;
-  mylumi["unp_S0_dU1p7_LU1000"] = 2784.;
-  mylumi["unp_S0_dU1p7_LU2000"] = 13802.;
-  mylumi["unp_S0_dU1p7_LU3000"] = 29718.;
-  mylumi["unp_S0_dU1p8_LU1000"] = 6139.;
-  mylumi["unp_S0_dU1p8_LU2000"] = 35561.;
-  mylumi["unp_S0_dU1p8_LU3000"] = 86132.;
-  mylumi["unp_S0_dU1p9_LU1000"] = 13526.;
-  mylumi["unp_S0_dU1p9_LU2000"] = 95602.;
-  mylumi["unp_S0_dU1p9_LU3000"] = 244798.; 
+  mylumi["unp_S0_dU1p5_LU6000"]      = 8045.;
+  mylumi["unp_S0_dU1p5_LU7000"]      = 9433.;
+  mylumi["unp_S0_dU1p5_LU8000"]      = 10902.;
+  mylumi["unp_S0_dU1p5_LU9000"]      = 12176.;
+  mylumi["unp_S0_dU1p6_LU4000"]      = 15913.;
+  mylumi["unp_S0_dU1p6_LU5000"]      = 21272.;
+  mylumi["unp_S0_dU1p6_LU6000"]      = 27159.;
+  mylumi["unp_S0_dU1p6_LU7000"]      = 33367.;
+  mylumi["unp_S0_dU1p7_LU1000"]      = 2784.;
+  mylumi["unp_S0_dU1p7_LU2000"]      = 13802.;
+  mylumi["unp_S0_dU1p7_LU3000"]      = 29718.;
+  mylumi["unp_S0_dU1p8_LU1000"]      = 6139.;
+  mylumi["unp_S0_dU1p8_LU2000"]      = 35561.;
+  mylumi["unp_S0_dU1p8_LU3000"]      = 86132.;
+  mylumi["unp_S0_dU1p9_LU1000"]      = 13526.;
+  mylumi["unp_S0_dU1p9_LU2000"]      = 95602.;
+  mylumi["unp_S0_dU1p9_LU3000"]      = 244798.; 
   
   // ADD
   mydataset["d2md3"]    = fileDirectory + "Signal_ADD/Signal_S10_V6A_ADD_D2_MD3000_13065pb.root";
@@ -215,27 +221,26 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
   mydataset["d6md2"]    = fileDirectory + "Signal_ADD/Signal_S10_V6A_ADD_D6_MD2000_12692pb.root"; 
   mydataset["d6md3"]    = fileDirectory + "Signal_ADD/Signal_S10_V6A_ADD_D6_MD3000_190476pb.root";
   mydataset["d6md4"]    = fileDirectory + "Signal_ADD/Signal_S10_V6A_ADD_D6_MD4000_1724137pb.root"; 
-  //
-  mylumi["d2md3"]    = 13065.;
-  mylumi["d2md4"]    = 40866.;
-  mylumi["d2md5"]    = 101419.;
-  mylumi["d2md6"]    = 206611.;
-  mylumi["d3md2"]    = 5219.;
-  mylumi["d3md3"]    = 37807.;
-  mylumi["d3md4"]    = 159438.;
-  mylumi["d3md5"]    = 465116.; 
-  mylumi["d4md2"]    = 8045.;
-  mylumi["d4md3"]    = 77101.; 
-  mylumi["d4md4"]    = 408163.;
-  mylumi["d4md5"]    = 1612903.;
-  mylumi["d5md1"]    = 298.;
-  mylumi["d5md2"]    = 11222.;
-  mylumi["d5md3"]    = 134048.;
-  mylumi["d5md4"]    = 937207.;
-  mylumi["d6md1"]    = 283.;
-  mylumi["d6md2"]    = 12692.; 
-  mylumi["d6md3"]    = 190476.;
-  mylumi["d6md4"]    = 1724137.;
+  mylumi["d2md3"]       = 13065.;
+  mylumi["d2md4"]       = 40866.;
+  mylumi["d2md5"]       = 101419.;
+  mylumi["d2md6"]       = 206611.;
+  mylumi["d3md2"]       = 5219.;
+  mylumi["d3md3"]       = 37807.;
+  mylumi["d3md4"]       = 159438.;
+  mylumi["d3md5"]       = 465116.; 
+  mylumi["d4md2"]       = 8045.;
+  mylumi["d4md3"]       = 77101.; 
+  mylumi["d4md4"]       = 408163.;
+  mylumi["d4md5"]       = 1612903.;
+  mylumi["d5md1"]       = 298.;
+  mylumi["d5md2"]       = 11222.;
+  mylumi["d5md3"]       = 134048.;
+  mylumi["d5md4"]       = 937207.;
+  mylumi["d6md1"]       = 283.;
+  mylumi["d6md2"]       = 12692.; 
+  mylumi["d6md3"]       = 190476.;
+  mylumi["d6md4"]       = 1724137.;
   
   //Dark Matter
   mydataset["dmav01"]    = fileDirectory + "Signal_DM/Signal_S10_V6A_DM_40TeV_AV_0p1.root";
@@ -247,7 +252,6 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
   mydataset["dmav400"]   = fileDirectory + "Signal_DM/Signal_S10_V6A_DM_40TeV_AV_400.root";
   mydataset["dmav700"]   = fileDirectory + "Signal_DM/Signal_S10_V6A_DM_40TeV_AV_700.root";
   mydataset["dmav1000"]  = fileDirectory + "Signal_DM/Signal_S10_V6A_DM_40TeV_AV_1000.root";
-  //
   mydataset["dmv01"]     = fileDirectory + "Signal_DM/Signal_S10_V6A_DM_40TeV_V_0p1.root";
   mydataset["dmv1"]      = fileDirectory + "Signal_DM/Signal_S10_V6A_DM_40TeV_V_1.root";
   mydataset["dmv10"]     = fileDirectory + "Signal_DM/Signal_S10_V6A_DM_40TeV_V_10.root";
@@ -257,48 +261,52 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
   mydataset["dmv400"]    = fileDirectory + "Signal_DM/Signal_S10_V6A_DM_40TeV_V_400.root";
   mydataset["dmv700"]    = fileDirectory + "Signal_DM/Signal_S10_V6A_DM_40TeV_V_700.root";
   mydataset["dmv1000"]   = fileDirectory + "Signal_DM/Signal_S10_V6A_DM_40TeV_V_1000.root";
-  //
-  mylumi["dmav01"]   = 19461.;  
-  mylumi["dmav1"]    = 19461.; 
-  mylumi["dmav10"]   = 19461.;
-  mylumi["dmav100"]  = 19461.;
-  mylumi["dmav200"]  = 19461.;
-  mylumi["dmav300"]  = 19461.;
-  mylumi["dmav400"]  = 19461.;
-  mylumi["dmav700"]  = 19461.;
-  mylumi["dmav1000"] = 19461.;
-  //
-  mylumi["dmv01"]   =  19461.;
-  mylumi["dmv1"]    =  19461.;
-  mylumi["dmv10"]   =  19461.;
-  mylumi["dmv100"]  =  19461.;
-  mylumi["dmv200"]  =  19461.;
-  mylumi["dmv300"]  =  19461.;
-  mylumi["dmv400"]  =  19461.;
-  mylumi["dmv700"]  =  19461.;
-  mylumi["dmv1000"] =  19461.;
-
-  mEvent = 0;
-  mMaxEvents = maxEvents;
-  mFileName = fileName; 
-  
-  misMC = isMC;
-  
-  mJetType = "pf";
-  mLepType = "m";
-  
-  mMetType = 10;
-  
-  mEnergyScale = 0.;
-  
-  mSecJetCut   = 30;
-  
-  
+  mylumi["dmav01"]       = 19596.;  
+  mylumi["dmav1"]        = 19596.; 
+  mylumi["dmav10"]       = 19596.;
+  mylumi["dmav100"]      = 19596.;
+  mylumi["dmav200"]      = 19596.;
+  mylumi["dmav300"]      = 19596.;
+  mylumi["dmav400"]      = 19596.;
+  mylumi["dmav700"]      = 19596.;
+  mylumi["dmav1000"]     = 19596.;
+  mylumi["dmv01"]        = 19596.;
+  mylumi["dmv1"]         = 19596.;
+  mylumi["dmv10"]        = 19596.;
+  mylumi["dmv100"]       = 19596.;
+  mylumi["dmv200"]       = 19596.;
+  mylumi["dmv300"]       = 19596.;
+  mylumi["dmv400"]       = 19596.;
+  mylumi["dmv700"]       = 19596.;
+  mylumi["dmv1000"]      = 19596.;
   
   TFile f1( mydataset["pileup"].c_str()  );
   TH1D *his = (TH1D*) f1.Get("pileup")->Clone();
-  
-  mPileUpWeights = generate_flat10_weights(his);
+
+  std::string myFileName = mydataset[fileName].c_str();
+  int puVersion;
+  if(myFileName.find("_S10_") != std::string::npos){
+    if(misMC == 0){
+      cout<<"*** Reset to be MC sample ***"<<endl;
+      misMC = 1;
+    }
+    puVersion = 10;
+  }
+  else if(myFileName.find("_S7_") != std::string::npos){
+    if(misMC == 0){
+      cout<<"*** Reset to be MC sample ***"<<endl;
+      misMC = 1;
+    }
+    puVersion = 7;
+  }
+  else{
+    if(misMC == 1){
+      cout<<"*** Reset to be DATA sample ***"<<endl;
+      misMC = 0;
+    }
+    puVersion = 0;
+  }
+  mPileUpWeights = generate_flat10_weights(his,puVersion);
   
   //setPDFPath("/uscmst1/prod/sw/cms/slc5_amd64_gcc434/external/lhapdf/5.6.0-cms4/share/lhapdf/PDFsets");
   //initPDFSet(1, "cteq66.LHgrid");
@@ -313,7 +321,6 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
   //initPDFSet(3, "NNPDF20_100.LHgrid");
   
   ///-------------Ntuple Variables --------------------------------------------------------------------------
-  
   TFile* file = TFile::Open( mydataset[fileName].c_str() );
   TDirectory* myDir = (TDirectory*)file->Get("NtupleAnalyzer");
   mDataTree = (TTree*) myDir->Get("ntuple");
@@ -773,237 +780,224 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
   mDataTree->SetBranchAddress("PFTauJetPhi"                                        ,mPFTauJetPhi);
   
   //Gen-daughter of W
-  mDataTree->SetBranchAddress("WTauDecayMode"                                      ,&mWTauDecayMode);
-  mDataTree->SetBranchAddress("WTauN"                                              ,&mWTauN);
-  mDataTree->SetBranchAddress("WTauDecayId"                                        ,mWTauDecayId);
-  mDataTree->SetBranchAddress("WTauDecayPt"                                        ,mWTauDecayPt);
-  mDataTree->SetBranchAddress("WTauDecayEta"                                       ,mWTauDecayEta);
-  mDataTree->SetBranchAddress("WTauDecayPhi"                                       ,mWTauDecayPhi); 
-  mDataTree->SetBranchAddress("WTauDecayMass"                                      ,mWTauDecayMass);
+  mDataTree->SetBranchAddress("WTauDecayMode"                         ,&mWTauDecayMode            );
+  mDataTree->SetBranchAddress("WTauN"                                 ,&mWTauN                    );
+  mDataTree->SetBranchAddress("WTauDecayId"                           ,mWTauDecayId               );
+  mDataTree->SetBranchAddress("WTauDecayPt"                           ,mWTauDecayPt               );
+  mDataTree->SetBranchAddress("WTauDecayEta"                          ,mWTauDecayEta              );
+  mDataTree->SetBranchAddress("WTauDecayPhi"                          ,mWTauDecayPhi              ); 
+  mDataTree->SetBranchAddress("WTauDecayMass"                         ,mWTauDecayMass             );
 
   //Photons
-  mDataTree->SetBranchAddress("NPhot"                                 ,&mNPhot                                ); 
-  mDataTree->SetBranchAddress("PhotE"                                 ,mPhotE                                 ); 
-  mDataTree->SetBranchAddress("PhotPt"                                ,mPhotPt                                ); 
-  mDataTree->SetBranchAddress("PhotPx"                                ,mPhotPx                                ); 
-  mDataTree->SetBranchAddress("PhotPy"                                ,mPhotPy                                ); 
-  mDataTree->SetBranchAddress("PhotPz"                                ,mPhotPz                                ); 
-  mDataTree->SetBranchAddress("PhotEta"                               ,mPhotEta                               ); 
-  mDataTree->SetBranchAddress("PhotPhi"                               ,mPhotPhi                               );   
-  mDataTree->SetBranchAddress("PhotE1x5"                              ,mPhotE1x5                              ); 
-  mDataTree->SetBranchAddress("PhotE2x5"                              ,mPhotE2x5                              ); 
-  mDataTree->SetBranchAddress("PhotE5x5"                              ,mPhotE5x5                              ); 
-  mDataTree->SetBranchAddress("PhotSigEta"                            ,mPhotSigEta                            ); 
-  mDataTree->SetBranchAddress("PhotSigPhi"                            ,mPhotSigPhi                            ); 
-  mDataTree->SetBranchAddress("PhotEcalIso04"                         ,mPhotEcalIso04                         ); 
-  mDataTree->SetBranchAddress("PhotHcalIso04"                         ,mPhotHcalIso04                         ); 
-  mDataTree->SetBranchAddress("PhotTrackIso04"                        ,mPhotTrackIso04                        ); 
-  mDataTree->SetBranchAddress("PhotHasPixSeed"                        ,mPhotHasPixSeed                        ); 
-  mDataTree->SetBranchAddress("PhotIsPhot"                            ,mPhotIsPhot                            ); 
+  mDataTree->SetBranchAddress("NPhot"                                 ,&mNPhot                    ); 
+  mDataTree->SetBranchAddress("PhotE"                                 ,mPhotE                     ); 
+  mDataTree->SetBranchAddress("PhotPt"                                ,mPhotPt                    ); 
+  mDataTree->SetBranchAddress("PhotPx"                                ,mPhotPx                    ); 
+  mDataTree->SetBranchAddress("PhotPy"                                ,mPhotPy                    ); 
+  mDataTree->SetBranchAddress("PhotPz"                                ,mPhotPz                    ); 
+  mDataTree->SetBranchAddress("PhotEta"                               ,mPhotEta                   ); 
+  mDataTree->SetBranchAddress("PhotPhi"                               ,mPhotPhi                   );   
+  mDataTree->SetBranchAddress("PhotE1x5"                              ,mPhotE1x5                  ); 
+  mDataTree->SetBranchAddress("PhotE2x5"                              ,mPhotE2x5                  ); 
+  mDataTree->SetBranchAddress("PhotE5x5"                              ,mPhotE5x5                  ); 
+  mDataTree->SetBranchAddress("PhotSigEta"                            ,mPhotSigEta                ); 
+  mDataTree->SetBranchAddress("PhotSigPhi"                            ,mPhotSigPhi                ); 
+  mDataTree->SetBranchAddress("PhotEcalIso04"                         ,mPhotEcalIso04             ); 
+  mDataTree->SetBranchAddress("PhotHcalIso04"                         ,mPhotHcalIso04             ); 
+  mDataTree->SetBranchAddress("PhotTrackIso04"                        ,mPhotTrackIso04            ); 
+  mDataTree->SetBranchAddress("PhotHasPixSeed"                        ,mPhotHasPixSeed            ); 
+  mDataTree->SetBranchAddress("PhotIsPhot"                            ,mPhotIsPhot                ); 
   
   //NPV
-  mDataTree->SetBranchAddress("NPV"                                   ,&mNPV                                  ); 
-  mDataTree->SetBranchAddress("PVx"                                   ,mPVx                                   ); 
-  mDataTree->SetBranchAddress("PVy"                                   ,mPVy                                   ); 
-  mDataTree->SetBranchAddress("PVz"                                   ,mPVz                                   ); 
-  mDataTree->SetBranchAddress("PVchi2"                                ,mPVchi2                                ); 
-  mDataTree->SetBranchAddress("PVndof"                                ,mPVndof                                ); 
-  mDataTree->SetBranchAddress("PVntracks"                             ,mPVntracks                             ); 
+  mDataTree->SetBranchAddress("NPV"                                   ,&mNPV                      ); 
+  mDataTree->SetBranchAddress("PVx"                                   ,mPVx                       ); 
+  mDataTree->SetBranchAddress("PVy"                                   ,mPVy                       ); 
+  mDataTree->SetBranchAddress("PVz"                                   ,mPVz                       ); 
+  mDataTree->SetBranchAddress("PVchi2"                                ,mPVchi2                    ); 
+  mDataTree->SetBranchAddress("PVndof"                                ,mPVndof                    ); 
+  mDataTree->SetBranchAddress("PVntracks"                             ,mPVntracks                 ); 
 	
   //HLT
-  mDataTree->SetBranchAddress("nHLT"                                  ,&mnHLT                                 ); 
-  mDataTree->SetBranchAddress("HLTArray"                              ,mHLTArray                              ); 
-  mDataTree->SetBranchAddress("HLTArray2"                             ,mHLTArray2                             ); 
-  mDataTree->SetBranchAddress("HLTNames"                              ,mHLTNames                              ); 
-  mDataTree->SetBranchAddress("HLTPreScale2"                          ,mHLTPreScale2                          ); 
+  mDataTree->SetBranchAddress("nHLT"                                  ,&mnHLT                     ); 
+  mDataTree->SetBranchAddress("HLTArray"                              ,mHLTArray                  ); 
+  mDataTree->SetBranchAddress("HLTArray2"                             ,mHLTArray2                 ); 
+  mDataTree->SetBranchAddress("HLTNames"                              ,mHLTNames                  ); 
+  mDataTree->SetBranchAddress("HLTPreScale2"                          ,mHLTPreScale2              ); 
 	
   //L1
-  mDataTree->SetBranchAddress("nL1"                                   ,&mnL1                                  ); 
-  mDataTree->SetBranchAddress("L1Array"                               ,mL1Array                               ); 
-  mDataTree->SetBranchAddress("nL1T"                                  ,&mnL1T                                 ); 
-  mDataTree->SetBranchAddress("L1TArray"                              ,mL1TArray                              ); 
+  mDataTree->SetBranchAddress("nL1"                                   ,&mnL1                      ); 
+  mDataTree->SetBranchAddress("L1Array"                               ,mL1Array                   ); 
+  mDataTree->SetBranchAddress("nL1T"                                  ,&mnL1T                     ); 
+  mDataTree->SetBranchAddress("L1TArray"                              ,mL1TArray                  ); 
 	
   //BeamHalo
-  mDataTree->SetBranchAddress("BeamHaloTight"                         ,&mBeamHaloTight                        ); 
-  mDataTree->SetBranchAddress("BeamHaloLoose"                         ,&mBeamHaloLoose                        ); 
+  mDataTree->SetBranchAddress("BeamHaloTight"                         ,&mBeamHaloTight            ); 
+  mDataTree->SetBranchAddress("BeamHaloLoose"                         ,&mBeamHaloLoose            ); 
 	
   //TIV
-  mDataTree->SetBranchAddress("TIV_N"                                 ,&mTIV_N                                 ); 
-  mDataTree->SetBranchAddress("TIV"                                   ,mTIV                                   ); 
-  mDataTree->SetBranchAddress("TIV_pt"                                ,mTIV_pt                                ); 
-  mDataTree->SetBranchAddress("TIV_px"                                ,mTIV_px                                ); 
-  mDataTree->SetBranchAddress("TIV_py"                                ,mTIV_py                                ); 
-  mDataTree->SetBranchAddress("TIV_pz"                                ,mTIV_pz                                ); 
-  mDataTree->SetBranchAddress("TIV_phi"                               ,mTIV_phi                               ); 
-  mDataTree->SetBranchAddress("TIV_eta"                               ,mTIV_eta                               ); 
-  mDataTree->SetBranchAddress("TIV_dsz"                               ,mTIV_dsz                               ); 
-  mDataTree->SetBranchAddress("TIV_dxy"                               ,mTIV_dxy                               ); 
-  mDataTree->SetBranchAddress("TIV_d0"                                ,mTIV_d0                                ); 
-  mDataTree->SetBranchAddress("TIV_dz"                                ,mTIV_dz                                ); 
-  mDataTree->SetBranchAddress("TIV_dsz_corr"                          ,mTIV_dsz_corr                          ); 
-  mDataTree->SetBranchAddress("TIV_dxy_corr"                          ,mTIV_dxy_corr                          ); 
-  mDataTree->SetBranchAddress("TIV_d0_corr"                           ,mTIV_d0_corr                           ); 
-  mDataTree->SetBranchAddress("TIV_dz_corr"                           ,mTIV_dz_corr                           ); 
-  mDataTree->SetBranchAddress("TIV_dR"                                ,mTIV_dR                                ); 
-  mDataTree->SetBranchAddress("TIV_lead"                              ,mTIV_lead                              ); 
-  mDataTree->SetBranchAddress("LowTIV"                                ,&mLowTIV                               ); 
+  mDataTree->SetBranchAddress("TIV_N"                                 ,&mTIV_N                     ); 
+  mDataTree->SetBranchAddress("TIV"                                   ,mTIV                       ); 
+  mDataTree->SetBranchAddress("TIV_pt"                                ,mTIV_pt                    ); 
+  mDataTree->SetBranchAddress("TIV_px"                                ,mTIV_px                    ); 
+  mDataTree->SetBranchAddress("TIV_py"                                ,mTIV_py                    ); 
+  mDataTree->SetBranchAddress("TIV_pz"                                ,mTIV_pz                    ); 
+  mDataTree->SetBranchAddress("TIV_phi"                               ,mTIV_phi                   ); 
+  mDataTree->SetBranchAddress("TIV_eta"                               ,mTIV_eta                   ); 
+  mDataTree->SetBranchAddress("TIV_dsz"                               ,mTIV_dsz                   ); 
+  mDataTree->SetBranchAddress("TIV_dxy"                               ,mTIV_dxy                   ); 
+  mDataTree->SetBranchAddress("TIV_d0"                                ,mTIV_d0                    ); 
+  mDataTree->SetBranchAddress("TIV_dz"                                ,mTIV_dz                    ); 
+  mDataTree->SetBranchAddress("TIV_dsz_corr"                          ,mTIV_dsz_corr              ); 
+  mDataTree->SetBranchAddress("TIV_dxy_corr"                          ,mTIV_dxy_corr              ); 
+  mDataTree->SetBranchAddress("TIV_d0_corr"                           ,mTIV_d0_corr               ); 
+  mDataTree->SetBranchAddress("TIV_dz_corr"                           ,mTIV_dz_corr               ); 
+  mDataTree->SetBranchAddress("TIV_dR"                                ,mTIV_dR                    ); 
+  mDataTree->SetBranchAddress("TIV_lead"                              ,mTIV_lead                  ); 
+  mDataTree->SetBranchAddress("LowTIV"                                ,&mLowTIV                   ); 
 	
   //GenPar
-  mDataTree->SetBranchAddress("NGenPar"                               ,&mNGenPar                              );
-  mDataTree->SetBranchAddress("GenParId"                              ,mGenParId                              );
-  mDataTree->SetBranchAddress("GenParStatus"                          ,mGenParStatus                          );
-  mDataTree->SetBranchAddress("GenParE"                               ,mGenParE                               );
-  mDataTree->SetBranchAddress("GenParPx"                              ,mGenParPx                              );
-  mDataTree->SetBranchAddress("GenParPy"                              ,mGenParPy                              );
-  mDataTree->SetBranchAddress("GenParPz"                              ,mGenParPz                              );
-  mDataTree->SetBranchAddress("GenParEta"                             ,mGenParEta                             );
-  mDataTree->SetBranchAddress("GenParPhi"                             ,mGenParPhi                             );
-  mDataTree->SetBranchAddress("GenParCharge"                          ,mGenParCharge                          );
-  mDataTree->SetBranchAddress("GenParPt"                              ,mGenParPt                              );
-  mDataTree->SetBranchAddress("GenParMass"                            ,mGenParMass                            );
-  mDataTree->SetBranchAddress("GenParMother1"                         ,mGenParMother1                         );
-  mDataTree->SetBranchAddress("GenParMother2"                         ,mGenParMother2                         );
-  mDataTree->SetBranchAddress("GenParDoughterOf"                      ,mGenParDoughterOf                      );
+  mDataTree->SetBranchAddress("NGenPar"                               ,&mNGenPar                  );
+  mDataTree->SetBranchAddress("GenParId"                              ,mGenParId                  );
+  mDataTree->SetBranchAddress("GenParStatus"                          ,mGenParStatus              );
+  mDataTree->SetBranchAddress("GenParE"                               ,mGenParE                   );
+  mDataTree->SetBranchAddress("GenParPx"                              ,mGenParPx                  );
+  mDataTree->SetBranchAddress("GenParPy"                              ,mGenParPy                  );
+  mDataTree->SetBranchAddress("GenParPz"                              ,mGenParPz                  );
+  mDataTree->SetBranchAddress("GenParEta"                             ,mGenParEta                 );
+  mDataTree->SetBranchAddress("GenParPhi"                             ,mGenParPhi                 );
+  mDataTree->SetBranchAddress("GenParCharge"                          ,mGenParCharge              );
+  mDataTree->SetBranchAddress("GenParPt"                              ,mGenParPt                  );
+  mDataTree->SetBranchAddress("GenParMass"                            ,mGenParMass                );
+  mDataTree->SetBranchAddress("GenParMother1"                         ,mGenParMother1             );
+  mDataTree->SetBranchAddress("GenParMother2"                         ,mGenParMother2             );
+  mDataTree->SetBranchAddress("GenParDoughterOf"                      ,mGenParDoughterOf          );
 
   //GenJet
-  mDataTree->SetBranchAddress(  "GenAK5JetE"                          ,mGenAK5JetE                            );
-  mDataTree->SetBranchAddress(  "GenAK5JetPt"                         ,mGenAK5JetPt                           );
-  mDataTree->SetBranchAddress(  "GenAK5JetPx"                         ,mGenAK5JetPx                           );
-  mDataTree->SetBranchAddress(  "GenAK5JetPy"                         ,mGenAK5JetPy                           );
-  mDataTree->SetBranchAddress(  "GenAK5JetPz"                         ,mGenAK5JetPz                           );
-  mDataTree->SetBranchAddress(  "GenAK5JetEta"                        ,mGenAK5JetEta                          );
-  mDataTree->SetBranchAddress(  "GenAK5JetPhi"                        ,mGenAK5JetPhi                          );
-  mDataTree->SetBranchAddress(  "GenAK5JetEmEnergy"                   ,mGenAK5JetEmEnergy                     );
-  mDataTree->SetBranchAddress(  "GenAK5JetHadEnergy"                  ,mGenAK5JetHadEnergy                    );
+  mDataTree->SetBranchAddress(  "GenAK5JetE"                          ,mGenAK5JetE                );
+  mDataTree->SetBranchAddress(  "GenAK5JetPt"                         ,mGenAK5JetPt               );
+  mDataTree->SetBranchAddress(  "GenAK5JetPx"                         ,mGenAK5JetPx               );
+  mDataTree->SetBranchAddress(  "GenAK5JetPy"                         ,mGenAK5JetPy               );
+  mDataTree->SetBranchAddress(  "GenAK5JetPz"                         ,mGenAK5JetPz               );
+  mDataTree->SetBranchAddress(  "GenAK5JetEta"                        ,mGenAK5JetEta              );
+  mDataTree->SetBranchAddress(  "GenAK5JetPhi"                        ,mGenAK5JetPhi              );
+  mDataTree->SetBranchAddress(  "GenAK5JetEmEnergy"                   ,mGenAK5JetEmEnergy         );
+  mDataTree->SetBranchAddress(  "GenAK5JetHadEnergy"                  ,mGenAK5JetHadEnergy        );
   
   //PDF
-  mDataTree->SetBranchAddress( "GenScale"                             ,&mPDFGenScale                          );
-  mDataTree->SetBranchAddress( "PDFx1"                                ,&mPDFx1                                );
-  mDataTree->SetBranchAddress( "PDFx2"                                ,&mPDFx2                                );
-  mDataTree->SetBranchAddress( "PDFf1"                                ,&mPDFf1                                );
-  mDataTree->SetBranchAddress( "PDFf2"                                ,&mPDFf2                                );
-  mDataTree->SetBranchAddress( "PDFscale"                             ,&mPDFscale                             );
-  mDataTree->SetBranchAddress( "PDFpdf1"                              ,&mPDFpdf1                              );
-  mDataTree->SetBranchAddress( "PDFpdf2"                              ,&mPDFpdf2                              );
+  mDataTree->SetBranchAddress( "GenScale"                             ,&mPDFGenScale              );
+  mDataTree->SetBranchAddress( "PDFx1"                                ,&mPDFx1                    );
+  mDataTree->SetBranchAddress( "PDFx2"                                ,&mPDFx2                    );
+  mDataTree->SetBranchAddress( "PDFf1"                                ,&mPDFf1                    );
+  mDataTree->SetBranchAddress( "PDFf2"                                ,&mPDFf2                    );
+  mDataTree->SetBranchAddress( "PDFscale"                             ,&mPDFscale                 );
+  mDataTree->SetBranchAddress( "PDFpdf1"                              ,&mPDFpdf1                  );
+  mDataTree->SetBranchAddress( "PDFpdf2"                              ,&mPDFpdf2                  );
 }
 
 
 EventData::~EventData() 
 {
-	delete mDataTree;
+  delete mDataTree;
 }
 
 
 bool EventData::GetNextEvent() 
 {
-	time_t rawtime;
-	time ( &rawtime );
-
-	if ( mEvent % 1000000 == 0 ) cout << mEvent << "   time:"<< ctime (&rawtime)  << endl;
-	if ( mEvent == mMaxEvents ) return false;
-	if ( !mDataTree->GetEntry(mEvent) ) return false;
-	mEvent++;
- 
-	return true;
+  time_t rawtime;
+  time ( &rawtime );
+  
+  if ( mEvent % 1000000 == 0 ) cout << mEvent << "   time:"<< ctime (&rawtime)  << endl;
+  if ( mEvent == mMaxEvents ) return false;
+  if ( !mDataTree->GetEntry(mEvent) ) return false;
+  mEvent++;
+  
+  return true;
 }
 
 
 ///------------------------------------------------------------------------------------------------------------------------------------
-
-
 double EventData::Weight()
 {   
-	double ww = mylumi["met1"] / mylumi[ mFileName.c_str() ] ; 
-
-	double pileup_weight=0.;
-
-	if(misMC==1)
-	{
-		int mnpv=0;
-		//if(mbx ==-1) mnpv= mnpvm1;
-		//else if(mbx ==0) mnpv= mnpv0;
-		//else if(mbx ==1) mnpv= mnpvp1;
-
-		mnpv = mnpv0;
-	
-		size_t dd = mnpv;
-	
-		if( dd < mPileUpWeights.size() )
-		{
-			pileup_weight = mPileUpWeights[ mnpv ];
-		}
-		else{ //should not happen as we have a weight for all simulated n_pu multiplicities!
+  double ww = mylumi["met1"] / mylumi[ mFileName.c_str() ] ; 
+  double pileup_weight=0.;
+  if(misMC==1){
+    int mnpv=0;
+    //if(mbx ==-1) mnpv= mnpvm1;
+    //else if(mbx ==0) mnpv= mnpv0;
+    //else if(mbx ==1) mnpv= mnpvp1;
+    
+    mnpv = mnpv0;
+    
+    size_t dd = mnpv;
+    
+    if( dd < mPileUpWeights.size() )
+      {
+	pileup_weight = mPileUpWeights[ mnpv ];
+      }
+    else{ //should not happen as we have a weight for all simulated n_pu multiplicities!
 			//throw logic_error("n_pu too big");
-		}
-	}
-	else
-	{
-		pileup_weight = 1;
-	}
-
-	double www = ww *pileup_weight; 
-	//double www = ww; 
-
-	return www;
+    }
+  }
+  else
+    {
+      pileup_weight = 1;
+    }
+  
+  double www = ww *pileup_weight; 
+  //double www = ww; 
+  
+  return www;
 }
 
 /*
-Double_t  EventData::PDFWeight( UInt_t id )
-{	
-	
-  double  w1,w2;
-	
-	LHAPDF::usePDFMember(1, id ); 
-	
-	double basepdf1 = LHAPDF::xfx(1, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
-	double basepdf2 = LHAPDF::xfx(1, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
-	w1 = basepdf1*basepdf2;
-	
-	
- 	LHAPDF::usePDFMember(3,0 );
- 	
- 	double basepdf1_ = LHAPDF::xfx(3, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
- 	double basepdf2_ = LHAPDF::xfx(3, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
- 	w2 = basepdf1_*basepdf2_;
+Double_t  EventData::PDFWeight( UInt_t id ){	
+double  w1,w2;
 
-	
-	return w1/w2 ;
+LHAPDF::usePDFMember(1, id ); 
 
+double basepdf1 = LHAPDF::xfx(1, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
+double basepdf2 = LHAPDF::xfx(1, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
+w1 = basepdf1*basepdf2;
+
+LHAPDF::usePDFMember(3,0 );
+
+double basepdf1_ = LHAPDF::xfx(3, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
+double basepdf2_ = LHAPDF::xfx(3, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
+w2 = basepdf1_*basepdf2_;
+
+return w1/w2 ;
 } 
 
+Double_t  EventData::PDFWeightAlphaS( UInt_t id ){
+double  w1;
 
-Double_t  EventData::PDFWeightAlphaS( UInt_t id )
-{
+LHAPDF::usePDFMember(2,id );
 
-        double  w1;
+double basepdf1 = LHAPDF::xfx(2, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
+double basepdf2 = LHAPDF::xfx(2, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
+w1 = basepdf1*basepdf2;
 
-        LHAPDF::usePDFMember(2,id );
-
-        double basepdf1 = LHAPDF::xfx(2, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
-        double basepdf2 = LHAPDF::xfx(2, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
-        w1 = basepdf1*basepdf2;
-
-	return w1;
+return w1;
 }
 
 
-Double_t  EventData::PDFWeightAlphaSmstw( UInt_t id )
-{
+Double_t  EventData::PDFWeightAlphaSmstw( UInt_t id ){
 
-        double  w1;
-		int usemem =0;
+double  w1;
+int usemem =0;
 
-		if(id==0) usemem=2;
-		else if(id==1) usemem=3;
+if(id==0) usemem=2;
+else if(id==1) usemem=3;
 
-        LHAPDF::usePDFMember(usemem,0 );
-        double basepdf1 = LHAPDF::xfx(usemem, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
-        double basepdf2 = LHAPDF::xfx(usemem, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
+LHAPDF::usePDFMember(usemem,0 );
+double basepdf1 = LHAPDF::xfx(usemem, mPDFx1, mPDFscale, mPDFf1)/mPDFx1;
+double basepdf2 = LHAPDF::xfx(usemem, mPDFx2, mPDFscale, mPDFf2)/mPDFx2;
 
-        w1 = basepdf1*basepdf2;
+w1 = basepdf1*basepdf2;
 
-		return w1;
-} */
+return w1;
+} 
+*/
 
 
 
@@ -1699,9 +1693,7 @@ Double_t         EventData::PDFpdf2()                                        {  
 
 
 ///-----------------------------------------------------------------------------------------------------------------------------------------
-  
-const std::string & EventData::DataSet()   { return mDataSet;          }
-  
+const std::string & EventData::DataSet()   { return mDataSet; }
 ///-----------------------------------------------------------------------------------------------------------------------------------------
 
 

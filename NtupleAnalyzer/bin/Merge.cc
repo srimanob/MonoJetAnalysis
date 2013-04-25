@@ -37,14 +37,15 @@ int main(int argc, char ** argv)
 	
 	// Get the dataSet names from the input arguments
 	std::string dsname;
-	for (int i=7; i<argc; i=i+2) 
+	for (int i=6; i<argc; i=i+2) 
 	{
 		dsname = argv[i];
 		theMergedPlots.addDataSet(dsname, argv[i+1]);
 	}
 	
 	// Merge the requested histograms into the one plot and produce the graphics file
-	theMergedPlots.mergeHist(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], true);
+	//theMergedPlots.mergeHist(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], true);
+	theMergedPlots.mergeHist(argv[1], argv[2], argv[3], argv[1], argv[4], argv[5], true, "", true);
 	
 	gPad->SetTicks();
 	gPad->Update();
