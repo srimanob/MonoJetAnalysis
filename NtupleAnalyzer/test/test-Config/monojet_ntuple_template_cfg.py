@@ -20,18 +20,18 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 
 ############################# Monojet setting #############################
-iRunData       = False #True or False
+iRunData       = True #True or False
 iFullSim       = False #No meaning if iRunData = True
-iData          = "PromptD" #No meaning if iRunData = False
-                            #Jul13,Aug06,Aug24,PromptC2,PromptD
+iData          = "PromptC2" #No meaning if iRunData = False
+                            #Jul13,Aug06,Aug24,PromptC2,PromptD,Dec11
 iSignal        = False #True or False, if True, PDF will be collected. No meaning if iRunData = True
-iTrigger       = "NoTrig" #MET, SingleMuon, DoubleMuon, SingleElectron, DoubleElectron, Physics, NoTrig
+iTrigger       = "MET" #MET, SingleMuon, DoubleMuon, SingleElectron, DoubleElectron, Physics, NoTrig
                           #(If isSignal, trigger will be set to NoTrig automatically)
 iFileData      = '/store/data/Run2012C/MET/AOD/PromptReco-v2/000/203/002/04BCEC26-AA02-E211-A81D-003048CF99BA.root'
-#iFileMC        = '/store/group/phys_higgs/vbfHinv/DataSample/AODSIM_WJetsToLNu.root'
+iFileMC        = '/store/group/phys_higgs/vbfHinv/DataSample/AODSIM_WJetsToLNu.root'
 #iFileMC        = '/store/group/phys_higgs/vbfHinv/DataSample/AODSIM_DYJetsToLL.root'
-iFileMC        = 'file:/afs/cern.ch/user/s/srimanob/public/ForMonoJet/FastSim/aodsim1.root'
-iMaxEvent      = -1
+#iFileMC        = 'file:/afs/cern.ch/user/s/srimanob/public/ForMonoJet/FastSim/aodsim1.root'
+iMaxEvent      = 500
 iPFElectronTag = "selectedPatElectronsPF"
 iPFMuonTag     = "selectedPatMuonsPF"
 iPFTauTag      = "patTausPF"
@@ -78,13 +78,15 @@ if iRunData == True:
     options.jetCorrections.append('L2L3Residual')
     options.mcInfo = 0
     if (iData.find("Jul13")==0):
-        options.GlobalTag = "FT_53_V6_AN3::All"
+        options.GlobalTag = "FT_53_V6C_AN3::All"
     elif (iData.find("Aug06")==0):
         options.GlobalTag = "FT_53_V6C_AN3::All"
     elif (iData.find("Aug24")==0):
-        options.GlobalTag = "FT_53_V10_AN3::All"
+        options.GlobalTag = "FT53_V10A_AN3::All"
     elif (iData.find("PromptC2")==0):
-        options.GlobalTag = "GR_P_V41_AN3::All"
+        options.GlobalTag = "GR_P_V42_AN3::All"
+    elif (iData.find("Dec11")==0):
+        options.GlobalTag = "FT_P_V42C_AN3::All"
     elif (iData.find("PromptD")==0):
         options.GlobalTag = "GR_P_V42_AN3::All"
     else:
@@ -196,7 +198,7 @@ elif (iTrigger.find("NoTrig")==0):
 else:
     process.hltHighLevel.HLTPaths = cms.vstring("HLT_MET120_HBHENoiseCleaned_v*","HLT_MonoCentralPFJet80_PFMETnoMu*")
 ## Singal run with NoTrig
-if iSignal == True:
+if iRunData == False and iSignal == True:
     process.hltHighLevel.HLTPaths = cms.vstring("*")
 
 
@@ -226,6 +228,7 @@ process.load('RecoMET.METAnalyzers.CSCHaloFilter_cfi')
 
 ## The HCAL laser filter _____________________________________________________||
 process.load("RecoMET.METFilters.hcalLaserEventFilter_cfi")
+process.load("EventFilter.HcalRawToDigi.hcallasereventfilter2012_cff")
 
 ## The ECAL dead cell trigger primitive filter _______________________________||
 process.load('RecoMET.METFilters.EcalDeadCellTriggerPrimitiveFilter_cfi')
@@ -250,6 +253,9 @@ process.load('RecoMET.METFilters.trackingFailureFilter_cfi')
 ## Muons with wrong momenta __________________________________________________||
 process.load('RecoMET.METFilters.inconsistentMuonPFCandidateFilter_cfi')
 process.load('RecoMET.METFilters.greedyMuonPFCandidateFilter_cfi')
+
+## The tracking POG filters __________________________________________________||
+process.load('RecoMET.METFilters.trackingPOGFilters_cff')
 ############################# END Noise Flags ####################################
 
 
@@ -350,7 +356,7 @@ elif (iTrigger.find("NoTrig")==0):
 else:
     process.NtupleAnalyzer.triggerUsed = cms.double(1)
 ## Singal run with NoTrig
-if iSignal == True:
+if iRunData == False and iSignal == True:
     process.NtupleAnalyzer.triggerUsed = cms.double(99)
 ############################# Ntuple Producer Plugin #############################
 
@@ -378,6 +384,7 @@ process.patElectronsPF.isolationValues = cms.PSet(
 
 #-- Tau & Jet
 process.pfNoTauPF.enable = cms.bool(False)
+process.load("RecoTauTag.Configuration.RecoPFTauTag_cff")
 ############################## END FIX PF COLLECTION #####################################
 
 
@@ -385,20 +392,23 @@ process.pfNoTauPF.enable = cms.bool(False)
 #-- Run Full Noise analysis for Data, and MC-FullSim
 if iRunData == True:
     iFullSim = True
+
+process.p0 = cms.Path(process.primaryVertexFilter)
+process.p1 = cms.Path(process.hltHighLevel)
 if iFullSim == True:
-    process.p0  = cms.Path(process.noscraping)
-    process.p1  = cms.Path(process.HBHENoiseFilter)
-    process.p2  = cms.Path(process.CSCTightHaloFilter)
-    process.p3  = cms.Path(process.CSCLooseHaloFilter)
-    process.p4  = cms.Path(process.hcalLaserEventFilter)
-    process.p5  = cms.Path(process.EcalDeadCellTriggerPrimitiveFilter) 
-    process.p6  = cms.Path(process.goodVertices * process.trackingFailureFilter)
-    process.p7  = cms.Path(process.eeBadScFilter)
-    process.p8  = cms.Path(process.greedyMuonPFCandidateFilter*process.inconsistentMuonPFCandidateFilter)
-    process.p9  = cms.Path(process.ecalLaserCorrFilter)
+    process.p2  = cms.Path(process.noscraping)
+    process.p3  = cms.Path(process.HBHENoiseFilter)
+    process.p4  = cms.Path(process.CSCTightHaloFilter)
+    process.p5  = cms.Path(process.CSCLooseHaloFilter)
+    process.p6  = cms.Path(process.hcalLaserEventFilter)
+    process.p7  = cms.Path(process.EcalDeadCellTriggerPrimitiveFilter) 
+    process.p8  = cms.Path(process.goodVertices * process.trackingFailureFilter)
+    process.p9  = cms.Path(process.eeBadScFilter)
+    process.p10 = cms.Path(process.greedyMuonPFCandidateFilter*process.inconsistentMuonPFCandidateFilter)
+    process.p11 = cms.Path(process.ecalLaserCorrFilter)
+    process.p12 = cms.Path(process.trkPOGFilters)
+    process.p13 = cms.Path(process.hcallLaserEvent2012Filter)
 else:
-    process.p0  = cms.Path(process.primaryVertexFilter)
-    process.p1  = cms.Path(process.primaryVertexFilter)
     process.p2  = cms.Path(process.primaryVertexFilter)
     process.p3  = cms.Path(process.primaryVertexFilter)
     process.p4  = cms.Path(process.primaryVertexFilter)
@@ -407,9 +417,12 @@ else:
     process.p7  = cms.Path(process.primaryVertexFilter)
     process.p8  = cms.Path(process.primaryVertexFilter)
     process.p9  = cms.Path(process.primaryVertexFilter)
-process.p10 = cms.Path(process.primaryVertexFilter)
-process.p11 = cms.Path(process.hltHighLevel)
-process.p   = cms.Path(process.susyPatDefaultSequence*process.puJetIdSqeuence)
+    process.p10 = cms.Path(process.primaryVertexFilter)
+    process.p11 = cms.Path(process.primaryVertexFilter)
+    process.p12 = cms.Path(process.primaryVertexFilter)
+    process.p13 = cms.Path(process.primaryVertexFilter)
+
+process.p   = cms.Path(process.recoTauClassicHPSSequence*process.susyPatDefaultSequence*process.puJetIdSqeuence)
 process.ntp = cms.EndPath(process.NtupleAnalyzer)
 
 if iSignal == True:
