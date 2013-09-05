@@ -203,6 +203,7 @@
 #include "DataFormats/Candidate/interface/CompositeCandidate.h"
 #include "DataFormats/Candidate/interface/NamedCompositeCandidate.h"
 #include "RecoEgamma/EgammaTools/interface/ConversionFinder.h"
+#include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
 
 #include "DataFormats/Scalers/interface/DcsStatus.h"
 
@@ -210,3 +211,5 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 
 #include "DataFormats/TauReco/interface/PFTauDiscriminator.h"
+
+#include "DataFormats/EgammaCandidates/interface/Conversion.h"

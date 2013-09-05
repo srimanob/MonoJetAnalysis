@@ -1,32 +1,33 @@
-// C++
+// Package: NtupleAnalyzer                                                    
+// Class: NtupleAnalyzer
 //
-// Package:    NtupleAnalyzer
-// Class:      NtupleAnalyzer
-// 
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                            //
-//         Original Author:  Mehmet Vergili                                                   //
-//               Created:   30 May 2010                                                       //
-//                           MonoJet Analysis  ntuple producer                                //
-////////////////////////////////////////////////////////////////////////////////////////////////
+// Created: 30 May 2010 (Mehmet Vergili)
+// Purpose: MonoJet Analysis / ntuple producer
+//
+// Last updated: 31 May 2013 (Phat Srimanobhas)
 
 #include "NtupleAnalyzer.h"
 
 #define TIVMAX     10000
-#define MAXMUON    30
+#define MAXGENPAR  1000
 #define MAXTAU     50
+#define MAXMUON    30
 #define MAXELEC    30
 #define MAXJET     30
+#define MAXMET     40
 #define MAXPHOT    30
-#define MAXGENPAR  1000
+#define MAXVTX     200
 
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
 #include "CMGTools/External/interface/PileupJetIdentifier.h"
 #include "DataFormats/Common/interface/ValueMap.h"
+#include "EGamma/EGammaAnalysisTools/interface/EGammaCutBasedEleId.h"
 #include "MonoJetAnalysis/NtupleAnalyzer/interface/ElectronEffectiveArea.h"
+
+#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"     
+#include "Cintex/Cintex.h"
 
 using namespace edm;
 using namespace reco;
@@ -39,27 +40,69 @@ public:
   ~NtupleAnalyzer();
   
 private:
-  virtual void beginJob() ;
+  virtual void beginJob();
+  virtual void beginRun(const edm::Run&, const edm::EventSetup&);
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
-  virtual void endJob() ;
+  virtual void endJob();
   void FirstValue();
+  float deltaPhi(float v1, float v2);
+  float deltaR(float eta1, float phi1, float eta2, float phi2);
+  float checkPtMatch(float v1, float v2);
   
-  /// ----------member data ---------------------------
+  ///------------------------------------------------
+  /// member data
+  ///------------------------------------------------
   Service<TFileService> fs;
   TTree *mtree; 
   map<string,TH1D*> histo1D;
   map<string,TH2D*> histo2D;
   
-  ///
-  InputTag TriggerTag;
-  double   JetPtCutTag;
-  double   JetEtaCutTag;
-  double   WeightTag;
-  bool     isMCTag;
-  double   isSignalTag;
-  double   triggerUsed;
-  
-  ///HLT  L1, L1Tech
+  ///------------------------------------------------
+  /// Input Collections
+  ///------------------------------------------------
+  edm::InputTag TriggerTag_;
+  double triggerUsed; 
+  std::string hltPath1Name_;
+  std::string hltPath2Name_;  
+  //  
+  edm::InputTag ElectronTag_; 
+  edm::InputTag MuonTag_; 
+  edm::InputTag TauTag_;
+  edm::InputTag JetTag_;  
+  edm::InputTag METTag_;  
+  //
+  edm::InputTag PFElectronTag_; 
+  edm::InputTag PFMuonTag_; 
+  edm::InputTag PFTauTag_;
+  edm::InputTag PFJetTag_;  
+  edm::InputTag PFMETTag_;
+  //
+  edm::InputTag puJetIdTag_;
+  //
+  double JetPtCutTag;
+  double JetEtaCutTag;
+  double METThresholdTag;
+  double WeightTag;
+  bool   isMCTag;
+  double isSignalTag;
+  bool   chooseOnlyGenZmumu;
+  bool   chooseOnlyGenZnunu;
+
+  //
+  edm::InputTag Tracks_; 
+  //
+  int    debugMode;
+  //
+  bool   includeNonPFCollection;
+  ///------------------------------------------------
+  /// HLT  L1, L1Tech
+  ///------------------------------------------------
+  HLTConfigProvider hltConfig_;
+  unsigned hltBit1_;
+  unsigned hltBit2_;
+  TriggerNames trgnm_;
+  TriggerNames trgnm2_; 
+  char    trgnm[15000];
   int     nHLT;
   int     nL1;
   int     nL1T;
@@ -70,33 +113,53 @@ private:
   int     HLTArray2[100];
   int     HLTPreScale[500];
   int     HLTPreScale2[100];
-  int     NoiseFlag[20]; 
-  char    trgnm[15000];
-  TriggerNames trgnm_, trgnm2_;
-  int     nhlt;
-
-  ///Rho
-  double  mfastJetRho;
+  int     nhlt; 
   
-  ///Run event Lumi BX
-  int     mRun;
-  int     mLumi;
-  int     mBX;
-  int     mnpvm1;
-  int     mnpv0;
-  int     mnpvp1;
-  long    mEvent;
-  
-  ///Noise Flags
+  ///------------------------------------------------
+  /// Noise Flags
+  ///------------------------------------------------
+  int     NoiseFlag[20];
   int     flg_hnoise;
   int     flg_hfbadhit;
   int     flg_ecalspike;
   int     mbeamHaloLoose;
   int     mbeamHaloTight;
   double  mSumTrackPt;
- 
-  ///------------------------Generator Information------------------------------------------------------
-  ///Gen Particle 	
+  
+  ///------------------------------------------------  
+  /// Rho
+  ///------------------------------------------------
+  double  mfastJetRho;
+
+  ///-------------------------------------------------------------------------- 
+  /// PileUP Summury
+  ///--------------------------------------------------------------------------
+  int     mnpvm1;
+  int     mnpv0;
+  int     mnpvp1;
+  
+  ///------------------------------------------------
+  /// Primary vertices
+  ///------------------------------------------------
+  double  mPVx[MAXVTX];
+  double  mPVy[MAXVTX];
+  double  mPVz[MAXVTX];
+  double  mPVchi2[MAXVTX];
+  double  mPVndof[MAXVTX]; 
+  int	  mPVntracks[MAXVTX];
+  int     mNPV;
+  
+  ///------------------------------------------------
+  /// Run event Lumi BX
+  ///------------------------------------------------
+  int     mRun;
+  int     mLumi;
+  int     mBX;
+  long    mEvent;
+  
+  ///------------------------------------------------
+  /// Generator Information
+  ///------------------------------------------------
   int     mNGenPar;
   int     mGenParIndex[MAXGENPAR]; 
   int     mGenParId[MAXGENPAR]; 
@@ -115,7 +178,10 @@ private:
   double  mGenParEta[MAXGENPAR]; 
   double  mGenParPhi[MAXGENPAR]; 
   double  mGenParMass[MAXGENPAR];
-  //
+
+  ///------------------------------------------------
+  /// Generator Information: PDF
+  ///------------------------------------------------
   double  mGenScale;
   double  mPdfscale;
   double  mPdfx1; 
@@ -129,7 +195,10 @@ private:
   int     mPdff2;	
   int     mNPdfWeights;
   int     mNPdfWeights1;
-  //
+  
+  ///------------------------------------------------
+  /// Generator Information: Tau decays
+  ///------------------------------------------------
   int     mWTauDecayMode;
   int     mWTauN;
   int     mWTauDecayId[MAXGENPAR];  
@@ -139,7 +208,9 @@ private:
   double  mWTauDecayPhi[MAXGENPAR];
   double  mWTauDecayMass[MAXGENPAR];
   
-  ///------------------------Calo AK5 Jets------------------------------------------------------
+  ///------------------------------------------------
+  /// Calo AK5 Jets
+  ///------------------------------------------------
   double  mCaloAK5JetE[MAXJET];
   double  mCaloAK5JetPt[MAXJET];
   double  mCaloAK5JetPx[MAXJET];
@@ -170,7 +241,9 @@ private:
   int     mCaloAK5JetIDLOOSE[MAXJET]; 
   int     mCaloAK5JetIDTIGHT[MAXJET];
   
-  ///--------------PF AK5Jets-------------------------------------------
+  ///------------------------------------------------
+  /// PF AK5Jets
+  ///------------------------------------------------
   int     mNPFAK5Jets;
   int     mPFAK5JetN90[MAXJET];
   int     mPFAK5JetNtrkPF[MAXJET];
@@ -202,15 +275,22 @@ private:
   double  mPFAK5JetBTagCombSecVtx[MAXJET];
   double  mPFAK5JetBTagCombSecVtxMVA[MAXJET];   
   //
-  double  mPFAK5uncer[MAXJET];
   double  mPFAK5JetNeuEmEngFrac[MAXJET];
   double  mPFAK5JetChaEmEngFrac[MAXJET];
   double  mPFAK5JetChaHadEngFrac[MAXJET];
   double  mPFAK5JetNeuHadEngFrac[MAXJET];
-  double  mPFAK5JetChaMuEng[MAXJET];
-  double  mPFAK5JetMuonEng[MAXJET];
+  //
+  double  mPFAK5JetChaEmEng[MAXJET];
+  double  mPFAK5JetNeuEmEng[MAXJET];
+  double  mPFAK5JetChaHadEng[MAXJET];
+  double  mPFAK5JetNeuHadEng[MAXJET];
   double  mPFAK5JetPhotEng[MAXJET];
-  double  mPFAK5JetElecEng[MAXJET];		
+  double  mPFAK5JetElecEng[MAXJET];
+  double  mPFAK5JetMuonEng[MAXJET];
+  double  mPFAK5JetHFHadEng[MAXJET];
+  double  mPFAK5JetHFEmEng[MAXJET];		
+  double  mPFAK5JetChaMuEng[MAXJET];
+  //
   int     mPFAK5JetNumOfChaMu[MAXJET];
   int     mPFAK5JetNumOfMuon[MAXJET];
   int     mPFAK5JetNumOfPhot[MAXJET];
@@ -223,8 +303,14 @@ private:
   int     mPFAK5JetIDLOOSE[MAXJET];
   int     mPFAK5JetIDTIGHT[MAXJET];
   int     mPFAK5JetPUFullJetId[MAXJET];
+  int     mPFAK5JetNumOfHFHad[MAXJET];
+  int     mPFAK5JetNumOfHFEM[MAXJET];
+  //
+  double  mPFAK5uncer[MAXJET];
   
-  ///Gen AK5 Jets
+  ///------------------------------------------------
+  /// Gen AK5 Jets
+  ///------------------------------------------------
   double  mGenAK5JetE[MAXJET];
   double  mGenAK5JetPt[MAXJET];
   double  mGenAK5JetPx[MAXJET];
@@ -236,24 +322,29 @@ private:
   double  mGenAK5JetHadEnergy[MAXJET];		
   int     mNGenAK5Jets; 
   
-  ///--------------METS-------------------------------------------
+  ///------------------------------------------------
+  /// MET
+  ///------------------------------------------------
   int     mNMet;
-  double  mMetPt[30];
-  double  mMetPhi[30];
-  double  mMetSumEt[30];
-  double  mMetPx[30];
-  double  mMetPy[30];
-  double  mMetSign[30];
+  double  mMetPt[MAXMET];
+  double  mMetPhi[MAXMET];
+  double  mMetSumEt[MAXMET];
+  double  mMetPx[MAXMET];
+  double  mMetPy[MAXMET];
+  double  mMetSign[MAXMET];
   
-  ///--------------MHT-------------------------------------------
+  ///------------------------------------------------
+  /// MHT
+  ///------------------------------------------------
   double  mMHTPt;
   double  mMHTPhi;
   double  mMHTPx;
   double  mMHTPy;
   double  mMHTSign;
   
-  
-  ///------------MUONS-------------------------------------------
+  ///------------------------------------------------
+  /// Muons
+  ///------------------------------------------------
   int     mNMuon;
   double  mMuonPt[MAXMUON];
   double  mMuonEt[MAXMUON];
@@ -272,7 +363,8 @@ private:
   double  mMuonEmEtDR03[MAXMUON];
   double  mMuonHadEtDR03[MAXMUON];
   int     mMuonNumOfMatches[MAXMUON];
-  
+  int     mMuonIsTight[MAXMUON];  
+  int     mMuonIsLoose[MAXMUON];
   // comb muon	
   double  mMuonCombChi2Norm[MAXMUON];  
   int	  mMuonCombValidHits[MAXMUON];  
@@ -291,7 +383,6 @@ private:
   double  mMuonCombVz[MAXMUON]; 
   double  mMuonCombD0[MAXMUON]; 
   double  mMuonCombDz[MAXMUON]; 
-  
   // standalone muon	
   double  mMuonStandChi2Norm[MAXMUON];
   int	  mMuonStandValidHits[MAXMUON];
@@ -304,7 +395,6 @@ private:
   double  mMuonStandChi2[MAXMUON];
   double  mMuonStandCharge[MAXMUON];
   double  mMuonStandQOverPError[MAXMUON];
-  
   // track muon	
   double  mMuonTrkChi2Norm[MAXMUON]; 
   int	  mMuonTrkValidHits[MAXMUON];
@@ -320,8 +410,9 @@ private:
   double  mMuonTrkDxy[MAXMUON]; 
   int     mMuonTrkNumOfValidPixHits[MAXMUON];
   
-  
-  ///------------PF MUONS-------------------------------------------
+  ///------------------------------------------------
+  /// PFMuons
+  ///------------------------------------------------
   int     mNPFMuon;
   double  mPFMuonPt[MAXMUON];               
   double  mPFMuonEt[MAXMUON];               
@@ -335,18 +426,28 @@ private:
   //
   int     mPFMuonIsGlobal[MAXMUON];         
   int     mPFMuonIsStandAlone[MAXMUON];     
-  int     mPFMuonIsTracker[MAXMUON];        
+  int     mPFMuonIsTracker[MAXMUON];  
+  int     mPFMuonIsPF[MAXMUON];
+  int     mPFMuonIsTight[MAXMUON];  
+  int     mPFMuonIsLoose[MAXMUON];   
   //
   double  mPFMuonChargedHadronIso[MAXMUON]; 
   double  mPFMuonPhotonIso[MAXMUON];        
   double  mPFMuonNeutralHadronIso[MAXMUON]; 
   int     mPFMuonisGMPT[MAXMUON];           
-  int     mPFMuonNumOfMatches[MAXMUON];
   double  mPFMuonR04ChargedHadronPt[MAXMUON];
   double  mPFMuonR04NeutralHadronEt[MAXMUON];
   double  mPFMuonR04PhotonEt[MAXMUON];
   double  mPFMuonR04PUPt[MAXMUON];
-  
+  //
+  int     mPFMuonNumOfMatches[MAXMUON];
+  int     mPFMuonNumOfMatchesStation[MAXMUON];
+  //
+  double  mPFMuonGlobChi2Norm[MAXMUON];
+  int     mPFMuonGlobNumOfValidMuonHits[MAXMUON];
+  //
+  double  mPFMuonBestTrkdxy[MAXMUON];
+  double  mPFMuonBestTrkdz[MAXMUON];
   //
   double  mPFMuoninnertrackPt[MAXMUON];     
   int     mPFMuonnValidHits[MAXMUON];       
@@ -397,9 +498,11 @@ private:
   double  mPFMuonTrkQOverPError[MAXMUON]; 
   double  mPFMuonTrkDxy[MAXMUON];         
   double  mPFMuonTrkNumOfValidPixHits[MAXMUON];
-  	
+  int     mPFMuonTrkLayerWithMeasurement[MAXMUON];
   
-  ///--------------Electron-------------------------------------------
+  ///------------------------------------------------
+  /// Electrons
+  ///------------------------------------------------
   int     mElecEcalDrivenSeed[MAXELEC];        
   int     mElecID80[MAXELEC];            
   int     mElecID95[MAXELEC];   
@@ -409,6 +512,11 @@ private:
   int     mElecNumOfValidHits[MAXELEC];  
   int     mElecInnerNumOfHits[MAXELEC];  
   int     mNElec;
+  //
+  int     mElecIsTight[MAXELEC];
+  int     mElecIsMedium[MAXELEC];
+  int     mElecIsLoose[MAXELEC];
+  int     mElecIsVeto[MAXELEC];
   //
   double  mElecE[MAXELEC];               
   double  mElecPt[MAXELEC];              
@@ -434,10 +542,17 @@ private:
   double  mElecetaeta[MAXELEC];          
   double  mElecietaieta[MAXELEC];  
   
-  ///--------------PF Electron-------------------------------------------
+  ///------------------------------------------------
+  /// PFElectrons
+  ///------------------------------------------------
   int     mNPFElec;
   int     mPFElecCharge[MAXELEC]; 
   int     mPFElecIsEB[MAXELEC];  
+  //
+  int     mPFElecIsTight[MAXELEC];
+  int     mPFElecIsMedium[MAXELEC];
+  int     mPFElecIsLoose[MAXELEC];
+  int     mPFElecIsVeto[MAXELEC];
   //
   double  mPFElecE[MAXELEC];           
   double  mPFElecPt[MAXELEC];          
@@ -485,7 +600,9 @@ private:
   int     mPFevspi[MAXELEC];                 
   int     mPFevsmu[MAXELEC];                 
   
-  ///-------------Taus--------------------------------------------------
+  ///------------------------------------------------
+  /// Taus
+  ///------------------------------------------------
   int     mNTau;
   int     mTauCharge[MAXTAU];
   double  mTauE[MAXTAU]; 
@@ -563,7 +680,9 @@ private:
   double  mTauJetEta[MAXTAU];
   double  mTauJetPhi[MAXTAU];
   
-  ///---------------PF Tau-----------------------------------------------	
+  ///------------------------------------------------
+  /// PFTaus
+  ///------------------------------------------------	
   int     mNPFTau;
   int     mPFTauCharge[MAXTAU];
   double  mPFTauE[MAXTAU]; 
@@ -649,7 +768,9 @@ private:
   double  mPFTauJetEta[MAXTAU];
   double  mPFTauJetPhi[MAXTAU];
   
-  ///------------Photons------------------------------------------------	
+  ///------------------------------------------------
+  /// Photons
+  ///------------------------------------------------	
   int     mNPhot;
   double  mPhotE[MAXPHOT];
   double  mPhotPt[MAXPHOT]; 
@@ -669,16 +790,9 @@ private:
   double  mPhotHasPixSeed[MAXPHOT];
   int     mPhotIsPhot[MAXPHOT];
   
-  ///------------Primary Vertices------------------------------------------------
-  double  mPVx[200];
-  double  mPVy[200];
-  double  mPVz[200];
-  double  mPVchi2[200];
-  double  mPVndof[200]; 
-  int	  mPVntracks[200];
-  int     mNPV;
-  
-  ///------------TIV------------------------------------------------
+  ///------------------------------------------------
+  /// TIV
+  ///------------------------------------------------
   float   TIV[TIVMAX];
   int     tivN;
   double  tiv_ltrack_thr_;
@@ -707,18 +821,9 @@ private:
   //
   float   LowTIV;
   
-  ///------------Input Collections------------------------------------------------
-  edm::InputTag Tracks_;
-  edm::InputTag PFElectronTag_; 
-  edm::InputTag PFMuonTag_; 
-  edm::InputTag PFTauTag_;  
-  edm::InputTag TauTag_;  
-  edm::InputTag PFJetTag_;  
-  edm::InputTag PFMETTag_;
-  
-  int     DEBUG;
-  
-  ///------------CaloTowers------------------------------------------------
+  ///------------------------------------------------
+  /// CaloTowers
+  ///------------------------------------------------
   //double CaloTowerEt[30];
   //double CaloTowerPhi[30]; 
   double  mCaloTowerdEx;
@@ -726,47 +831,127 @@ private:
 };
 
 
-NtupleAnalyzer::NtupleAnalyzer(const edm::ParameterSet& iConfig)
+NtupleAnalyzer::NtupleAnalyzer(const edm::ParameterSet& iConfig):
+  hltConfig_()
 {
-  mtree        = fs->make<TTree>("ntuple","ntuple");
-  WeightTag    = iConfig.getParameter<double>("weight");
+  mtree                  = fs->make<TTree>("ntuple","ntuple");
+  WeightTag              = iConfig.getParameter<double>("weight");
   
-  TriggerTag   = iConfig.getParameter<string>("TriggerTag");
-  JetPtCutTag  = iConfig.getParameter<double>("jetPtCut");
-  JetEtaCutTag = iConfig.getParameter<double>("jetEtaCut");
+  //
+  debugMode              = iConfig.getParameter<bool>("debugMode");
+  includeNonPFCollection = iConfig.getParameter<bool>("includeNonPFCollection");
   
-  isMCTag      = iConfig.getParameter<bool>("isMC");
-  isSignalTag  = iConfig.getParameter<double>("isSignal");
+  //
+  TriggerTag_            = iConfig.getUntrackedParameter<edm::InputTag>("TriggerTag");
+  triggerUsed            = iConfig.getParameter<double>("triggerUsed");
+  hltPath1Name_          = iConfig.getUntrackedParameter<std::string>("hltPath1Name");
+  hltPath2Name_          = iConfig.getUntrackedParameter<std::string>("hltPath2Name"); 
+  hltBit1_               = 0;
+  hltBit2_               = 0;
   
-  triggerUsed  = iConfig.getParameter<double>("triggerUsed");
+  //
+  JetPtCutTag            = iConfig.getParameter<double>("jetPtCut");
+  JetEtaCutTag           = iConfig.getParameter<double>("jetEtaCut");
+  METThresholdTag        = iConfig.getParameter<double>("METThreshold");
   
-  ///TIV
-  tiv_ltrack_thr_ = iConfig.getParameter<double>("TIV_ltrack_thr");
-  tiv_strack_thr_ = iConfig.getParameter<double>("TIV_strack_thr");
-  tiv_dz_thr_     = iConfig.getParameter<double>("TIV_dz_thr");
-  tiv_dxy_thr_    = iConfig.getParameter<double>("TIV_dxy_thr");
-  tiv_cone_       = iConfig.getParameter<double>("TIV_cone_thr");
-  tiv_inner_cone_ = iConfig.getParameter<double>("TIV_inner_cone_thr");
-  Tracks_         = iConfig.getUntrackedParameter<edm::InputTag>("Tracks");
+  //
+  isMCTag                = iConfig.getParameter<bool>("isMC");
+  isSignalTag            = iConfig.getParameter<double>("isSignal");
+  chooseOnlyGenZmumu     = iConfig.getParameter<bool>("chooseOnlyGenZmumu"); 
+  chooseOnlyGenZnunu     = iConfig.getParameter<bool>("chooseOnlyGenZnunu");
+  
+  // PF Collection
+  PFElectronTag_         = iConfig.getUntrackedParameter<edm::InputTag>("PFElectronTag");
+  PFMuonTag_             = iConfig.getUntrackedParameter<edm::InputTag>("PFMuonTag");
+  PFTauTag_              = iConfig.getUntrackedParameter<edm::InputTag>("PFTauTag");
+  PFJetTag_              = iConfig.getUntrackedParameter<edm::InputTag>("PFJetTag");
+  PFMETTag_              = iConfig.getUntrackedParameter<edm::InputTag>("PFMETTag");
+  
+  // non PF collection 
+  ElectronTag_           = iConfig.getUntrackedParameter<edm::InputTag>("ElectronTag");
+  MuonTag_               = iConfig.getUntrackedParameter<edm::InputTag>("MuonTag");
+  TauTag_                = iConfig.getUntrackedParameter<edm::InputTag>("TauTag");
+  JetTag_                = iConfig.getUntrackedParameter<edm::InputTag>("JetTag");
+  METTag_                = iConfig.getUntrackedParameter<edm::InputTag>("METTag");
 
-  //PFCollection
-  PFElectronTag_  = iConfig.getUntrackedParameter<edm::InputTag>("PFElectronTag");
-  PFMuonTag_      = iConfig.getUntrackedParameter<edm::InputTag>("PFMuonTag");
-  PFTauTag_       = iConfig.getUntrackedParameter<edm::InputTag>("PFTauTag");
-  TauTag_         = iConfig.getUntrackedParameter<edm::InputTag>("TauTag");
-  PFJetTag_       = iConfig.getUntrackedParameter<edm::InputTag>("PFJetTag");
-  PFMETTag_       = iConfig.getUntrackedParameter<edm::InputTag>("PFMETTag");
-  
-  DEBUG=0;
+  // PUJetID tag
+  puJetIdTag_            = iConfig.getUntrackedParameter<edm::InputTag>("puJetIdTag");
+ 
+  // TIV
+  tiv_ltrack_thr_        = iConfig.getParameter<double>("TIV_ltrack_thr");
+  tiv_strack_thr_        = iConfig.getParameter<double>("TIV_strack_thr");
+  tiv_dz_thr_            = iConfig.getParameter<double>("TIV_dz_thr");
+  tiv_dxy_thr_           = iConfig.getParameter<double>("TIV_dxy_thr");
+  tiv_cone_              = iConfig.getParameter<double>("TIV_cone_thr");
+  tiv_inner_cone_        = iConfig.getParameter<double>("TIV_inner_cone_thr");
+  Tracks_                = iConfig.getUntrackedParameter<edm::InputTag>("Tracks");
 }
 
 
 NtupleAnalyzer::~NtupleAnalyzer()
 {
-
 }
 
 
+float NtupleAnalyzer::deltaPhi(float v1, float v2)
+{
+  float diff = fabs(v2 - v1);
+  float corr = 2*acos(-1.) - diff;
+  if (diff < acos(-1.))
+    return diff; 
+  else
+    return corr; 
+}
+
+
+float NtupleAnalyzer::deltaR(float eta1, float phi1, float eta2, float phi2)
+{
+  return sqrt( (eta1-eta2)*(eta1-eta2) 
+	       + deltaPhi(phi1, phi2)*deltaPhi(phi1, phi2) );
+}
+
+
+float NtupleAnalyzer::checkPtMatch(float v1, float v2)
+{
+  return std::fabs((v1-v2)/v2);
+}
+
+
+void NtupleAnalyzer::beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
+{
+  bool changed;
+  hltConfig_.init(iRun, iSetup, TriggerTag_.process(), changed);
+  
+  try{
+    hltBit1_=(hltConfig_.triggerNames()).size();  // default setting -- trigger not found
+    hltBit2_=(hltConfig_.triggerNames()).size();  // default setting -- trigger not found 
+    for (uint i=0;i<(hltConfig_.triggerNames()).size();++i){ // loop over trigger names
+      std::string trigName=hltConfig_.triggerName(i);
+      if (hltPath1Name_.size()>0 &&
+	  trigName.find(hltPath1Name_)!= std::string::npos){
+	hltBit1_ = hltConfig_.triggerIndex(trigName);
+      }
+      if (hltPath2Name_.size()>0 &&
+	  trigName.find(hltPath2Name_)!= std::string::npos){
+	hltBit2_ = hltConfig_.triggerIndex(trigName);
+      }
+    }
+    
+    if (hltBit1_==(hltConfig_.triggerNames()).size())
+      edm::LogWarning("InvHiggsInfoProducer") << "Could not find an HLT path matching "<<hltPath1Name_<<std::endl;
+    else
+      edm::LogInfo("InvHiggsInfoProducer") << hltPath1Name_ << " index is " << hltBit1_ << std::endl;
+    
+    if (hltBit2_==(hltConfig_.triggerNames()).size())
+      edm::LogWarning("InvHiggsInfoProducer") << "Could not find an HLT path matching "<<hltPath2Name_<<std::endl;
+    else
+      edm::LogInfo("InvHiggsInfoProducer") << hltPath2Name_ << " index is " << hltBit2_ << std::endl;
+  }
+  catch (cms::Exception e) {
+    edm::LogWarning("InvHiggsInfoProducer") << "Exception while trying to find HLT bit numbers" << std::endl;
+    edm::LogWarning("InvHiggsInfoProducer") << e << std::endl;
+  }
+}
 
 // ------------ method called to for each event  ------------
 
@@ -783,32 +968,86 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   }
   
   
-  ///-------------------------------------------------------------------------- 
-  /// Run  Event Lumi Bx
-  ///--------------------------------------------------------------------------
-  mRun   = iEvent.id().run();
-  mEvent = iEvent.id().event();
-  mLumi  = iEvent.luminosityBlock();
-  mBX    = iEvent.bunchCrossing();
-  
-  
   ///--------------------------------------------------------------------------
   /// Prefilter
-  ///--------------------------------------------------------------------------
-  /*
-    Handle< View<pat::MET> > PFMetHand2;
-    iEvent.getByLabel("patMETsAK5Calo",PFMetHand2);
-    const View<pat::MET> & pfmets2 = *PFMetHand2;
-    if(pfmets2[0].uncorrectedPt(pat::MET::uncorrALL)< 60) return;
-  */
+  ///--------------------------------------------------------------------------  
+  //
   //if(mEvent!=128062935) return;
+  //
+  edm::Handle<edm::View<pat::MET> > PFMetType1Filter;
+  iEvent.getByLabel(PFMETTag_,PFMetType1Filter);
+  if(!PFMetType1Filter.isValid()) return;
+  const edm::View<pat::MET> & pfmetsType1filter = *PFMetType1Filter;
+  if(pfmetsType1filter[0].et()<METThresholdTag) return;
+  //
+  // Select only Zmumu events
+  // 
+  Handle<reco::GenParticleCollection>  GenParHand;
+  iEvent.getByLabel("genParticles", GenParHand);
+  if(chooseOnlyGenZmumu && isMCTagCheck && GenParHand.isValid()){
+    bool checkZmumu = false;
+    for( size_t i = 0; i < GenParHand->size(); ++ i ){
+      const GenParticle &p = (*GenParHand)[i];
+      int id     = p.pdgId();
+      int status = p.status();
+      if(status==3 && abs(id)==13){
+	int n = p.numberOfMothers();
+	if(n>0){
+	  const reco::Candidate *pa = p.mother();
+	  int parentID = pa->pdgId();
+	  if(parentID==23)
+	    checkZmumu = true;
+	}
+      }
+    }
+    if(!checkZmumu) return;
+  }
+  //
+  // Select only Znunu events
+  // 
+  if(chooseOnlyGenZnunu && isMCTagCheck && GenParHand.isValid()){
+    bool checkZnunu = false;
+    for( size_t i = 0; i < GenParHand->size(); ++ i ){
+      const GenParticle &p = (*GenParHand)[i];
+      int id     = p.pdgId();
+      int status = p.status();
+      if(status==3 && (abs(id)==12 || abs(id)==14 || abs(id)==16)){
+	int n = p.numberOfMothers();
+	if(n>0){
+	  const reco::Candidate *pa = p.mother();
+	  int parentID = pa->pdgId();
+	  if(parentID==23)
+	    checkZnunu = true;
+	}
+      }
+    }
+    if(!checkZnunu) return;
+  }
   
   
   ///-------------------------------------------------------------------------- 
-  /// Store trigger information & Filter
+  /// Trigger filter
   ///--------------------------------------------------------------------------
-  Handle<TriggerResults> hltTriggerResultHandle;
-  iEvent.getByLabel( TriggerTag , hltTriggerResultHandle);
+  edm::Handle<TriggerResults> hltTriggerResultHandle;
+  iEvent.getByLabel(TriggerTag_, hltTriggerResultHandle);
+  if(!hltTriggerResultHandle.isValid()) return;
+
+  bool triggerCheck1 = false;
+  bool triggerCheck2 = false;
+
+  if(hltBit1_ < hltTriggerResultHandle->size()){
+    triggerCheck1 = hltTriggerResultHandle->accept(hltBit1_);
+  }
+  if(hltBit2_ < hltTriggerResultHandle->size()){
+    triggerCheck2 = hltTriggerResultHandle->accept(hltBit2_);
+  }
+  
+  if(triggerUsed!=99 && !triggerCheck1 && !triggerCheck2) return;
+ 
+  
+  ///-------------------------------------------------------------------------- 
+  /// Store trigger information
+  ///--------------------------------------------------------------------------
   trgnm_ = iEvent.triggerNames(*hltTriggerResultHandle);
   const TriggerResults &Hlt = *hltTriggerResultHandle;
   char tmpnm1[3000],tmpnm2[3000];
@@ -831,41 +1070,25 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     //cout <<trgnm<<endl;
     //string strtrg = trgnm;
   }
-  
-  int flg_trg=0;
   string strtrg = tmpnm2;
+  sprintf(trgnm,"TRG%s", tmpnm2); 
   
-  if(triggerUsed==1){
-    if(strtrg.find("HLT_MET120_HBHENoiseCleaned_v")!=string::npos) flg_trg=1;
-    if(strtrg.find("HLT_MonoCentralPFJet80_PFMETnoMu")!=string::npos) flg_trg=1;
-  }
-  else if(triggerUsed==2){
-    if(strtrg.find("HLT_IsoMu24_eta2p1_v")!=string::npos) flg_trg=1;
-    if(strtrg.find("HLT_Mu40_eta2p1_v")!=string::npos) flg_trg=1;
-  }
-  else if(triggerUsed==3){
-    if(strtrg.find("HLT_Mu17_Mu8_v")!=string::npos) flg_trg=1;
-  }
-  else if(triggerUsed==4){
-    if(strtrg.find("HLT_Ele27_WP80_v")!=string::npos) flg_trg=1;
-  }
-  else if(triggerUsed==5){
-    if(strtrg.find("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v")!=string::npos) flg_trg=1;
-  }
-  else if(triggerUsed==6){
-    if(strtrg.find("HLT_Physics_v")!=string::npos) flg_trg=1;
-  }
-  else if(triggerUsed==99){ //no trigger
-    flg_trg=1;
-  }
-  else{
-    if(strtrg.find("HLT_MET120_HBHENoiseCleaned_v")!=string::npos) flg_trg=1;
-    if(strtrg.find("HLT_MonoCentralPFJet80_PFMETnoMu")!=string::npos) flg_trg=1;
+  
+  ///-------------------------------------------------------------------------- 
+  /// Run  Event Lumi Bx
+  ///--------------------------------------------------------------------------
+  mRun   = iEvent.id().run();
+  mEvent = iEvent.id().event();
+  mLumi  = iEvent.luminosityBlock();
+  mBX    = iEvent.bunchCrossing();
+  
+  if(debugMode){
+    cout<<"----------------------------"<<endl;
+    cout<<"Run= "<<mRun<<", Lumi= "<<mLumi<<", Event= "<<mEvent<<endl;
+    cout<<"Trigger-1: "<<hltPath1Name_<<" Result= "<<triggerCheck1<<endl;
+    cout<<"Trigger-2: "<<hltPath2Name_<<" Result= "<<triggerCheck2<<endl;
   }
   
-  if (flg_trg==0) return; 
-  sprintf(trgnm,"TRG%s", tmpnm2);
-
   
   ///-------------------------------------------------------------------------- 
   ///
@@ -893,15 +1116,27 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   ///--------------------------------------------------------------------------
   //TriggerNames myTrigName;
   Handle<TriggerResults> myTrig;
-  iEvent.getByLabel("TriggerResults", myTrig );
-  //iEvent.getByLabel(edm::InputTag("TriggerResults","","PAT"), myTrig );
-  
-  int hltCount2 = myTrig->size();
-  for(int i = 0 ; i < hltCount2; i++){
-    //cout << i << "  " <<  myTrig->accept(i)  << endl;
-    NoiseFlag[i] = myTrig->accept(i);
+  iEvent.getByLabel("TriggerResults", myTrig);
+  int hltCount2 = 20;
+  if(myTrig.isValid()){
+    hltCount2 = myTrig->size();
+    for(int i=0; i<hltCount2; i++){
+      //cout << i << "  " <<  myTrig->accept(i)  << endl;
+      NoiseFlag[i] = myTrig->accept(i);
+    }
+  }
+  else{
+    for(int i=0; i<hltCount2; i++){
+      NoiseFlag[i] = 1;
+    }
   }
   nNoiseFlag = hltCount2;
+  if(debugMode){
+    cout<<"Noise: ";
+    for(int i=0; i<nNoiseFlag; i++)
+      cout<<NoiseFlag[i]<<" ";
+    cout<<endl;
+  }
   
   
   ///-------------------------------------------------------------------------- 
@@ -927,30 +1162,30 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   int cti=0;
   
   for (CaloTowerCollection::const_iterator kal=towers->begin(); kal!=towers->end(); kal++){	
-    // double eta   = kal->eta();
-    double phi   = kal->phi();
-    double theta = kal->theta();
-    double e     = kal->energy();
-    double et    = e*sin(theta);
-    
-    // double etEM    = (kal->emEnergy())*sin(theta);
-    // double etHad   = (kal->hadEnergy())*sin(theta);
-    
-    math::PtEtaPhiMLorentzVector ct(kal->p4(vertex_));
-    if(et>0.3){
-      // sum_ez += e*cos(theta);
-      // sum_et += et;
-      // sum_ex += et*cos(phi);
-      // sum_ey += et*sin(phi);
-      
-      // sum_ex += ct.px();
-      // sum_ey += ct.py();
-      
-      dEx=dEx+(ct.px()-et*cos(phi));
-      dEy=dEy+(ct.py()-et*sin(phi));
-      
-    }
-    cti++;
+  // double eta   = kal->eta();
+  double phi   = kal->phi();
+  double theta = kal->theta();
+  double e     = kal->energy();
+  double et    = e*sin(theta);
+  
+  // double etEM    = (kal->emEnergy())*sin(theta);
+  // double etHad   = (kal->hadEnergy())*sin(theta);
+  
+  math::PtEtaPhiMLorentzVector ct(kal->p4(vertex_));
+  if(et>0.3){
+  // sum_ez += e*cos(theta);
+  // sum_et += et;
+  // sum_ex += et*cos(phi);
+  // sum_ey += et*sin(phi);
+  
+  // sum_ex += ct.px();
+  // sum_ey += ct.py();
+  
+  dEx=dEx+(ct.px()-et*cos(phi));
+  dEy=dEy+(ct.py()-et*sin(phi));
+  
+  }
+  cti++;
   }   // loop over calo towers.
   
   //    double metPt=sqrt(sum_ex*sum_ex+sum_ey*sum_ey);
@@ -970,8 +1205,6 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   mCaloTowerdEy = dEy;
   
   //}
-  
-  //cout  <<  mRun  <<  "   " << mLumi  <<  "   " <<   mEvent  << endl; 
   */
 
   
@@ -1012,102 +1245,133 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   const edm::InputTag eventrho("kt6PFJets", "rho");
   iEvent.getByLabel(eventrho,rho);
   mfastJetRho = *rho;
+  if(debugMode){
+    cout<<"Rho= "<<mfastJetRho<<endl;
+  }
+  
+  
+  ///-------------------------------------------------------------------------- 
+  /// B-Field
+  ///--------------------------------------------------------------------------
+  edm::Handle<DcsStatusCollection> dcsHandle;
+  iEvent.getByLabel("scalersRawToDigi", dcsHandle);
+  double bField = 3.8112;
+  if( !isMCTag && dcsHandle->size() > 0){
+    float currentToBFieldScaleFactor = 2.09237036221512717e-04;
+    float  current = (*dcsHandle)[0].magnetCurrent();
+    bField = current*currentToBFieldScaleFactor;
+  }
+  else {
+    edm::ESHandle<MagneticField> magneticField;
+    iSetup.get<IdealMagneticFieldRecord>().get(magneticField);
+    bField = magneticField->inTesla(GlobalPoint(0.,0.,0.)).z();
+  }
+  
+  
+  ///-------------------------------------------------------------------------- 
+  /// Tracks
+  ///--------------------------------------------------------------------------
+  edm::Handle<reco::TrackCollection> trkHandle;
+  iEvent.getByLabel("generalTracks",trkHandle);
   
   
   ///-------------------------------------------------------------------------- 
   /// AK5CaloJet
   ///--------------------------------------------------------------------------
   edm::Handle<edm::View<pat::Jet> > JetHand;
-  iEvent.getByLabel("cleanPatJetsAK5Calo" ,JetHand);
+  iEvent.getByLabel(JetTag_,JetHand);
   int jeti=0;
-  /*
-  for(unsigned int ind=0; ind<(*JetHand).size() && ind<MAXJET; ind++){ 
-  
-  const pat::Jet& jet2 = (*JetHand)[ind];
-  const pat::Jet& jet =  (*JetHand)[ind].correctedJet("Uncorrected");
-  
-  if( jet2.pt() < JetPtCutTag ) continue;
-  
-  /// default scale factor: Raw & L1 & L2 & L3
-  /// http://cmslxr.fnal.gov/lxr/source/DataFormats/PatCandidates/interface/JetCorrFactors.h
-  
-  JetIDSelectionFunctor jetIDFunctorLoose(JetIDSelectionFunctor::PURE09, JetIDSelectionFunctor::LOOSE);
-  JetIDSelectionFunctor jetIDFunctorTight(JetIDSelectionFunctor::PURE09, JetIDSelectionFunctor::TIGHT);
-  
-  mCaloAK5JetIDLOOSE[jeti] = jetIDFunctorLoose(jet2);
-  mCaloAK5JetIDTIGHT[jeti] = jetIDFunctorTight(jet2);
-  
-  mCaloAK5JetPt[jeti]      =  jet.pt();
-  mCaloAK5JetPx [jeti]     =  jet.momentum().X();
-  mCaloAK5JetPy [jeti]     =  jet.momentum().Y();
-  mCaloAK5JetPz [jeti]     =  jet.momentum().Z();
-  mCaloAK5JetE [jeti]      =  jet.energy();
-  
-  mCaloAK5JetEta[jeti]     =  jet2.eta();
-  mCaloAK5JetPhi[jeti]     =  jet2.phi();
-  mCaloAK5JetEmf [jeti]    =  jet2.emEnergyFraction();
-  mCaloAK5JetN90 [jeti]    =  jet2.n90();
-  
-  mCaloAK5JetN90Hits[jeti] =  jet2.jetID().n90Hits ;
-  mCaloAK5JetfHPD [jeti]   =  jet2.jetID().fHPD ;
-  mCaloAK5JetfRBX [jeti]   =  jet2.jetID().fRBX ;
-  mCaloAK5JetIDEmf[jeti]   =  jet2.jetID().restrictedEMF;
-  
-  mCaloAK5JetSigEta[jeti]  =  jet2.etaetaMoment();
-  mCaloAK5JetSigPhi[jeti]  =  jet2.phiphiMoment();
-  
-  mCaloAK5JetPtCor[jeti]      =  jet2.pt();
-  mCaloAK5JetPxCor [jeti]     =  jet2.momentum().X();
-  mCaloAK5JetPyCor [jeti]     =  jet2.momentum().Y();
-  mCaloAK5JetPzCor [jeti]     =  jet2.momentum().Z();
-  mCaloAK5JetECor [jeti]      =  jet2.energy();
-  
-  mCaloAK5JetBtagTkCountHighEff[jeti] = jet.bDiscriminator("trackCountingHighEffBJetTags");
-  mCaloAK5JetBTagSimpleSecVtx[jeti]   = jet.bDiscriminator("simpleSecondaryVertexBJetTags");
-  mCaloAK5JetBTagCombSecVtx[jeti]     = jet.bDiscriminator("combinedSecondaryVertexBJetTags");
-  
-  const reco::TrackRefVector &tracks = jet.associatedTracks();
-  double ptsum = 0;
-  for (size_t i = 0; i < tracks.size(); ++i){
-  ptsum += tracks[i]->pt();
-  }
-  mCaloAK5TrackPt[jeti] = ptsum; 
-  
-  if(isMCTag){
-  if(jet.genJet()!= 0){
-  mGenAK5JetPt[jeti]=jet.genJet()->pt();
-  mGenAK5JetE[jeti]=jet.genJet()->energy();
-  mGenAK5JetPx[jeti]=jet.genJet()->momentum().X();
-  mGenAK5JetPy[jeti]=jet.genJet()->momentum().Y();
-  mGenAK5JetPz[jeti]=jet.genJet()->momentum().z();
-  mGenAK5JetEta[jeti]=jet.genJet()->eta();
-  mGenAK5JetPhi[jeti]=jet.genJet()->phi();
-  mGenAK5JetEmEnergy[jeti]=jet.genJet()->emEnergy();
-  mGenAK5JetHadEnergy[jeti]=jet.genJet()->emEnergy();
-  }
-  else {
-  mGenAK5JetPt[jeti]       =-999;
-  mGenAK5JetE[jeti]        =-999;
-  mGenAK5JetPx[jeti]       =-999;
-  mGenAK5JetPy[jeti]       =-999;
-  mGenAK5JetPz[jeti]       =-999;
-  mGenAK5JetEta[jeti]      =-999;
-  mGenAK5JetPhi[jeti]      =-999;
-  mGenAK5JetEmEnergy[jeti] =-999;
-  mGenAK5JetHadEnergy[jeti]=-999;
-  }
-  }
-  
-  jeti++;
-  }
-  */
+  if(includeNonPFCollection && JetHand.isValid()){
+    for(unsigned int ind=0; ind<(*JetHand).size() && ind<MAXJET; ind++){
+      const pat::Jet& jet2 = (*JetHand)[ind];
+      const pat::Jet& jet =  (*JetHand)[ind].correctedJet("Uncorrected");
+      
+      if( jet2.pt() < JetPtCutTag ) continue;
+      
+      /// default scale factor: Raw & L1 & L2 & L3
+      /// http://cmslxr.fnal.gov/lxr/source/DataFormats/PatCandidates/interface/JetCorrFactors.h
+      
+      JetIDSelectionFunctor jetIDFunctorLoose(JetIDSelectionFunctor::PURE09, JetIDSelectionFunctor::LOOSE);
+      JetIDSelectionFunctor jetIDFunctorTight(JetIDSelectionFunctor::PURE09, JetIDSelectionFunctor::TIGHT);
+      
+      mCaloAK5JetIDLOOSE[jeti] = jetIDFunctorLoose(jet2);
+      mCaloAK5JetIDTIGHT[jeti] = jetIDFunctorTight(jet2);
+      
+      mCaloAK5JetPt[jeti]      =  jet.pt();
+      mCaloAK5JetPx[jeti]      =  jet.momentum().X();
+      mCaloAK5JetPy[jeti]      =  jet.momentum().Y();
+      mCaloAK5JetPz[jeti]      =  jet.momentum().Z();
+      mCaloAK5JetE[jeti]       =  jet.energy();
+      
+      mCaloAK5JetEta[jeti]     =  jet2.eta();
+      mCaloAK5JetPhi[jeti]     =  jet2.phi();
+      mCaloAK5JetEmf[jeti]     =  jet2.emEnergyFraction();
+      mCaloAK5JetN90[jeti]     =  jet2.n90();
+    
+      mCaloAK5JetN90Hits[jeti] =  jet2.jetID().n90Hits ;
+      mCaloAK5JetfHPD[jeti]    =  jet2.jetID().fHPD ;
+      mCaloAK5JetfRBX[jeti]    =  jet2.jetID().fRBX ;
+      mCaloAK5JetIDEmf[jeti]   =  jet2.jetID().restrictedEMF;
+      
+      mCaloAK5JetSigEta[jeti]  =  jet2.etaetaMoment();
+      mCaloAK5JetSigPhi[jeti]  =  jet2.phiphiMoment();
+    
+      mCaloAK5JetPtCor[jeti]   =  jet2.pt();
+      mCaloAK5JetPxCor[jeti]   =  jet2.momentum().X();
+      mCaloAK5JetPyCor[jeti]   =  jet2.momentum().Y();
+      mCaloAK5JetPzCor[jeti]   =  jet2.momentum().Z();
+      mCaloAK5JetECor[jeti]    =  jet2.energy();
+    
+      mCaloAK5JetBtagTkCountHighEff[jeti] = jet.bDiscriminator("trackCountingHighEffBJetTags");
+      mCaloAK5JetBTagSimpleSecVtx[jeti]   = jet.bDiscriminator("simpleSecondaryVertexBJetTags");
+      mCaloAK5JetBTagCombSecVtx[jeti]     = jet.bDiscriminator("combinedSecondaryVertexBJetTags");
+      
+      const reco::TrackRefVector &tracks = jet.associatedTracks();
+      double ptsum = 0;
+      for (size_t i = 0; i < tracks.size(); ++i){
+	ptsum += tracks[i]->pt();
+      }
+      mCaloAK5TrackPt[jeti] = ptsum; 
+      
+      if(isMCTag){
+	if(jet.genJet()!= 0){
+	  mGenAK5JetPt[jeti]=jet.genJet()->pt();
+	  mGenAK5JetE[jeti]=jet.genJet()->energy();
+	  mGenAK5JetPx[jeti]=jet.genJet()->momentum().X();
+	  mGenAK5JetPy[jeti]=jet.genJet()->momentum().Y();
+	  mGenAK5JetPz[jeti]=jet.genJet()->momentum().z();
+	  mGenAK5JetEta[jeti]=jet.genJet()->eta();
+	  mGenAK5JetPhi[jeti]=jet.genJet()->phi();
+	  mGenAK5JetEmEnergy[jeti]=jet.genJet()->emEnergy();
+	  mGenAK5JetHadEnergy[jeti]=jet.genJet()->emEnergy();
+	}
+	else {
+	  mGenAK5JetPt[jeti]       =-999;
+	  mGenAK5JetE[jeti]        =-999;
+	  mGenAK5JetPx[jeti]       =-999;
+	  mGenAK5JetPy[jeti]       =-999;
+	  mGenAK5JetPz[jeti]       =-999;
+	  mGenAK5JetEta[jeti]      =-999;
+	  mGenAK5JetPhi[jeti]      =-999;
+	  mGenAK5JetEmEnergy[jeti] =-999;
+	  mGenAK5JetHadEnergy[jeti]=-999;
+	}
+      }      
+      jeti++;
+    }
+  }//if(includeNonPFCollection)
   mNCaloAK5Jets = jeti;
+  if(debugMode && mNCaloAK5Jets>0){
+    cout<<"CaloJet0: Pt= "<<mCaloAK5JetPtCor[0]
+	<<", Eta= "<<mCaloAK5JetEta[0]
+	<<", Phi= "<<mCaloAK5JetPhi[0]
+	<<endl;
+  }
   
   
   ///-------------------------------------------------------------------------- 
   /// AK5PFJet
   ///--------------------------------------------------------------------------
-  //iEvent.getByLabel("cleanPatJetsAK5PF" ,JetHand);
   iEvent.getByLabel(PFJetTag_,JetHand);
   jeti=0;
   edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
@@ -1117,10 +1381,9 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   
   //edm::Handle<edm::ValueMap<float> > puJetIdMVA;
   //iEvent.getByLabel("puJetMva:fullDiscriminant",puJetIdMVA);
-  
-  edm::Handle<edm::ValueMap<int> > puJetIdFlag;
-  iEvent.getByLabel(edm::InputTag("puJetMva","fullId","PAT"),puJetIdFlag);
   int idflag;
+  edm::Handle<edm::ValueMap<int> > puJetIdFlag;
+  iEvent.getByLabel(puJetIdTag_,puJetIdFlag);
   
   for(unsigned int ind=0; ind<(*JetHand).size() && ind<MAXJET; ind++){
     const pat::Jet& jet2 = (*JetHand)[ind];
@@ -1167,25 +1430,36 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     mPFAK5JetPyCor[jeti]                = jet2.momentum().Y();
     mPFAK5JetPzCor[jeti]                = jet2.momentum().Z();
     mPFAK5JetECor[jeti]                 = jet2.energy();
+
+    ///JPT or PFJet specific information
+    mPFAK5JetNumOfMuon[jeti]            = jet2.muonMultiplicity();
+    mPFAK5JetNumOfChaMu[jeti]           = jet2.chargedMultiplicity();
+
+    mPFAK5JetChaEmEng[jeti]             = jet2.chargedEmEnergy();
+    mPFAK5JetNeuEmEng[jeti]             = jet2.neutralEmEnergy();
+    mPFAK5JetChaHadEng[jeti]            = jet2.chargedHadronEnergy();
+    mPFAK5JetNeuHadEng[jeti]            = jet2.neutralHadronEnergy();
+    mPFAK5JetPhotEng[jeti]              = jet2.photonEnergy();
+    mPFAK5JetElecEng[jeti]              = jet2.electronEnergy();
+    mPFAK5JetMuonEng[jeti]              = jet2.muonEnergy();
+    mPFAK5JetHFHadEng[jeti]             = jet2.HFHadronEnergy();
+    mPFAK5JetHFEmEng[jeti]              = jet2.HFEMEnergy();
     
+    //Relative to uncorrected jet energy
     mPFAK5JetNeuEmEngFrac[jeti]         = jet2.neutralEmEnergyFraction();
     mPFAK5JetChaEmEngFrac[jeti]         = jet2.chargedEmEnergyFraction();
     mPFAK5JetChaHadEngFrac[jeti]        = jet2.chargedHadronEnergyFraction();
     mPFAK5JetNeuHadEngFrac[jeti]        = jet2.neutralHadronEnergyFraction();
     
-    mPFAK5JetChaMuEng[jeti]             = jet2.chargedMuEnergy();
-    
-    mPFAK5JetMuonEng[jeti]              = jet2.muonEnergy();
-    mPFAK5JetPhotEng[jeti]              = jet2.photonEnergy();
-    mPFAK5JetElecEng[jeti]              = jet2.electronEnergy();
+    mPFAK5JetNumOfChaHad[jeti]          = jet2.chargedHadronMultiplicity();
+    mPFAK5JetNumOfNeuHad[jeti]          = jet2.neutralHadronMultiplicity();
     mPFAK5JetNumOfPhot[jeti]            = jet2.photonMultiplicity();
     mPFAK5JetNumOfElec[jeti]            = jet2.electronMultiplicity();
-    mPFAK5JetNumOfNeuHad[jeti]          = jet2.neutralHadronMultiplicity();
-    mPFAK5JetNumOfChaHad[jeti]          = jet2.chargedHadronMultiplicity();
+    mPFAK5JetNumOfHFHad[jeti]           = jet2.HFHadronMultiplicity();
+    mPFAK5JetNumOfHFEM[jeti]            = jet2.HFEMMultiplicity();
     
-    mPFAK5JetNumOfMuon[jeti]            = jet2.muonMultiplicity();
-    mPFAK5JetNumOfChaMu[jeti]           = jet2.chargedMultiplicity();
-    
+    mPFAK5JetChaMuEng[jeti]             = jet2.chargedMuEnergy();
+     
     mPFAK5JetNumOfNeu[jeti]             = jet2.neutralMultiplicity();
     mPFAK5JetNumOfCha[jeti]             = jet2.chargedMultiplicity();
     
@@ -1212,13 +1486,27 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 			
     jeti++;
   }
-  mNPFAK5Jets = jeti;
+  mNPFAK5Jets = jeti; 
+  if(debugMode){
+    cout<<"N(PFJet): "<<mNPFAK5Jets<<endl;
+  }
+  if(debugMode && mNPFAK5Jets>0){
+    cout<<"PFJet0: Pt= "<<mPFAK5JetPtCor[0]<<", Eta= "<<mPFAK5JetEta[0]<<", Phi= "<<mPFAK5JetPhi[0]<<", PUJetID= "<<mPFAK5JetPUFullJetId[0]<<endl;
+    cout<<"      : NHEF= "<<mPFAK5JetNeuHadEngFrac[0]<<", CHEF= "<<mPFAK5JetChaHadEngFrac[0]<<", NEMF= "<<mPFAK5JetNeuEmEngFrac[0]<<", CEMF= "<<mPFAK5JetChaEmEngFrac[0]<<endl;
+    cout<<"      : MuEF= "<<mPFAK5JetMuonEng[0]/mPFAK5JetE[0]<<", ElecEF= "<<mPFAK5JetElecEng[0]/mPFAK5JetE[0]<<", PhotonEF= "<<mPFAK5JetPhotEng[0]/mPFAK5JetE[0]<<endl;
+  }
+  if(debugMode && mNPFAK5Jets>1){
+    cout<<"PFJet0: Pt= "<<mPFAK5JetPtCor[1]<<", Eta= "<<mPFAK5JetEta[1]<<", Phi= "<<mPFAK5JetPhi[1]<<", PUJetID= "<<mPFAK5JetPUFullJetId[1]<<endl;
+    cout<<"      : NHEF= "<<mPFAK5JetNeuHadEngFrac[1]<<", CHEF= "<<mPFAK5JetChaHadEngFrac[1]<<", NEMF= "<<mPFAK5JetNeuEmEngFrac[1]<<", CEMF= "<<mPFAK5JetChaEmEngFrac[1]<<endl;
+    cout<<"      : MuEF= "<<mPFAK5JetMuonEng[1]/mPFAK5JetE[1]<<", ElecEF= "<<mPFAK5JetElecEng[1]/mPFAK5JetE[1]<<", PhotonEF= "<<mPFAK5JetPhotEng[1]/mPFAK5JetE[1]<<endl;
+  }
   
   
   ///-------------------------------------------------------------------------- 
-  /// CaloMET
+  /// MET: Initialization
   ///--------------------------------------------------------------------------
-  for(int i=0; i<30; i++){
+  mNMet = MAXMET;
+  for(int i=0; i<mNMet; i++){
     mMetPt[i]=0; 
     mMetPhi[i]=0; 
     mMetSumEt[i]=0; 
@@ -1226,50 +1514,56 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     mMetPy[i]=0; 
     mMetSign[i]=0;
   }
+  
+  
+  ///-------------------------------------------------------------------------- 
+  /// CaloMET
+  ///--------------------------------------------------------------------------
   Handle<View<pat::MET> > CaloMetHand;
-  iEvent.getByLabel("patMETsAK5Calo",CaloMetHand);
-  const View<pat::MET> & mets = *CaloMetHand;
-  
-  mNMet=30;
-  
-  // 0=full corr	1=uncorrNone  2=uncorrALL 3=uncorrJES  4=uncorrMUON  5=TAU
-  
-  mMetPt[0]    = mets[0].et();
-  mMetPhi[0]   = mets[0].phi();
-  mMetPx[0]    = mets[0].px();
-  mMetPy[0]    = mets[0].py();
-  mMetSumEt[0] = mets[0].sumEt();
-  
-  mMetPt[1]    = mets[0].uncorrectedPt(pat::MET::uncorrNONE); 
-  mMetPhi[1]   = mets[0].uncorrectedPhi(pat::MET::uncorrNONE); 
-  mMetPx[1]    = mets[0].corEx(pat::MET::uncorrNONE); 
-  mMetPy[1]    = mets[0].corEy(pat::MET::uncorrNONE); 
-  mMetSumEt[1] = mets[0].corSumEt(pat::MET::uncorrNONE); 
-  
-  mMetPt[2]    = mets[0].uncorrectedPt(pat::MET::uncorrALL); 
-  mMetPhi[2]   = mets[0].uncorrectedPhi(pat::MET::uncorrALL); 
-  mMetPx[2]    = mets[0].corEx(pat::MET::uncorrALL); 
-  mMetPy[2]    = mets[0].corEy(pat::MET::uncorrALL); 
-  mMetSumEt[2] = mets[0].corSumEt(pat::MET::uncorrALL); 
-  
-  mMetPt[3]    = mets[0].uncorrectedPt(pat::MET::uncorrJES); 
-  mMetPhi[3]   = mets[0].uncorrectedPhi(pat::MET::uncorrJES); 
-  mMetPx[3]    = mets[0].corEx(pat::MET::uncorrJES); 
-  mMetPy[3]    = mets[0].corEy(pat::MET::uncorrJES); 
-  mMetSumEt[3] = mets[0].corSumEt(pat::MET::uncorrJES); 
-  
-  mMetPt[4]    = mets[0].uncorrectedPt(pat::MET::uncorrMUON); 
-  mMetPhi[4]   = mets[0].uncorrectedPhi(pat::MET::uncorrMUON); 
-  mMetPx[4]    = mets[0].corEx(pat::MET::uncorrMUON); 
-  mMetPy[4]    = mets[0].corEy(pat::MET::uncorrMUON); 
-  mMetSumEt[4] = mets[0].corSumEt(pat::MET::uncorrMUON); 
-  
-  mMetPt[5]    = mets[0].uncorrectedPt(pat::MET::uncorrTAU); 
-  mMetPhi[5]   = mets[0].uncorrectedPhi(pat::MET::uncorrTAU); 
-  mMetPx[5]    = mets[0].corEx(pat::MET::uncorrTAU); 
-  mMetPy[5]    = mets[0].corEy(pat::MET::uncorrTAU); 
-  mMetSumEt[5] = mets[0].corSumEt(pat::MET::uncorrTAU); 
-  
+  //iEvent.getByLabel("patMETsAK5Calo",CaloMetHand);
+  iEvent.getByLabel(METTag_,CaloMetHand);
+  if(CaloMetHand.isValid()){
+    const View<pat::MET> & mets = *CaloMetHand;
+    // 0=full corr	1=uncorrNone  2=uncorrALL 3=uncorrJES  4=uncorrMUON  5=TAU
+    mMetPt[0]    = mets[0].et();
+    mMetPhi[0]   = mets[0].phi();
+    mMetPx[0]    = mets[0].px();
+    mMetPy[0]    = mets[0].py();
+    mMetSumEt[0] = mets[0].sumEt();
+    //
+    mMetPt[1]    = mets[0].uncorrectedPt(pat::MET::uncorrNONE); 
+    mMetPhi[1]   = mets[0].uncorrectedPhi(pat::MET::uncorrNONE); 
+    mMetPx[1]    = mets[0].corEx(pat::MET::uncorrNONE); 
+    mMetPy[1]    = mets[0].corEy(pat::MET::uncorrNONE); 
+    mMetSumEt[1] = mets[0].corSumEt(pat::MET::uncorrNONE); 
+    //
+    mMetPt[2]    = mets[0].uncorrectedPt(pat::MET::uncorrALL); 
+    mMetPhi[2]   = mets[0].uncorrectedPhi(pat::MET::uncorrALL); 
+    mMetPx[2]    = mets[0].corEx(pat::MET::uncorrALL); 
+    mMetPy[2]    = mets[0].corEy(pat::MET::uncorrALL); 
+    mMetSumEt[2] = mets[0].corSumEt(pat::MET::uncorrALL); 
+    //
+    mMetPt[3]    = mets[0].uncorrectedPt(pat::MET::uncorrJES); 
+    mMetPhi[3]   = mets[0].uncorrectedPhi(pat::MET::uncorrJES); 
+    mMetPx[3]    = mets[0].corEx(pat::MET::uncorrJES); 
+    mMetPy[3]    = mets[0].corEy(pat::MET::uncorrJES); 
+    mMetSumEt[3] = mets[0].corSumEt(pat::MET::uncorrJES); 
+    //
+    mMetPt[4]    = mets[0].uncorrectedPt(pat::MET::uncorrMUON); 
+    mMetPhi[4]   = mets[0].uncorrectedPhi(pat::MET::uncorrMUON); 
+    mMetPx[4]    = mets[0].corEx(pat::MET::uncorrMUON); 
+    mMetPy[4]    = mets[0].corEy(pat::MET::uncorrMUON); 
+    mMetSumEt[4] = mets[0].corSumEt(pat::MET::uncorrMUON); 
+    //
+    mMetPt[5]    = mets[0].uncorrectedPt(pat::MET::uncorrTAU); 
+    mMetPhi[5]   = mets[0].uncorrectedPhi(pat::MET::uncorrTAU); 
+    mMetPx[5]    = mets[0].corEx(pat::MET::uncorrTAU); 
+    mMetPy[5]    = mets[0].corEy(pat::MET::uncorrTAU); 
+    mMetSumEt[5] = mets[0].corSumEt(pat::MET::uncorrTAU); 
+    if(debugMode){
+      std::cout<<"CaloMET= "<<mMetPt[0]<<", METPhi= "<<mMetPhi[0]<<std::endl;
+    }
+  }
   
   ///-------------------------------------------------------------------------- 
   /// GenMET
@@ -1300,18 +1594,21 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   ///-------------------------------------------------------------------------- 
   /// PF MetsType1 Corrected
   ///--------------------------------------------------------------------------
-  Handle<View<pat::MET> > PFMetType1Hand;
-  //iEvent.getByLabel("patMETsPF",PFMetType1Hand);
+  //edm::Handle<edm::View<reco::MET> > PFMetType1Hand;
+  edm::Handle<edm::View<pat::MET> > PFMetType1Hand;
   iEvent.getByLabel(PFMETTag_,PFMetType1Hand);
-  const View<pat::MET> & pfmetsType1 = *PFMetType1Hand;
-  
-  //cout<<"PHAT-PFMET: "<<pfmetsType1[0].et()<<endl;
-  
-  mMetPt[10]    = pfmetsType1[0].et();
-  mMetPhi[10]   = pfmetsType1[0].phi();
-  mMetPx[10]    = pfmetsType1[0].px();
-  mMetPy[10]    = pfmetsType1[0].py();
-  mMetSumEt[10] = pfmetsType1[0].sumEt();
+  if(PFMetType1Hand.isValid()){
+    const edm::View<pat::MET> & pfmetsType1 = *PFMetType1Hand;
+    //const edm::View<reco::MET> & pfmetsType1 = *PFMetType1Hand;
+    mMetPt[10]    = pfmetsType1[0].et();
+    mMetPhi[10]   = pfmetsType1[0].phi();
+    mMetPx[10]    = pfmetsType1[0].px();
+    mMetPy[10]    = pfmetsType1[0].py();
+    mMetSumEt[10] = pfmetsType1[0].sumEt();
+    if(debugMode){
+      std::cout<<"PFMET= "<<mMetPt[10]<<", METPhi= "<<mMetPhi[10]<<std::endl;
+    }
+  }
   
   
   ///-------------------------------------------------------------------------- 
@@ -1319,82 +1616,88 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   ///--------------------------------------------------------------------------
   Handle<View<pat::MET> > PFMetHand;
   iEvent.getByLabel("patMETsPF", PFMetHand);
-  const View<pat::MET> & pfmets = *PFMetHand;
-  
-  mMetPt[11]    = pfmets[0].et();
-  mMetPhi[11]   = pfmets[0].phi();
-  mMetPx[11]    = pfmets[0].px();
-  mMetPy[11]    = pfmets[0].py();
-  mMetSumEt[11] = pfmets[0].sumEt();
-  
-  mMetPt[12]    = pfmets[0].uncorrectedPt(pat::MET::uncorrALL); 
-  mMetPhi[12]   = pfmets[0].uncorrectedPhi(pat::MET::uncorrALL); 
-  mMetPx[12]    = pfmets[0].corEx(pat::MET::uncorrALL); 
-  mMetPy[12]    = pfmets[0].corEy(pat::MET::uncorrALL); 
-  mMetSumEt[12] = pfmets[0].corSumEt(pat::MET::uncorrALL); 
-  
-  mMetPt[13]    = pfmets[0].uncorrectedPt(pat::MET::uncorrJES); 
-  mMetPhi[13]   = pfmets[0].uncorrectedPhi(pat::MET::uncorrJES); 
-  mMetPx[13]    = pfmets[0].corEx(pat::MET::uncorrJES); 
-  mMetPy[13]    = pfmets[0].corEy(pat::MET::uncorrJES); 
-  mMetSumEt[13] = pfmets[0].corSumEt(pat::MET::uncorrJES); 
-  
-  mMetPt[14]    = pfmets[0].uncorrectedPt(pat::MET::uncorrMUON); 
-  mMetPhi[14]   = pfmets[0].uncorrectedPhi(pat::MET::uncorrMUON); 
-  mMetPx[14]    = pfmets[0].corEx(pat::MET::uncorrMUON); 
-  mMetPy[14]    = pfmets[0].corEy(pat::MET::uncorrMUON); 
-  mMetSumEt[14] = pfmets[0].corSumEt(pat::MET::uncorrMUON); 
-  
-  mMetPt[15]    = pfmets[0].uncorrectedPt(pat::MET::uncorrTAU); 
-  mMetPhi[15]   = pfmets[0].uncorrectedPhi(pat::MET::uncorrTAU); 
-  mMetPx[15]    = pfmets[0].corEx(pat::MET::uncorrTAU); 
-  mMetPy[15]    = pfmets[0].corEy(pat::MET::uncorrTAU); 
-  mMetSumEt[15] = pfmets[0].corSumEt(pat::MET::uncorrTAU); 
-	
+  if(PFMetHand.isValid()){
+    const View<pat::MET> & pfmets = *PFMetHand;
+    //
+    mMetPt[11]    = pfmets[0].et();
+    mMetPhi[11]   = pfmets[0].phi();
+    mMetPx[11]    = pfmets[0].px();
+    mMetPy[11]    = pfmets[0].py();
+    mMetSumEt[11] = pfmets[0].sumEt();
+    //
+    mMetPt[12]    = pfmets[0].uncorrectedPt(pat::MET::uncorrALL); 
+    mMetPhi[12]   = pfmets[0].uncorrectedPhi(pat::MET::uncorrALL); 
+    mMetPx[12]    = pfmets[0].corEx(pat::MET::uncorrALL); 
+    mMetPy[12]    = pfmets[0].corEy(pat::MET::uncorrALL); 
+    mMetSumEt[12] = pfmets[0].corSumEt(pat::MET::uncorrALL); 
+    //
+    mMetPt[13]    = pfmets[0].uncorrectedPt(pat::MET::uncorrJES); 
+    mMetPhi[13]   = pfmets[0].uncorrectedPhi(pat::MET::uncorrJES); 
+    mMetPx[13]    = pfmets[0].corEx(pat::MET::uncorrJES); 
+    mMetPy[13]    = pfmets[0].corEy(pat::MET::uncorrJES); 
+    mMetSumEt[13] = pfmets[0].corSumEt(pat::MET::uncorrJES); 
+    //
+    mMetPt[14]    = pfmets[0].uncorrectedPt(pat::MET::uncorrMUON); 
+    mMetPhi[14]   = pfmets[0].uncorrectedPhi(pat::MET::uncorrMUON); 
+    mMetPx[14]    = pfmets[0].corEx(pat::MET::uncorrMUON); 
+    mMetPy[14]    = pfmets[0].corEy(pat::MET::uncorrMUON); 
+    mMetSumEt[14] = pfmets[0].corSumEt(pat::MET::uncorrMUON); 
+    //
+    mMetPt[15]    = pfmets[0].uncorrectedPt(pat::MET::uncorrTAU); 
+    mMetPhi[15]   = pfmets[0].uncorrectedPhi(pat::MET::uncorrTAU); 
+    mMetPx[15]    = pfmets[0].corEx(pat::MET::uncorrTAU); 
+    mMetPy[15]    = pfmets[0].corEy(pat::MET::uncorrTAU); 
+    mMetSumEt[15] = pfmets[0].corSumEt(pat::MET::uncorrTAU); 
+  }
   
   ///-------------------------------------------------------------------------- 
   /// TC Mets
   ///--------------------------------------------------------------------------
   Handle<View<pat::MET> > TCMetHand;
   iEvent.getByLabel("patMETsTC",TCMetHand);
-  const View<pat::MET> & tcmets = *TCMetHand;
-  
-  mMetPt[20]    = tcmets[0].et();
-  mMetPhi[20]   = tcmets[0].phi();
-  mMetPx[20]    = tcmets[0].px();
-  mMetPy[20]    = tcmets[0].py();
-  mMetSumEt[20] = tcmets[0].sumEt();
-  
-  mMetPt[21]    = tcmets[0].uncorrectedPt(pat::MET::uncorrNONE); 
-  mMetPhi[21]   = tcmets[0].uncorrectedPhi(pat::MET::uncorrNONE); 
-  mMetPx[21]    = tcmets[0].corEx(pat::MET::uncorrNONE); 
-  mMetPy[21]    = tcmets[0].corEy(pat::MET::uncorrNONE); 
-  mMetSumEt[21] = tcmets[0].corSumEt(pat::MET::uncorrNONE); 
-  
-  mMetPt[22]    = tcmets[0].uncorrectedPt(pat::MET::uncorrALL); 
-  mMetPhi[22]   = tcmets[0].uncorrectedPhi(pat::MET::uncorrALL); 
-  mMetPx[22]    = tcmets[0].corEx(pat::MET::uncorrALL); 
-  mMetPy[22]    = tcmets[0].corEy(pat::MET::uncorrALL); 
-  mMetSumEt[22] = tcmets[0].corSumEt(pat::MET::uncorrALL); 
-  
-  mMetPt[23]    = tcmets[0].uncorrectedPt(pat::MET::uncorrJES); 
-  mMetPhi[23]   = tcmets[0].uncorrectedPhi(pat::MET::uncorrJES); 
-  mMetPx[23]    = tcmets[0].corEx(pat::MET::uncorrJES); 
-  mMetPy[23]    = tcmets[0].corEy(pat::MET::uncorrJES); 
-  mMetSumEt[23] = tcmets[0].corSumEt(pat::MET::uncorrJES); 
-  
-  mMetPt[24]    = tcmets[0].uncorrectedPt(pat::MET::uncorrMUON); 
-  mMetPhi[24]   = tcmets[0].uncorrectedPhi(pat::MET::uncorrMUON); 
-  mMetPx[24]    = tcmets[0].corEx(pat::MET::uncorrMUON); 
-  mMetPy[24]    = tcmets[0].corEy(pat::MET::uncorrMUON); 
-  mMetSumEt[24] = tcmets[0].corSumEt(pat::MET::uncorrMUON); 
-  
-  mMetPt[25]    = tcmets[0].uncorrectedPt(pat::MET::uncorrTAU); 
-  mMetPhi[25]   = tcmets[0].uncorrectedPhi(pat::MET::uncorrTAU); 
-  mMetPx[25]    = tcmets[0].corEx(pat::MET::uncorrTAU); 
-  mMetPy[25]    = tcmets[0].corEy(pat::MET::uncorrTAU); 
-  mMetSumEt[25] = tcmets[0].corSumEt(pat::MET::uncorrTAU); 
-  
+  if(TCMetHand.isValid()){
+    const View<pat::MET> & tcmets = *TCMetHand;
+    //
+    mMetPt[20]    = tcmets[0].et();
+    mMetPhi[20]   = tcmets[0].phi();
+    mMetPx[20]    = tcmets[0].px();
+    mMetPy[20]    = tcmets[0].py();
+    mMetSumEt[20] = tcmets[0].sumEt();
+    //
+    mMetPt[21]    = tcmets[0].uncorrectedPt(pat::MET::uncorrNONE); 
+    mMetPhi[21]   = tcmets[0].uncorrectedPhi(pat::MET::uncorrNONE); 
+    mMetPx[21]    = tcmets[0].corEx(pat::MET::uncorrNONE); 
+    mMetPy[21]    = tcmets[0].corEy(pat::MET::uncorrNONE); 
+    mMetSumEt[21] = tcmets[0].corSumEt(pat::MET::uncorrNONE); 
+    //
+    mMetPt[22]    = tcmets[0].uncorrectedPt(pat::MET::uncorrALL); 
+    mMetPhi[22]   = tcmets[0].uncorrectedPhi(pat::MET::uncorrALL); 
+    mMetPx[22]    = tcmets[0].corEx(pat::MET::uncorrALL); 
+    mMetPy[22]    = tcmets[0].corEy(pat::MET::uncorrALL); 
+    mMetSumEt[22] = tcmets[0].corSumEt(pat::MET::uncorrALL); 
+    //
+    mMetPt[23]    = tcmets[0].uncorrectedPt(pat::MET::uncorrJES); 
+    mMetPhi[23]   = tcmets[0].uncorrectedPhi(pat::MET::uncorrJES); 
+    mMetPx[23]    = tcmets[0].corEx(pat::MET::uncorrJES); 
+    mMetPy[23]    = tcmets[0].corEy(pat::MET::uncorrJES); 
+    mMetSumEt[23] = tcmets[0].corSumEt(pat::MET::uncorrJES); 
+    //
+    mMetPt[24]    = tcmets[0].uncorrectedPt(pat::MET::uncorrMUON); 
+    mMetPhi[24]   = tcmets[0].uncorrectedPhi(pat::MET::uncorrMUON); 
+    mMetPx[24]    = tcmets[0].corEx(pat::MET::uncorrMUON); 
+    mMetPy[24]    = tcmets[0].corEy(pat::MET::uncorrMUON); 
+    mMetSumEt[24] = tcmets[0].corSumEt(pat::MET::uncorrMUON); 
+    //
+    mMetPt[25]    = tcmets[0].uncorrectedPt(pat::MET::uncorrTAU); 
+    mMetPhi[25]   = tcmets[0].uncorrectedPhi(pat::MET::uncorrTAU); 
+    mMetPx[25]    = tcmets[0].corEx(pat::MET::uncorrTAU); 
+    mMetPy[25]    = tcmets[0].corEy(pat::MET::uncorrTAU); 
+    mMetSumEt[25] = tcmets[0].corSumEt(pat::MET::uncorrTAU); 
+    
+    if(debugMode){
+      std::cout<<"TcMET= "<<mMetPt[20]<<", METPhi= "<<mMetPhi[20]<<std::endl;
+    }
+  }
   
   ///-------------------------------------------------------------------------- 
   /// Pat MHT
@@ -1403,13 +1706,9 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     edm::Handle<edm::View<pat::MHT> > MHTHand;
     iEvent.getByLabel("patMHTsAK5Calo",MHTHand);
     const edm::View<pat::MHT> & mhts = *MHTHand;
-    
-    if ( MHTHand->size()!=0)
-    {
+    if ( MHTHand->size()!=0){
     mMHTPt    = mhts[0].pt();
-    //mMHTPhi   = mhts[0].phi();
-    
-    //cout  << mMHTPhi << endl;
+    mMHTPhi   = mhts[0].phi();
     mMHTSign  = mhts[0].significance();
     }
   */
@@ -1432,6 +1731,7 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       mPVntracks[pvind]= (*recVtxs)[ind].tracksSize();
       if(pvind == 0) primaryvtx = (*recVtxs)[ind];
       pvind++;
+      if(pvind>=MAXVTX) break;
     }
   }
   mNPV = pvind; 
@@ -1457,133 +1757,149 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   /// Muons
   ///--------------------------------------------------------------------------
   edm::Handle<edm::View<pat::Muon> > MuonHand;
-  iEvent.getByLabel("cleanPatMuons",MuonHand);
+  iEvent.getByLabel(MuonTag_,MuonHand);
+  //
+  edm::Handle<edm::View<pat::Muon> > MuonHandTight;
+  edm::Handle<edm::View<pat::Muon> > MuonHandLoose;
+  iEvent.getByLabel("selectTightMuons",MuonHandTight); 
+  iEvent.getByLabel("selectLooseMuons",MuonHandLoose); 
+  //
   int muoni=0;
-  /*
-  for(unsigned int ind=0; ind<(*MuonHand).size() && ind<MAXMUON; ind++){ 
-  const pat::Muon& muon = (*MuonHand)[ind];
-  mMuonPt[muoni]           = muon.pt();
-  mMuonEt[muoni]           = muon.et();
-  mMuonE[muoni]            = muon.energy();
-  mMuonPx[muoni]           = muon.momentum().X();
-  mMuonPy[muoni]           = muon.momentum().Y();
-  mMuonPz[muoni]           = muon.momentum().Z();
-  mMuonEta[muoni]          = muon.eta();
-  mMuonPhi[muoni]          = muon.phi();
-  mMuonCharge[muoni]       = muon.charge();
-  //
-  mMuonIsGlobal[muoni]     = muon.isGlobalMuon();
-  mMuonIsStandAlone[muoni] = muon.isStandAloneMuon();
-  mMuonIsTracker[muoni]    = muon.isTrackerMuon();
-  //
-  mMuonSumPtDR03[muoni]    = muon.isolationR03().sumPt;
-  mMuonSumPtDR05[muoni]    = muon.isolationR05().sumPt;
-  mMuonEmEtDR03[muoni]     = muon.isolationR03().emEt;
-  mMuonHadEtDR03[muoni]    = muon.isolationR03().hadEt;
-  //
-  mMuonNumOfMatches[muoni] = muon.numberOfMatches();
-  //
-  if( muon.isGlobalMuon() && muon.combinedMuon().isNonnull() ){
-  mMuonCombChi2Norm[muoni]    = muon.combinedMuon()->normalizedChi2();
-  mMuonCombValidHits[muoni]   = muon.combinedMuon()->found();
-  mMuonCombLostHits[muoni]    = muon.combinedMuon()->lost();
-  mMuonCombPt[muoni]          = muon.combinedMuon()->pt();
-  mMuonCombPz[muoni]          = muon.combinedMuon()->pz();
-  mMuonCombP[muoni]           = muon.combinedMuon()->p();
-  mMuonCombEta[muoni]         = muon.combinedMuon()->eta();
-  mMuonCombPhi[muoni]         = muon.combinedMuon()->phi();
-  mMuonCombChi2[muoni]        = muon.combinedMuon()->chi2();
-  mMuonCombCharge[muoni]      = muon.combinedMuon()->charge();
-  mMuonCombQOverPError[muoni] = muon.combinedMuon()->qoverpError();		
-  mMuonCombNdof[muoni]        = muon.combinedMuon()->ndof();
-  mMuonCombVx[muoni]          = muon.combinedMuon()->vx();
-  mMuonCombVy[muoni]          = muon.combinedMuon()->vy();
-  mMuonCombVz[muoni]          = muon.combinedMuon()->vz();
-  mMuonCombD0[muoni]          = muon.combinedMuon()->d0();
-  mMuonCombDz[muoni]          = muon.combinedMuon()->dz();
-  } 
-  else{
-  mMuonCombChi2Norm[muoni]    = 999.;
-  mMuonCombValidHits[muoni]   = 999.;
-  mMuonCombLostHits[muoni]    = 999.;
-  mMuonCombPt[muoni]          = 999.;
-  mMuonCombPz[muoni]          = 999.;
-  mMuonCombP[muoni]           = 999.;
-  mMuonCombEta[muoni]         = 999.;
-  mMuonCombPhi[muoni]         = 999.;
-  mMuonCombChi2[muoni]        = 999.;
-  mMuonCombCharge[muoni]      = 999.;
-  mMuonCombQOverPError[muoni] = 999.;
-  mMuonCombNdof[muoni]        = 999.;
-  mMuonCombVx[muoni]          = 999.;
-  mMuonCombVy[muoni]          = 999.;
-  mMuonCombVz[muoni]          = 999.;
-  mMuonCombD0[muoni]          = 999.;
-  mMuonCombDz[muoni]          = 999.;
-  }
-  //
-  if (muon.standAloneMuon().isNonnull()){
-  mMuonStandChi2Norm[muoni]    = muon.standAloneMuon()->normalizedChi2();
-  mMuonStandValidHits[muoni]   = muon.standAloneMuon()->found();
-  mMuonStandLostHits[muoni]    = muon.standAloneMuon()->lost();
-  mMuonStandPt[muoni]          = muon.standAloneMuon()->pt();
-  mMuonStandPz[muoni]          = muon.standAloneMuon()->pz();
-  mMuonStandP[muoni]           = muon.standAloneMuon()->p();
-  mMuonStandEta[muoni]         = muon.standAloneMuon()->eta();
-  mMuonStandPhi[muoni]         = muon.standAloneMuon()->phi();
-  mMuonStandChi2[muoni]        = muon.standAloneMuon()->chi2();
-  mMuonStandCharge[muoni]      = muon.standAloneMuon()->charge();
-  mMuonStandQOverPError[muoni] = muon.standAloneMuon()->qoverpError();
-  } 
-  else{
-  mMuonStandChi2Norm[muoni]    = 999.; 
-  mMuonStandValidHits[muoni]   = 999.; 
-  mMuonStandLostHits[muoni]    = 999.; 
-  mMuonStandPt[muoni]          = 999.; 
-  mMuonStandPz[muoni]          = 999.; 
-  mMuonStandP[muoni]           = 999.; 
-  mMuonStandEta[muoni]         = 999.; 
-  mMuonStandPhi[muoni]         = 999.; 
-  mMuonStandChi2[muoni]        = 999.; 
-  mMuonStandCharge[muoni]      = 999.; 
-  mMuonStandQOverPError[muoni] = 999.; 
-  }
-  //
-  if(muon.track().isNonnull()){
-  mMuonTrkChi2Norm[muoni]    = muon.track()->normalizedChi2();
-  mMuonTrkValidHits[muoni]   = muon.track()->found();
-  mMuonTrkLostHits[muoni]    = muon.track()->lost();
-  mMuonTrkPt[muoni]          = muon.track()->pt();
-  mMuonTrkPz[muoni]          = muon.track()->pz();
-  mMuonTrkP[muoni]           = muon.track()->p();
-  mMuonTrkEta[muoni]         = muon.track()->eta();
-  mMuonTrkPhi[muoni]         = muon.track()->phi();
-  mMuonTrkChi2[muoni]        = muon.track()->chi2();
-  mMuonTrkCharge[muoni]      = muon.track()->charge();
-  mMuonTrkQOverPError[muoni] = muon.track()->qoverpError();
-  mMuonTrkDxy[muoni]         = muon.track()->dxy( beamSpotHandle->position() );
-  mMuonTrkNumOfValidPixHits[muoni] =  muon.track()->hitPattern().numberOfValidPixelHits();
-  }
-  else{
-  mMuonTrkChi2Norm[muoni]    = 999.; 
-  mMuonTrkValidHits[muoni]   = 999.; 
-  mMuonTrkLostHits[muoni]    = 999.; 
-  mMuonTrkPt[muoni]          = 999.; 
-  mMuonTrkPz[muoni]          = 999.; 
-  mMuonTrkP[muoni]           = 999.; 
-  mMuonTrkEta[muoni]         = 999.; 
-  mMuonTrkPhi[muoni]         = 999.; 
-  mMuonTrkChi2[muoni]        = 999.; 
-  mMuonTrkCharge[muoni]      = 999.; 
-  mMuonTrkQOverPError[muoni] = 999.; 
-  mMuonTrkDxy[muoni]         = 999.;
-  mMuonTrkNumOfValidPixHits[muoni] = 999.;
-  }  
-  muoni++;
-  }
-  */
+  if(includeNonPFCollection && MuonHand.isValid()){
+    for(unsigned int ind=0; ind<(*MuonHand).size() && ind<MAXMUON; ind++){ 
+      const pat::Muon& muon = (*MuonHand)[ind];
+      mMuonPt[muoni]           = muon.pt();
+      mMuonEt[muoni]           = muon.et();
+      mMuonE[muoni]            = muon.energy();
+      mMuonPx[muoni]           = muon.momentum().X();
+      mMuonPy[muoni]           = muon.momentum().Y();
+      mMuonPz[muoni]           = muon.momentum().Z();
+      mMuonEta[muoni]          = muon.eta();
+      mMuonPhi[muoni]          = muon.phi();
+      mMuonCharge[muoni]       = muon.charge();
+      //
+      mMuonIsGlobal[muoni]     = muon.isGlobalMuon();
+      mMuonIsStandAlone[muoni] = muon.isStandAloneMuon();
+      mMuonIsTracker[muoni]    = muon.isTrackerMuon();
+      //
+      mMuonSumPtDR03[muoni]    = muon.isolationR03().sumPt;
+      mMuonSumPtDR05[muoni]    = muon.isolationR05().sumPt;
+      mMuonEmEtDR03[muoni]     = muon.isolationR03().emEt;
+      mMuonHadEtDR03[muoni]    = muon.isolationR03().hadEt;
+      //
+      mMuonNumOfMatches[muoni] = muon.numberOfMatches();
+      //
+      mMuonIsTight[muoni]      = muon.isTightMuon(primaryvtx);
+      mMuonIsLoose[muoni]      = muon.isLooseMuon();
+      //
+      if( muon.isGlobalMuon() && muon.combinedMuon().isNonnull() ){
+	mMuonCombChi2Norm[muoni]    = muon.combinedMuon()->normalizedChi2();
+	mMuonCombValidHits[muoni]   = muon.combinedMuon()->found();
+	mMuonCombLostHits[muoni]    = muon.combinedMuon()->lost();
+	mMuonCombPt[muoni]          = muon.combinedMuon()->pt();
+	mMuonCombPz[muoni]          = muon.combinedMuon()->pz();
+	mMuonCombP[muoni]           = muon.combinedMuon()->p();
+	mMuonCombEta[muoni]         = muon.combinedMuon()->eta();
+	mMuonCombPhi[muoni]         = muon.combinedMuon()->phi();
+	mMuonCombChi2[muoni]        = muon.combinedMuon()->chi2();
+	mMuonCombCharge[muoni]      = muon.combinedMuon()->charge();
+	mMuonCombQOverPError[muoni] = muon.combinedMuon()->qoverpError();		
+	mMuonCombNdof[muoni]        = muon.combinedMuon()->ndof();
+	mMuonCombVx[muoni]          = muon.combinedMuon()->vx();
+	mMuonCombVy[muoni]          = muon.combinedMuon()->vy();
+	mMuonCombVz[muoni]          = muon.combinedMuon()->vz();
+	mMuonCombD0[muoni]          = muon.combinedMuon()->d0();
+	mMuonCombDz[muoni]          = muon.combinedMuon()->dz();
+      } 
+      else{
+	mMuonCombChi2Norm[muoni]    = 999.;
+	mMuonCombValidHits[muoni]   = 999.;
+	mMuonCombLostHits[muoni]    = 999.;
+	mMuonCombPt[muoni]          = 999.;
+	mMuonCombPz[muoni]          = 999.;
+	mMuonCombP[muoni]           = 999.;
+	mMuonCombEta[muoni]         = 999.;
+	mMuonCombPhi[muoni]         = 999.;
+	mMuonCombChi2[muoni]        = 999.;
+	mMuonCombCharge[muoni]      = 999.;
+	mMuonCombQOverPError[muoni] = 999.;
+	mMuonCombNdof[muoni]        = 999.;
+	mMuonCombVx[muoni]          = 999.;
+	mMuonCombVy[muoni]          = 999.;
+	mMuonCombVz[muoni]          = 999.;
+	mMuonCombD0[muoni]          = 999.;
+	mMuonCombDz[muoni]          = 999.;
+      }
+      //
+      if (muon.standAloneMuon().isNonnull()){
+	mMuonStandChi2Norm[muoni]    = muon.standAloneMuon()->normalizedChi2();
+	mMuonStandValidHits[muoni]   = muon.standAloneMuon()->found();
+	mMuonStandLostHits[muoni]    = muon.standAloneMuon()->lost();
+	mMuonStandPt[muoni]          = muon.standAloneMuon()->pt();
+	mMuonStandPz[muoni]          = muon.standAloneMuon()->pz();
+	mMuonStandP[muoni]           = muon.standAloneMuon()->p();
+	mMuonStandEta[muoni]         = muon.standAloneMuon()->eta();
+	mMuonStandPhi[muoni]         = muon.standAloneMuon()->phi();
+	mMuonStandChi2[muoni]        = muon.standAloneMuon()->chi2();
+	mMuonStandCharge[muoni]      = muon.standAloneMuon()->charge();
+	mMuonStandQOverPError[muoni] = muon.standAloneMuon()->qoverpError();
+      } 
+      else{
+	mMuonStandChi2Norm[muoni]    = 999.; 
+	mMuonStandValidHits[muoni]   = 999.; 
+	mMuonStandLostHits[muoni]    = 999.; 
+	mMuonStandPt[muoni]          = 999.; 
+	mMuonStandPz[muoni]          = 999.; 
+	mMuonStandP[muoni]           = 999.; 
+	mMuonStandEta[muoni]         = 999.; 
+	mMuonStandPhi[muoni]         = 999.; 
+	mMuonStandChi2[muoni]        = 999.; 
+	mMuonStandCharge[muoni]      = 999.; 
+	mMuonStandQOverPError[muoni] = 999.; 
+      }
+      //
+      if(muon.track().isNonnull()){
+	mMuonTrkChi2Norm[muoni]    = muon.track()->normalizedChi2();
+	mMuonTrkValidHits[muoni]   = muon.track()->found();
+	mMuonTrkLostHits[muoni]    = muon.track()->lost();
+	mMuonTrkPt[muoni]          = muon.track()->pt();
+	mMuonTrkPz[muoni]          = muon.track()->pz();
+	mMuonTrkP[muoni]           = muon.track()->p();
+	mMuonTrkEta[muoni]         = muon.track()->eta();
+	mMuonTrkPhi[muoni]         = muon.track()->phi();
+	mMuonTrkChi2[muoni]        = muon.track()->chi2();
+	mMuonTrkCharge[muoni]      = muon.track()->charge();
+	mMuonTrkQOverPError[muoni] = muon.track()->qoverpError();
+	mMuonTrkDxy[muoni]         = muon.track()->dxy( beamSpotHandle->position() );
+	mMuonTrkNumOfValidPixHits[muoni] =  muon.track()->hitPattern().numberOfValidPixelHits();
+      }
+      else{
+	mMuonTrkChi2Norm[muoni]    = 999.; 
+	mMuonTrkValidHits[muoni]   = 999.; 
+	mMuonTrkLostHits[muoni]    = 999.; 
+	mMuonTrkPt[muoni]          = 999.; 
+	mMuonTrkPz[muoni]          = 999.; 
+	mMuonTrkP[muoni]           = 999.; 
+	mMuonTrkEta[muoni]         = 999.; 
+	mMuonTrkPhi[muoni]         = 999.; 
+	mMuonTrkChi2[muoni]        = 999.; 
+	mMuonTrkCharge[muoni]      = 999.; 
+	mMuonTrkQOverPError[muoni] = 999.; 
+	mMuonTrkDxy[muoni]         = 999.;
+	mMuonTrkNumOfValidPixHits[muoni] = 999.;
+      }  
+      muoni++;
+      if(muoni>=MAXMUON) break;
+    }
+  }//if(includeNonPFCollection)
   mNMuon=muoni;
-
+  if(debugMode && mNMuon>0){
+    cout<<"Muon0: Pt= "<<mMuonPt[0]
+	<<", Eta= "<<mMuonEta[0]
+	<<", Phi= "<<mMuonPhi[0]
+	<<endl;
+  }
+  
   
   ///-------------------------------------------------------------------------- 
   /// PFMuons
@@ -1591,7 +1907,7 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   iEvent.getByLabel(PFMuonTag_,MuonHand);
   muoni=0;
   for(unsigned int ind=0; ind<(*MuonHand).size() && ind<MAXMUON; ind++){ 
-    const pat::Muon& muon = (*MuonHand)[ind];
+    const pat::Muon& muon             = (*MuonHand)[ind];
     mPFMuonPt[muoni]                  = muon.pt();
     mPFMuonEt[muoni]                  = muon.et();
     mPFMuonE[muoni]                   = muon.energy();
@@ -1605,17 +1921,41 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     mPFMuonIsGlobal[muoni]            = muon.isGlobalMuon();
     mPFMuonIsStandAlone[muoni]        = muon.isStandAloneMuon();
     mPFMuonIsTracker[muoni]           = muon.isTrackerMuon();
+    mPFMuonIsPF[muoni]                = muon.isPFMuon();
+    //
+    mPFMuonIsTight[muoni]             = muon.isTightMuon(primaryvtx);
+    mPFMuonIsLoose[muoni]             = muon.isLooseMuon();
     //
     mPFMuonChargedHadronIso[muoni]    = muon.chargedHadronIso();
     mPFMuonPhotonIso[muoni]           = muon.photonIso();
     mPFMuonNeutralHadronIso[muoni]    = muon.neutralHadronIso();
     mPFMuonisGMPT[muoni]              = muon.muonID("GlobalMuonPromptTight");
-    mPFMuonNumOfMatches[muoni]        = muon.numberOfMatches(); 
     mPFMuonR04ChargedHadronPt[muoni]  = muon.pfIsolationR04().sumChargedHadronPt;
     mPFMuonR04NeutralHadronEt[muoni]  = muon.pfIsolationR04().sumNeutralHadronEt;
     mPFMuonR04PhotonEt[muoni]         = muon.pfIsolationR04().sumPhotonEt;
     mPFMuonR04PUPt[muoni]             = muon.pfIsolationR04().sumPUPt;
     //
+    mPFMuonNumOfMatches[muoni]        = muon.numberOfMatches(); 
+    mPFMuonNumOfMatchesStation[muoni] = muon.numberOfMatchedStations();
+    // Global Track
+    if(muon.globalTrack().isNonnull()){
+      mPFMuonGlobChi2Norm[muoni]            = muon.globalTrack()->normalizedChi2();
+      mPFMuonGlobNumOfValidMuonHits[muoni]  = muon.globalTrack()->hitPattern().numberOfValidMuonHits();
+    }
+    else{
+      mPFMuonGlobChi2Norm[muoni]            = 999.;
+      mPFMuonGlobNumOfValidMuonHits[muoni]  = 999.;
+    }
+    // BestTrack
+    if(muon.muonBestTrack().isNonnull()){
+      mPFMuonBestTrkdxy[muoni]              = fabs(muon.muonBestTrack()->dxy(primaryvtx.position()));
+      mPFMuonBestTrkdz[muoni]               = fabs(muon.muonBestTrack()->dz(primaryvtx.position()));
+    }
+    else{
+      mPFMuonBestTrkdxy[muoni]              = 999.;
+      mPFMuonBestTrkdz[muoni]               = 999.;
+    }
+    // InnerTrack
     if(muon.innerTrack().isNonnull()){
       mPFMuoninnertrackPt[muoni]     = muon.innerTrack()->pt();
       mPFMuonnValidHits[muoni]       = muon.innerTrack()->numberOfValidHits();
@@ -1623,7 +1963,14 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       mPFMuondxy[muoni]              = muon.innerTrack()->dxy(primaryvtx.position());
       mPFMuondz[muoni]               = muon.vz() - primaryvtx.position().z();
     }
-    //
+    else{
+      mPFMuoninnertrackPt[muoni]     = 999.;
+      mPFMuonnValidHits[muoni]       = 999.;
+      mPFMuonnValidPixelHits[muoni]  = 999.;
+      mPFMuondxy[muoni]              = 999.;
+      mPFMuondz[muoni]               = 999.;
+    }
+    // GlobalMuon
     if(muon.isGlobalMuon() && muon.combinedMuon().isNonnull()){
       mPFMuonCombChi2Norm[muoni]    = muon.combinedMuon()->normalizedChi2();
       mPFMuonCombValidHits[muoni]   = muon.combinedMuon()->found();
@@ -1662,7 +2009,7 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       mPFMuonCombD0[muoni]          = 999.;
       mPFMuonCombDz[muoni]          = 999.;
     }
-    //
+    // StandAloneMuon
     if(muon.standAloneMuon().isNonnull()){
       mPFMuonStandChi2Norm[muoni]    = muon.standAloneMuon()->normalizedChi2();
       mPFMuonStandValidHits[muoni]   = muon.standAloneMuon()->found();
@@ -1689,7 +2036,7 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       mPFMuonStandCharge[muoni]      = 999.; 
       mPFMuonStandQOverPError[muoni] = 999.; 
     }
-    //
+    // Track
     if(muon.track().isNonnull()){
       mPFMuonTrkChi2Norm[muoni]    = muon.track()->normalizedChi2();
       mPFMuonTrkValidHits[muoni]   = muon.track()->found();
@@ -1703,7 +2050,8 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       mPFMuonTrkCharge[muoni]      = muon.track()->charge();
       mPFMuonTrkQOverPError[muoni] = muon.track()->qoverpError();
       mPFMuonTrkDxy[muoni]         = muon.track()->dxy( beamSpotHandle->position() );
-      mPFMuonTrkNumOfValidPixHits[muoni] =  muon.track()->hitPattern().numberOfValidPixelHits();  
+      mPFMuonTrkNumOfValidPixHits[muoni] =  muon.track()->hitPattern().numberOfValidPixelHits();
+      mPFMuonTrkLayerWithMeasurement[muoni] = muon.track()->hitPattern().trackerLayersWithMeasurement(); 
     }
     else{
       mPFMuonTrkChi2Norm[muoni]    = 999.; 
@@ -1719,106 +2067,125 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       mPFMuonTrkQOverPError[muoni] = 999.; 
       mPFMuonTrkDxy[muoni]         = 999.;
       mPFMuonTrkNumOfValidPixHits[muoni] = 999.;
+      mPFMuonTrkLayerWithMeasurement[muoni] = 999.;
     }
     muoni++;
+    if(muoni>=MAXMUON) break;
   }
   mNPFMuon=muoni;
- 
-  
-  ///-------------------------------------------------------------------------- 
-  /// B-Field
-  ///--------------------------------------------------------------------------
-  edm::Handle<DcsStatusCollection> dcsHandle;
-  iEvent.getByLabel("scalersRawToDigi", dcsHandle);
-  double bField = 3.8112;
-  if( !isMCTag && dcsHandle->size() > 0){
-    float currentToBFieldScaleFactor = 2.09237036221512717e-04;
-    float  current = (*dcsHandle)[0].magnetCurrent();
-    bField = current*currentToBFieldScaleFactor;
+  if(debugMode){
+    cout<<"NPFMuons: "<<mNPFMuon<<endl;
+    if(mNPFMuon>0){
+      cout<<"PFMuon0: Pt= "<<mPFMuonPt[0]
+	  <<", Eta= "<<mPFMuonEta[0]
+	  <<", Phi= "<<mPFMuonPhi[0]
+	  <<", R04ChargedHadronPt= "<<mPFMuonR04ChargedHadronPt[0]
+	  <<", R04NeutralHadronEt= "<<mPFMuonR04NeutralHadronEt[0]
+	  <<", R04PhotonEt= "<<mPFMuonR04PhotonEt[0]
+	  <<", R04PUPt="<<mPFMuonR04PUPt[muoni]
+	  <<", Tight= "<<mPFMuonIsTight[0]
+	  <<", Loose= "<<mPFMuonIsLoose[0]
+	  <<endl;
+    }
   }
-  else {
-    edm::ESHandle<MagneticField> magneticField;
-    iSetup.get<IdealMagneticFieldRecord>().get(magneticField);
-    bField = magneticField->inTesla(GlobalPoint(0.,0.,0.)).z();
-  }
-  
-  
-  ///-------------------------------------------------------------------------- 
-  /// ---
-  ///--------------------------------------------------------------------------
-  edm::Handle<reco::TrackCollection> trkHandle;
-  iEvent.getByLabel("generalTracks",trkHandle);
 
+  
+  ///-------------------------------------------------------------------------- 
+  /// Conversions
+  ///--------------------------------------------------------------------------
+  edm::Handle<reco::ConversionCollection> conversions_h;
+  iEvent.getByLabel("allConversions", conversions_h);
+  
   
   ///-------------------------------------------------------------------------- 
   /// Electrons
   ///--------------------------------------------------------------------------
-  edm::Handle<edm::View<pat::Electron> > ElecHand;
-  iEvent.getByLabel("cleanPatElectrons",ElecHand);
+  edm::Handle<edm::View<pat::Electron> > ElecHand; 
+  iEvent.getByLabel(ElectronTag_,ElecHand);
+  //
+  edm::Handle<edm::View<pat::Electron> > ElecHandTight;
+  edm::Handle<edm::View<pat::Electron> > ElecHandMedium;
+  edm::Handle<edm::View<pat::Electron> > ElecHandLoose;
+  edm::Handle<edm::View<pat::Electron> > ElecHandVeto;
+  iEvent.getByLabel("selectTightElectrons",ElecHandTight); 
+  iEvent.getByLabel("selectMediumElectrons",ElecHandMedium);
+  iEvent.getByLabel("selectLooseElectrons",ElecHandLoose); 
+  iEvent.getByLabel("selectVetoElectrons",ElecHandVeto); 
   int eleci=0;
-  /*
-  for(unsigned int ind=0; ind<(*ElecHand).size() && ind<MAXELEC; ind++){ 
-  const pat::Electron& elec = (*ElecHand)[ind];
-  Double_t sc_et = elec.superCluster()->energy()/TMath::CosH(elec.gsfTrack()->eta());
-  
-  mElecE[eleci]              = elec.superCluster()->energy();
-  mElecPt[eleci]             = sc_et;
-  mElecPx[eleci]             = elec.px();
-  mElecPy[eleci]             = elec.py();
-  mElecPz[eleci]             = elec.pz();
-  
-  int ecalseed = elec.ecalDrivenSeed();
-  int eID95 = ((int)elec.electronID("simpleEleId95cIso") & 1);
-  int eID80 = ((int)elec.electronID("simpleEleId80cIso") & 1);
-  
-  mElecEcalDrivenSeed[eleci] = ecalseed;
-  mElecID80[eleci]           = eID80;
-  mElecID95[eleci]           = eID95;
-  
-  mElecEta[eleci]            = elec.eta();
-  mElecPhi[eleci]            = elec.phi();
-  mElecCharge[eleci]         = elec.charge();
-  mElecdr03HcalTowerSumEt[eleci]   = elec.dr03HcalTowerSumEt();//hcalIso();
-  mElecdr03EcalRecHitSumEt[eleci]  = elec.dr03EcalRecHitSumEt();//ecalIso();
-  mElecdr03TkSumPt[eleci]    = elec.dr03TkSumPt(); //trackIso();
-  mElecNumOfValidHits[eleci] = elec.gsfTrack()->numberOfValidHits();
-  mElecInnerNumOfHits[eleci] = elec.gsfTrack()->trackerExpectedHitsInner().numberOfHits();
-  
-  ConversionFinder convFinder;
-  ConversionInfo convInfo = convFinder.getConversionInfo(elec, trkHandle, bField);
-  
-  mElecdist[eleci]           = convInfo.dist();
-  mElecdcot[eleci]           = convInfo.dcot();
-  mElecNormChi2[eleci]       = elec.gsfTrack()->normalizedChi2();
-  mElecdxy[eleci]            = elec.gsfTrack()->dxy(primaryvtx.position());
-  mElecdz[eleci]             = elec.gsfTrack()->dz(primaryvtx.position());
-  mElecdB[eleci]             = elec.dB();
-  mElecIsEB[eleci]           = elec.isEB();
-  mElecfbrem[eleci]          = elec.fbrem();
-  mElecDEtaSuTrAtVtx[eleci]  = elec.deltaEtaSuperClusterTrackAtVtx();
-  mElecDPhiSuTrAtVtx[eleci]  = elec.deltaPhiSuperClusterTrackAtVtx();
-  mElecHadronicOverEm[eleci] = elec.hadronicOverEm();
-  mElecHcalOverEcal[eleci]   = elec.hcalOverEcal();
-  mElecSuperClusOverP[eleci] = elec.eSuperClusterOverP();
-  mElecetaeta[eleci]         = elec.sigmaEtaEta();
-  mElecietaieta[eleci]       = elec.sigmaIetaIeta();
-  
-  eleci++;
-  }
-  */
-  mNElec=eleci;
-  
+  if(includeNonPFCollection && ElecHand.isValid()){
+    for(unsigned int ind=0; ind<(*ElecHand).size() && ind<MAXELEC; ind++){ 
+      const pat::Electron& elec  = (*ElecHand)[ind];
+      Double_t sc_et             = elec.superCluster()->energy()/TMath::CosH(elec.gsfTrack()->eta());
+      
+      mElecE[eleci]              = elec.superCluster()->energy();
+      mElecPt[eleci]             = sc_et;
+      mElecPx[eleci]             = elec.px();
+      mElecPy[eleci]             = elec.py();
+      mElecPz[eleci]             = elec.pz();
+      
+      int ecalseed               = elec.ecalDrivenSeed();
+      int eID95                  = ((int)elec.electronID("simpleEleId95cIso") & 1);
+      int eID80                  = ((int)elec.electronID("simpleEleId80cIso") & 1);
+      
+      mElecEcalDrivenSeed[eleci] = ecalseed;
+      mElecID80[eleci]           = eID80;
+      mElecID95[eleci]           = eID95;
+      
+      mElecEta[eleci]            = elec.eta();
+      mElecPhi[eleci]            = elec.phi();
+      mElecCharge[eleci]         = elec.charge();
+      mElecdr03HcalTowerSumEt[eleci]   = elec.dr03HcalTowerSumEt();//hcalIso();
+      mElecdr03EcalRecHitSumEt[eleci]  = elec.dr03EcalRecHitSumEt();//ecalIso();
+      mElecdr03TkSumPt[eleci]    = elec.dr03TkSumPt(); //trackIso();
+      mElecNumOfValidHits[eleci] = elec.gsfTrack()->numberOfValidHits();
+      mElecInnerNumOfHits[eleci] = elec.gsfTrack()->trackerExpectedHitsInner().numberOfHits();
+      
+      ConversionFinder convFinder;
+      ConversionInfo convInfo    = convFinder.getConversionInfo(elec, trkHandle, bField);
+      
+      mElecdist[eleci]           = convInfo.dist();
+      mElecdcot[eleci]           = convInfo.dcot();
+      mElecNormChi2[eleci]       = elec.gsfTrack()->normalizedChi2();
+      mElecdxy[eleci]            = elec.gsfTrack()->dxy(primaryvtx.position());
+      mElecdz[eleci]             = elec.gsfTrack()->dz(primaryvtx.position());
+      mElecdB[eleci]             = elec.dB();
+      mElecIsEB[eleci]           = elec.isEB();
+      mElecfbrem[eleci]          = elec.fbrem();
+      mElecDEtaSuTrAtVtx[eleci]  = elec.deltaEtaSuperClusterTrackAtVtx();
+      mElecDPhiSuTrAtVtx[eleci]  = elec.deltaPhiSuperClusterTrackAtVtx();
+      mElecHadronicOverEm[eleci] = elec.hadronicOverEm();
+      mElecHcalOverEcal[eleci]   = elec.hcalOverEcal();
+      mElecSuperClusOverP[eleci] = elec.eSuperClusterOverP();
+      mElecetaeta[eleci]         = elec.sigmaEtaEta();
+      mElecietaieta[eleci]       = elec.sigmaIetaIeta();
 
+      mElecIsTight[eleci]     = -1;
+      mElecIsMedium[eleci]    = -1;
+      mElecIsLoose[eleci]     = -1;
+      mElecIsVeto[eleci]      = -1;
+      
+      eleci++; 
+      if(eleci>=MAXELEC) break;
+    }
+  }//if(includeNonPFCollection)
+  mNElec=eleci;
+  if(debugMode && mNElec>0){
+    cout<<"Elec0: Pt= "<<mElecPt[0]
+	<<", Eta= "<<mElecEta[0]
+	<<", Phi= "<<mElecPhi[0]
+	<<", Tight= "<<mElecIsTight[0]
+	<<", Veto= "<<mElecIsVeto[0]
+	<<endl;
+  }
+  
+  
   ///-------------------------------------------------------------------------- 
   /// PFElectrons
   ///--------------------------------------------------------------------------
-  //iEvent.getByLabel("selectedPatElectronsPF",ElecHand);
   iEvent.getByLabel(PFElectronTag_,ElecHand);
   eleci=0;
   for(unsigned int ind=0; ind<(*ElecHand).size() && ind<MAXELEC; ind++){ 
     const pat::Electron& elec = (*ElecHand)[ind];
-
-    //std::cout<<"PFElectron: eta = "<<elec.eta()<<" | isEB = "<<elec.isEB()<<" | isEE = "<<elec.isEE()<<" | isEBEEGap = "<<elec.isEBEEGap()<<std::endl;
     
     mPFElecE[eleci]                    = elec.energy();
     mPFElecPt[eleci]                   = elec.pt();
@@ -1871,12 +2238,99 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     mPFeidRobustLoose[eleci]           = ((int)elec.electronID("eidRobustLoose") & 1);
     mPFeidRobustTight[eleci]           = ((int)elec.electronID("eidRobustTight") & 1);
     mPFeidTight[eleci]                 = ((int)elec.electronID("eidTight") & 1);
-    mPFevspi[eleci]                    = ((int)elec.electronID("pf_evspi") & 1);
-    mPFevsmu[eleci]                    = ((int)elec.electronID("pf_evsmu") & 1);
-    
+    //mPFevspi[eleci]                    = ((int)elec.electronID("pf_evspi") & 1);
+    //mPFevsmu[eleci]                    = ((int)elec.electronID("pf_evsmu") & 1);
+
+    //ID
+    float ooemoop                      = (1.0/elec.ecalEnergy() - elec.eSuperClusterOverP()/elec.ecalEnergy());
+    bool vtxFitConversion              = ConversionTools::hasMatchedConversion(elec, conversions_h, beamSpotHandle->position());
+    mPFElecIsTight[eleci]              = EgammaCutBasedEleId::PassWP(EgammaCutBasedEleId::TIGHT, 
+								     mPFElecIsEB[eleci],
+								     mPFElecPt[eleci],
+								     mPFElecEta[eleci],
+								     mPFElecDEtaSuTrAtVtx[eleci],
+								     mPFElecDPhiSuTrAtVtx[eleci], 
+								     mPFElecietaieta[eleci], 
+								     mPFElecHadOverEm[eleci],
+								     ooemoop,
+								     mPFElecdxy[eleci], 
+								     mPFElecdz[eleci], 
+								     mPFElecCharHadIso[eleci], 
+								     mPFElecPhoIso[eleci],
+								     mPFElecNeuHadIso[eleci], 
+								     vtxFitConversion, 
+								     mPFElecInnerHits[eleci], 
+								     mfastJetRho);
+    mPFElecIsMedium[eleci]             = EgammaCutBasedEleId::PassWP(EgammaCutBasedEleId::MEDIUM, 
+								     mPFElecIsEB[eleci],
+								     mPFElecPt[eleci],
+								     mPFElecEta[eleci],
+								     mPFElecDEtaSuTrAtVtx[eleci],
+								     mPFElecDPhiSuTrAtVtx[eleci], 
+								     mPFElecietaieta[eleci], 
+								     mPFElecHadOverEm[eleci],
+								     ooemoop,
+								     mPFElecdxy[eleci], 
+								     mPFElecdz[eleci], 
+								     mPFElecCharHadIso[eleci], 
+								     mPFElecPhoIso[eleci],
+								     mPFElecNeuHadIso[eleci], 
+								     vtxFitConversion, 
+								     mPFElecInnerHits[eleci], 
+								     mfastJetRho);
+    mPFElecIsLoose[eleci]              = EgammaCutBasedEleId::PassWP(EgammaCutBasedEleId::LOOSE, 
+								     mPFElecIsEB[eleci],
+								     mPFElecPt[eleci],
+								     mPFElecEta[eleci],
+								     mPFElecDEtaSuTrAtVtx[eleci],
+								     mPFElecDPhiSuTrAtVtx[eleci], 
+								     mPFElecietaieta[eleci], 
+								     mPFElecHadOverEm[eleci],
+								     ooemoop,
+								     mPFElecdxy[eleci], 
+								     mPFElecdz[eleci], 
+								     mPFElecCharHadIso[eleci], 
+								     mPFElecPhoIso[eleci],
+								     mPFElecNeuHadIso[eleci], 
+								     vtxFitConversion, 
+								     mPFElecInnerHits[eleci], 
+								     mfastJetRho);
+    mPFElecIsVeto[eleci]               = EgammaCutBasedEleId::PassWP(EgammaCutBasedEleId::VETO, 
+								     mPFElecIsEB[eleci],
+								     mPFElecPt[eleci],
+								     mPFElecEta[eleci],
+								     mPFElecDEtaSuTrAtVtx[eleci],
+								     mPFElecDPhiSuTrAtVtx[eleci], 
+								     mPFElecietaieta[eleci], 
+								     mPFElecHadOverEm[eleci],
+								     ooemoop,
+								     mPFElecdxy[eleci], 
+								     mPFElecdz[eleci], 
+								     mPFElecCharHadIso[eleci], 
+								     mPFElecPhoIso[eleci],
+								     mPFElecNeuHadIso[eleci], 
+								     vtxFitConversion, 
+								     mPFElecInnerHits[eleci], 
+								     mfastJetRho);
     eleci++;
+    if(eleci>=MAXELEC) break;
   }
   mNPFElec=eleci;
+  if(debugMode){
+    cout<<"NPFElectrons: "<<mNPFElec<<endl;
+    if(mNPFElec>0){
+      cout<<"PFElec0: Pt= "<<mPFElecPt[0]
+	  <<", Eta= "<<mPFElecEta[0]
+	  <<", Phi= "<<mPFElecPhi[0]
+	  <<", CharHadIso= "<<mPFElecCharHadIso[0]
+	  <<", PhoIso= "<<mPFElecPhoIso[0]
+	  <<", NeuHadIso= "<<mPFElecNeuHadIso[0]
+	  <<", EffArea= "<<mPFElecEffArea[0]
+	  <<", Tight= "<<mPFElecIsTight[0]
+	  <<", Veto= "<<mPFElecIsVeto[0]
+	  <<endl;
+    }
+  }
   
   
   ///-------------------------------------------------------------------------- 
@@ -1884,104 +2338,112 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   ///--------------------------------------------------------------------------  
   edm::Handle<edm::View<pat::Tau> > TauHand;
   iEvent.getByLabel(TauTag_,TauHand); 
-      
   int taui=0;
-  /*
-  for(unsigned int ind=0; ind<(*TauHand).size() && ind<MAXTAU; ind++){ 
-  const pat::Tau& tau = (*TauHand)[ind];
-  
-  mTauPt[taui]                                             = tau.pt();
-  mTauPx[taui]                                             = tau.momentum().X();
-  mTauPy[taui]                                             = tau.momentum().Y();
-  mTauPz[taui]                                             = tau.momentum().Z();
-  mTauE[taui]                                              = tau.energy();
-  mTauEta[taui]                                            = tau.eta();
-  mTauPhi[taui]                                            = tau.phi();
-  mTauCharge[taui]                                         = tau.charge();
-  
-  //
-  mTauEtaEtaMoment[taui]                                   = tau.etaetaMoment();
-  mTauPhiPhiMoment[taui]                                   = tau.phiphiMoment();
-  mTauEtaPhiMoment[taui]                                   = tau.etaphiMoment();
-  
-  //PF objects
-  mTauLeadPFChargedHadrCandsignedSipt[taui]                = tau.leadPFChargedHadrCandsignedSipt();  
-  mTauIsoPFChargedHadrCandsPtSum[taui]                     = tau.isolationPFChargedHadrCandsPtSum();
-  mTauIsoPFGammaCandsEtSum[taui]                           = tau.isolationPFGammaCandsEtSum();      
-  mTauMaximumHCALPFClusterEt[taui]                         = tau.maximumHCALPFClusterEt();          
-  mTauEmFraction[taui]                                     = tau.emFraction();                      
-  mTauHcalTotOverPLead[taui]                               = tau.hcalTotOverPLead();                
-  mTauHcalMaxOverPLead[taui]                               = tau.hcalMaxOverPLead();                
-  mTauHcal3x3OverPLead[taui]                               = tau.hcal3x3OverPLead();                
-  mTauEcalStripSumEOverPLead[taui]                         = tau.ecalStripSumEOverPLead();          
-  mTauBremsRecoveryEOverPLead[taui]                        = tau.bremsRecoveryEOverPLead();                 
-  mTauElectronPreIDOutput[taui]                            = tau.electronPreIDOutput();             
-  mTauElectronPreIDDecision[taui]                          = tau.electronPreIDDecision();            
-  mTauCaloComp[taui]                                       = tau.caloComp();                        
-  mTauSegComp[taui]                                        = tau.segComp();                         
-  mTauMuonDecision[taui]                                   = tau.muonDecision(); 
-  
-  //
-  mTausignalPFChargedHadrCands[taui]                       = tau.signalPFChargedHadrCands().size();
-  mTausignalPFGammaCands[taui]                             = tau.signalPFGammaCands().size();
-  
-  //ID
-  mTauDisAgainstElectronDeadECAL[taui]                     = tau.tauID("againstElectronDeadECAL");
-  mTauDisAgainstElectronLooseMVA2[taui]                    = tau.tauID("againstElectronLooseMVA2");
-  mTauDisAgainstElectronLooseMVA3[taui]                    = tau.tauID("againstElectronLooseMVA3");
-  mTauDisAgainstElectronLoose[taui]                        = tau.tauID("againstElectronLoose");
-  mTauDisAgainstElectronMVA2category[taui]                 = tau.tauID("againstElectronMVA2category");
-  mTauDisAgainstElectronMVA2raw[taui]                      = tau.tauID("againstElectronMVA2raw");
-  mTauDisAgainstElectronMVA3category[taui]                 = tau.tauID("againstElectronMVA3category");
-  mTauDisAgainstElectronMVA3raw[taui]                      = tau.tauID("againstElectronMVA3raw");
-  mTauDisAgainstElectronMVA[taui]                          = tau.tauID("againstElectronMVA");
-  mTauDisAgainstElectronMediumMVA2[taui]                   = tau.tauID("againstElectronMediumMVA2");
-  mTauDisAgainstElectronMediumMVA3[taui]                   = tau.tauID("againstElectronMediumMVA3");
-  mTauDisAgainstElectronMedium[taui]                       = tau.tauID("againstElectronMedium");
-  mTauDisAgainstElectronTightMVA2[taui]                    = tau.tauID("againstElectronTightMVA2");
-  mTauDisAgainstElectronTightMVA3[taui]                    = tau.tauID("againstElectronTightMVA3");
-  mTauDisAgainstElectronTight[taui]                        = tau.tauID("againstElectronTight");
-  mTauDisAgainstElectronVLooseMVA2[taui]                   = tau.tauID("againstElectronVLooseMVA2");
-  mTauDisAgainstElectronVTightMVA3[taui]                   = tau.tauID("againstElectronVTightMVA3");
-  mTauDisAgainstMuonLoose2[taui]                           = tau.tauID("againstMuonLoose2");
-  mTauDisAgainstMuonLoose[taui]                            = tau.tauID("againstMuonLoose");
-  mTauDisAgainstMuonMedium2[taui]                          = tau.tauID("againstMuonMedium2");
-  mTauDisAgainstMuonMedium[taui]                           = tau.tauID("againstMuonMedium");
-  mTauDisAgainstMuonTight2[taui]                           = tau.tauID("againstMuonTight2");
-  mTauDisAgainstMuonTight[taui]                            = tau.tauID("againstMuonTight");
-  mTauDisByCombinedIsolationDeltaBetaCorrRaw3Hits[taui]    = tau.tauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
-  mTauDisByCombinedIsolationDeltaBetaCorrRaw[taui]         = tau.tauID("byCombinedIsolationDeltaBetaCorrRaw");
-  mTauDisByIsolationMVA2raw[taui]                          = tau.tauID("byIsolationMVA2raw");
-  mTauDisByIsolationMVAraw[taui]                           = tau.tauID("byIsolationMVAraw");
-  mTauDisByLooseCombinedIsolationDeltaBetaCorr3Hits[taui]  = tau.tauID("byLooseCombinedIsolationDeltaBetaCorr3Hits");
-  mTauDisByLooseCombinedIsolationDeltaBetaCorr[taui]       = tau.tauID("byLooseCombinedIsolationDeltaBetaCorr");
-  mTauDisByLooseIsolationMVA2[taui]                        = tau.tauID("byLooseIsolationMVA2");
-  mTauDisByLooseIsolationMVA[taui]                         = tau.tauID("byLooseIsolationMVA");
-  mTauDisByMediumCombinedIsolationDeltaBetaCorr3Hits[taui] = tau.tauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
-  mTauDisByMediumCombinedIsolationDeltaBetaCorr[taui]      = tau.tauID("byMediumCombinedIsolationDeltaBetaCorr");
-  mTauDisByMediumIsolationMVA2[taui]                       = tau.tauID("byMediumIsolationMVA2");
-  mTauDisByMediumIsolationMVA[taui]                        = tau.tauID("byMediumIsolationMVA");
-  mTauDisByTightCombinedIsolationDeltaBetaCorr3Hits[taui]  = tau.tauID("byTightCombinedIsolationDeltaBetaCorr3Hits");
-  mTauDisByTightCombinedIsolationDeltaBetaCorr[taui]       = tau.tauID("byTightCombinedIsolationDeltaBetaCorr");
-  mTauDisByTightIsolationMVA2[taui]                        = tau.tauID("byTightIsolationMVA2");
-  mTauDisByTightIsolationMVA[taui]                         = tau.tauID("byTightIsolationMVA");
-  mTauDisByVLooseCombinedIsolationDeltaBetaCorr[taui]      = tau.tauID("byVLooseCombinedIsolationDeltaBetaCorr");
-  mTauDisDecayModeFinding[taui]                            = tau.tauID("decayModeFinding");
-  
-  //GenJet Pt
-  mTauJetPt[taui]  =  -99.;
-  mTauJetEta[taui] =  -99.;
-  mTauJetPhi[taui] =  -99.;
-  if(isMCTag && tau.genJet()!= 0){
-  mTauJetPt[taui]  =  tau.genJet()->pt();
-  mTauJetEta[taui] =  tau.genJet()->eta();
-  mTauJetPhi[taui] =  tau.genJet()->phi();
+  if(includeNonPFCollection && TauHand.isValid()){
+    for(unsigned int ind=0; ind<(*TauHand).size() && ind<MAXTAU; ind++){ 
+      const pat::Tau& tau = (*TauHand)[ind];
+      
+      mTauPt[taui]                                             = tau.pt();
+      mTauPx[taui]                                             = tau.momentum().X();
+      mTauPy[taui]                                             = tau.momentum().Y();
+      mTauPz[taui]                                             = tau.momentum().Z();
+      mTauE[taui]                                              = tau.energy();
+      mTauEta[taui]                                            = tau.eta();
+      mTauPhi[taui]                                            = tau.phi();
+      mTauCharge[taui]                                         = tau.charge();
+      
+      //
+      mTauEtaEtaMoment[taui]                                   = tau.etaetaMoment();
+      mTauPhiPhiMoment[taui]                                   = tau.phiphiMoment();
+      mTauEtaPhiMoment[taui]                                   = tau.etaphiMoment();
+      
+      //PF objects
+      mTauLeadPFChargedHadrCandsignedSipt[taui]                = tau.leadPFChargedHadrCandsignedSipt();  
+      mTauIsoPFChargedHadrCandsPtSum[taui]                     = tau.isolationPFChargedHadrCandsPtSum();
+      mTauIsoPFGammaCandsEtSum[taui]                           = tau.isolationPFGammaCandsEtSum();      
+      mTauMaximumHCALPFClusterEt[taui]                         = tau.maximumHCALPFClusterEt();          
+      mTauEmFraction[taui]                                     = tau.emFraction();                      
+      mTauHcalTotOverPLead[taui]                               = tau.hcalTotOverPLead();                
+      mTauHcalMaxOverPLead[taui]                               = tau.hcalMaxOverPLead();                
+      mTauHcal3x3OverPLead[taui]                               = tau.hcal3x3OverPLead();                
+      mTauEcalStripSumEOverPLead[taui]                         = tau.ecalStripSumEOverPLead();          
+      mTauBremsRecoveryEOverPLead[taui]                        = tau.bremsRecoveryEOverPLead();                 
+      mTauElectronPreIDOutput[taui]                            = tau.electronPreIDOutput();             
+      mTauElectronPreIDDecision[taui]                          = tau.electronPreIDDecision();            
+      mTauCaloComp[taui]                                       = tau.caloComp();                        
+      mTauSegComp[taui]                                        = tau.segComp();                         
+      mTauMuonDecision[taui]                                   = tau.muonDecision(); 
+      
+      //
+      mTausignalPFChargedHadrCands[taui]                       = tau.signalPFChargedHadrCands().size();
+      mTausignalPFGammaCands[taui]                             = tau.signalPFGammaCands().size();
+      
+      //ID
+      mTauDisAgainstElectronDeadECAL[taui]                     = tau.tauID("againstElectronDeadECAL");
+      mTauDisAgainstElectronLooseMVA2[taui]                    = tau.tauID("againstElectronLooseMVA2");
+      mTauDisAgainstElectronLooseMVA3[taui]                    = tau.tauID("againstElectronLooseMVA3");
+      mTauDisAgainstElectronLoose[taui]                        = tau.tauID("againstElectronLoose");
+      mTauDisAgainstElectronMVA2category[taui]                 = tau.tauID("againstElectronMVA2category");
+      mTauDisAgainstElectronMVA2raw[taui]                      = tau.tauID("againstElectronMVA2raw");
+      mTauDisAgainstElectronMVA3category[taui]                 = tau.tauID("againstElectronMVA3category");
+      mTauDisAgainstElectronMVA3raw[taui]                      = tau.tauID("againstElectronMVA3raw");
+      mTauDisAgainstElectronMVA[taui]                          = tau.tauID("againstElectronMVA");
+      mTauDisAgainstElectronMediumMVA2[taui]                   = tau.tauID("againstElectronMediumMVA2");
+      mTauDisAgainstElectronMediumMVA3[taui]                   = tau.tauID("againstElectronMediumMVA3");
+      mTauDisAgainstElectronMedium[taui]                       = tau.tauID("againstElectronMedium");
+      mTauDisAgainstElectronTightMVA2[taui]                    = tau.tauID("againstElectronTightMVA2");
+      mTauDisAgainstElectronTightMVA3[taui]                    = tau.tauID("againstElectronTightMVA3");
+      mTauDisAgainstElectronTight[taui]                        = tau.tauID("againstElectronTight");
+      mTauDisAgainstElectronVLooseMVA2[taui]                   = tau.tauID("againstElectronVLooseMVA2");
+      mTauDisAgainstElectronVTightMVA3[taui]                   = tau.tauID("againstElectronVTightMVA3");
+      mTauDisAgainstMuonLoose2[taui]                           = tau.tauID("againstMuonLoose2");
+      mTauDisAgainstMuonLoose[taui]                            = tau.tauID("againstMuonLoose");
+      mTauDisAgainstMuonMedium2[taui]                          = tau.tauID("againstMuonMedium2");
+      mTauDisAgainstMuonMedium[taui]                           = tau.tauID("againstMuonMedium");
+      mTauDisAgainstMuonTight2[taui]                           = tau.tauID("againstMuonTight2");
+      mTauDisAgainstMuonTight[taui]                            = tau.tauID("againstMuonTight");
+      mTauDisByCombinedIsolationDeltaBetaCorrRaw3Hits[taui]    = tau.tauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+      mTauDisByCombinedIsolationDeltaBetaCorrRaw[taui]         = tau.tauID("byCombinedIsolationDeltaBetaCorrRaw");
+      mTauDisByIsolationMVA2raw[taui]                          = tau.tauID("byIsolationMVA2raw");
+      mTauDisByIsolationMVAraw[taui]                           = tau.tauID("byIsolationMVAraw");
+      mTauDisByLooseCombinedIsolationDeltaBetaCorr3Hits[taui]  = tau.tauID("byLooseCombinedIsolationDeltaBetaCorr3Hits");
+      mTauDisByLooseCombinedIsolationDeltaBetaCorr[taui]       = tau.tauID("byLooseCombinedIsolationDeltaBetaCorr");
+      mTauDisByLooseIsolationMVA2[taui]                        = tau.tauID("byLooseIsolationMVA2");
+      mTauDisByLooseIsolationMVA[taui]                         = tau.tauID("byLooseIsolationMVA");
+      mTauDisByMediumCombinedIsolationDeltaBetaCorr3Hits[taui] = tau.tauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
+      mTauDisByMediumCombinedIsolationDeltaBetaCorr[taui]      = tau.tauID("byMediumCombinedIsolationDeltaBetaCorr");
+      mTauDisByMediumIsolationMVA2[taui]                       = tau.tauID("byMediumIsolationMVA2");
+      mTauDisByMediumIsolationMVA[taui]                        = tau.tauID("byMediumIsolationMVA");
+      mTauDisByTightCombinedIsolationDeltaBetaCorr3Hits[taui]  = tau.tauID("byTightCombinedIsolationDeltaBetaCorr3Hits");
+      mTauDisByTightCombinedIsolationDeltaBetaCorr[taui]       = tau.tauID("byTightCombinedIsolationDeltaBetaCorr");
+      mTauDisByTightIsolationMVA2[taui]                        = tau.tauID("byTightIsolationMVA2");
+      mTauDisByTightIsolationMVA[taui]                         = tau.tauID("byTightIsolationMVA");
+      mTauDisByVLooseCombinedIsolationDeltaBetaCorr[taui]      = tau.tauID("byVLooseCombinedIsolationDeltaBetaCorr");
+      mTauDisDecayModeFinding[taui]                            = tau.tauID("decayModeFinding");
+      
+      //GenJet Pt
+      mTauJetPt[taui]  =  -99.;
+      mTauJetEta[taui] =  -99.;
+      mTauJetPhi[taui] =  -99.;
+      if(isMCTag && tau.genJet()!= 0){
+	mTauJetPt[taui]  =  tau.genJet()->pt();
+	mTauJetEta[taui] =  tau.genJet()->eta();
+	mTauJetPhi[taui] =  tau.genJet()->phi();
+      }
+      
+      taui++;
+      if(taui>=MAXTAU) break; 
+    }
   }
-  
-  taui++;
-  }
-  */
   mNTau = taui;
+  if(debugMode && mNTau>0){
+    cout<<"Tau0: Pt= "<<mTauPt[0]
+	<<", Eta= "<<mTauEta[0]
+	<<", Phi= "<<mTauPhi[0]
+	<<", ByDecayMode= "<<mTauDisDecayModeFinding[0]
+	<<", ByLooseCombinedIsolationDeltaBetaCorr= "<<mTauDisByLooseCombinedIsolationDeltaBetaCorr[0]
+	<<endl;
+  }
 
   
   ///-------------------------------------------------------------------------- 
@@ -2057,26 +2519,28 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     mPFTauDisByIsolationMVAraw[taui]                           = tau.tauID("byIsolationMVAraw");
     mPFTauDisByLooseCombinedIsolationDeltaBetaCorr3Hits[taui]  = tau.tauID("byLooseCombinedIsolationDeltaBetaCorr3Hits");
     mPFTauDisByLooseCombinedIsolationDeltaBetaCorr[taui]       = tau.tauID("byLooseCombinedIsolationDeltaBetaCorr");
-    mPFTauDisByLooseIsolationDeltaBetaCorr[taui]               = tau.tauID("byLooseIsolationDeltaBetaCorr");
     mPFTauDisByLooseIsolationMVA2[taui]                        = tau.tauID("byLooseIsolationMVA2");
     mPFTauDisByLooseIsolationMVA[taui]                         = tau.tauID("byLooseIsolationMVA");
-    mPFTauDisByLooseIsolation[taui]                            = tau.tauID("byLooseIsolation");
     mPFTauDisByMediumCombinedIsolationDeltaBetaCorr3Hits[taui] = tau.tauID("byMediumCombinedIsolationDeltaBetaCorr3Hits");
     mPFTauDisByMediumCombinedIsolationDeltaBetaCorr[taui]      = tau.tauID("byMediumCombinedIsolationDeltaBetaCorr");
-    mPFTauDisByMediumIsolationDeltaBetaCorr[taui]              = tau.tauID("byMediumIsolationDeltaBetaCorr");
     mPFTauDisByMediumIsolationMVA2[taui]                       = tau.tauID("byMediumIsolationMVA2");
     mPFTauDisByMediumIsolationMVA[taui]                        = tau.tauID("byMediumIsolationMVA");
-    mPFTauDisByMediumIsolation[taui]                           = tau.tauID("byMediumIsolation");
     mPFTauDisByTightCombinedIsolationDeltaBetaCorr3Hits[taui]  = tau.tauID("byTightCombinedIsolationDeltaBetaCorr3Hits");
     mPFTauDisByTightCombinedIsolationDeltaBetaCorr[taui]       = tau.tauID("byTightCombinedIsolationDeltaBetaCorr");
-    mPFTauDisByTightIsolationDeltaBetaCorr[taui]               = tau.tauID("byTightIsolationDeltaBetaCorr");
     mPFTauDisByTightIsolationMVA2[taui]                        = tau.tauID("byTightIsolationMVA2");
     mPFTauDisByTightIsolationMVA[taui]                         = tau.tauID("byTightIsolationMVA");
-    mPFTauDisByTightIsolation[taui]                            = tau.tauID("byTightIsolation");
     mPFTauDisByVLooseCombinedIsolationDeltaBetaCorr[taui]      = tau.tauID("byVLooseCombinedIsolationDeltaBetaCorr");
+    mPFTauDisDecayModeFinding[taui]                            = tau.tauID("decayModeFinding");
+
+    //Collections which don't exist in Tau
+    mPFTauDisByLooseIsolationDeltaBetaCorr[taui]               = tau.tauID("byLooseIsolationDeltaBetaCorr");
+    mPFTauDisByLooseIsolation[taui]                            = tau.tauID("byLooseIsolation");
+    mPFTauDisByMediumIsolationDeltaBetaCorr[taui]              = tau.tauID("byMediumIsolationDeltaBetaCorr");
+    mPFTauDisByMediumIsolation[taui]                           = tau.tauID("byMediumIsolation");
+    mPFTauDisByTightIsolationDeltaBetaCorr[taui]               = tau.tauID("byTightIsolationDeltaBetaCorr");
+    mPFTauDisByTightIsolation[taui]                            = tau.tauID("byTightIsolation");
     mPFTauDisByVLooseIsolationDeltaBetaCorr[taui]              = tau.tauID("byVLooseIsolationDeltaBetaCorr");
     mPFTauDisByVLooseIsolation[taui]                           = tau.tauID("byVLooseIsolation");
-    mPFTauDisDecayModeFinding[taui]                            = tau.tauID("decayModeFinding");
 
     //GenJet Pt
     mPFTauJetPt[taui]  =  -99.;
@@ -2089,8 +2553,17 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     }
     
     taui++;  
+    if(taui>=MAXTAU) break; 
   }
   mNPFTau = taui;
+  if(debugMode && mNPFTau>0){
+    cout<<"PFTau0: Pt= "<<mPFTauPt[0]
+	<<", Eta= "<<mPFTauEta[0]
+	<<", Phi= "<<mPFTauPhi[0]
+	<<", ByDecayMode= "<<mPFTauDisDecayModeFinding[0]
+	<<", ByLooseCombinedIsolationDeltaBetaCorr= "<<mPFTauDisByLooseCombinedIsolationDeltaBetaCorr[0]
+	<<endl;
+  }
   
   
   ///-------------------------------------------------------------------------- 
@@ -2098,31 +2571,32 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   ///--------------------------------------------------------------------------
   edm::Handle<edm::View<pat::Photon> > PhotHand;
   iEvent.getByLabel("cleanPatPhotons",PhotHand);
-  
   int photi=0;
-  for(unsigned int ind=0; ind<(*PhotHand).size() && ind<MAXPHOT; ind++){ 
-    const pat::Photon& phot = (*PhotHand)[ind];
-    
-    mPhotPt[photi]  = phot.pt() ;
-    mPhotPx[photi]  = phot.momentum().X() ;
-    mPhotPy[photi]  = phot.momentum().Y() ;
-    mPhotPz[photi]  = phot.momentum().Z() ;
-    mPhotE[photi]   = phot.energy() ;
-    mPhotEta[photi] = phot.eta() ;
-    mPhotPhi[photi] = phot.phi() ;
-    mPhotE1x5[eleci]= phot.e1x5(); 
-    mPhotE2x5[photi]= phot.e2x5(); 
-    mPhotE5x5[photi]= phot.e5x5(); 
-    mPhotSigEta[photi] = phot.sigmaEtaEta();
-    //mPhotSigPhi[photi] = phot.sigmaPhiPhi();
-    mPhotEcalIso04[photi] = phot.ecalIso(); 
-    mPhotHcalIso04[photi] = phot.hcalIso();
-    mPhotTrackIso04[photi] = phot.trackIso();
-    
-    mPhotHasPixSeed[photi] = phot.hasPixelSeed();
-    mPhotIsPhot[photi]     = phot.isPhoton();   
-    
-    photi++;
+  if(PhotHand.isValid()){
+    for(unsigned int ind=0; ind<(*PhotHand).size() && ind<MAXPHOT; ind++){ 
+      const pat::Photon& phot = (*PhotHand)[ind];
+      
+      mPhotPt[photi]  = phot.pt() ;
+      mPhotPx[photi]  = phot.momentum().X() ;
+      mPhotPy[photi]  = phot.momentum().Y() ;
+      mPhotPz[photi]  = phot.momentum().Z() ;
+      mPhotE[photi]   = phot.energy() ;
+      mPhotEta[photi] = phot.eta() ;
+      mPhotPhi[photi] = phot.phi() ;
+      mPhotE1x5[eleci]= phot.e1x5(); 
+      mPhotE2x5[photi]= phot.e2x5(); 
+      mPhotE5x5[photi]= phot.e5x5(); 
+      mPhotSigEta[photi] = phot.sigmaEtaEta();
+      //mPhotSigPhi[photi] = phot.sigmaPhiPhi();
+      mPhotEcalIso04[photi] = phot.ecalIso(); 
+      mPhotHcalIso04[photi] = phot.hcalIso();
+      mPhotTrackIso04[photi] = phot.trackIso();
+      
+      mPhotHasPixSeed[photi] = phot.hasPixelSeed();
+      mPhotIsPhot[photi]     = phot.isPhoton();   
+      
+      photi++;
+    }
   }
   mNPhot = photi;
   
@@ -2130,10 +2604,11 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   ///-------------------------------------------------------------------------- 
   /// MC Products
   ///--------------------------------------------------------------------------
+  mNGenPar = 0;
   if(isMCTag){
     /// Gen Particles
-    Handle<reco::GenParticleCollection>  GenParHand;
-    iEvent.getByLabel("genParticles", GenParHand);
+    //Handle<reco::GenParticleCollection>  GenParHand;
+    //iEvent.getByLabel("genParticles", GenParHand);
     
     //modified by Shuichi & Latife	
     
@@ -2622,29 +3097,29 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   
   Handle<reco::TrackCollection> tracks;
   iEvent.getByLabel(Tracks_,tracks);
+  tivN=0;
   
   /*
-  for(int i=0; i<TIVMAX;i++){
-  TIV[i]=-99;
-  TIV_pt[i]=-99;
-  TIV_eta[i]=-99;
-  TIV_phi[i]=-99;
-  TIV_px[i]=-99;
-  TIV_py[i]=-99;
-  TIV_pz[i]=-99;
-  TIV_dxy[i]=-99;
-  TIV_dsz[i]=-99;
-  TIV_dR[i] = -99;
-  TIV_d0[i]=-99;
-  TIV_dz[i]=-99;
-  TIV_dxy_corr[i]=-99;
-  TIV_dsz_corr[i]=-99;
-  TIV_d0_corr[i]=-99;
-  TIV_dz_corr[i]=-99;
-  }
+    for(int i=0; i<TIVMAX;i++){
+    TIV[i]=-99;
+    TIV_pt[i]=-99;
+    TIV_eta[i]=-99;
+    TIV_phi[i]=-99;
+    TIV_px[i]=-99;
+    TIV_py[i]=-99;
+    TIV_pz[i]=-99;
+    TIV_dxy[i]=-99;
+    TIV_dsz[i]=-99;
+    TIV_dR[i] = -99;
+    TIV_d0[i]=-99;
+    TIV_dz[i]=-99;
+    TIV_dxy_corr[i]=-99;
+    TIV_dsz_corr[i]=-99;
+    TIV_d0_corr[i]=-99;
+    TIV_dz_corr[i]=-99;
+    }
   */
   
-  tivN=0;
   /*
     for(reco::TrackCollection::const_iterator itTrack = tracks->begin();itTrack != tracks->end();++itTrack){
     float trkPt = itTrack->pt();
@@ -2803,6 +3278,7 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   LowTIV = Lower_TIV;
   */
   
+  
   ///-------------------------------------------------------------------------- 
   /// Fill tree
   ///--------------------------------------------------------------------------
@@ -2813,405 +3289,448 @@ void NtupleAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
 // ------------ method called once each job just before starting event loop  ------------
 void NtupleAnalyzer::beginJob()
 {
-  /// Run and Event lumi bx weight
-  mtree->Branch("run"      ,&mRun       , "run/I");
-  mtree->Branch("event"    ,&mEvent     , "event/L");
-  mtree->Branch("lumi"     ,&mLumi      , "lumi/I");	
-  mtree->Branch("bx"       ,&mBX        , "bx/I");
-  mtree->Branch("npvm1"    ,&mnpvm1     , "npvm1/I");
-  mtree->Branch("npv0"     ,&mnpv0      , "npv0/I");
-  mtree->Branch("npvp1"    ,&mnpvp1     , "npvp1/I");
-  mtree->Branch("ptHat"    ,&WeightTag  , "ptHat/D");	
+  ///-------------------------------------------------------------------------- 
+  /// General event information
+  ///--------------------------------------------------------------------------
+  mtree->Branch("run"                                                ,&mRun                                               ,"run/I");
+  mtree->Branch("event"                                              ,&mEvent                                             ,"event/L");
+  mtree->Branch("lumi"                                               ,&mLumi                                              ,"lumi/I");	
+  mtree->Branch("bx"                                                 ,&mBX                                                ,"bx/I");
+  //
+  mtree->Branch("npvm1"                                              ,&mnpvm1                                             ,"npvm1/I");
+  mtree->Branch("npv0"                                               ,&mnpv0                                              ,"npv0/I");
+  mtree->Branch("npvp1"                                              ,&mnpvp1                                             ,"npvp1/I");
+  mtree->Branch("ptHat"                                              ,&WeightTag                                          ,"ptHat/D");	
+  //
+  mtree->Branch("CaloTowerdEx"                                       ,&mCaloTowerdEx                                      ,"CaloTowerdEx/D");	
+  mtree->Branch("CaloTowerdEy"                                       ,&mCaloTowerdEy                                      ,"CaloTowerdEy/D");	
+  //
+  mtree->Branch("fastJetRho"                                         ,&mfastJetRho                                        ,"fastJetRho/D");
   
-  mtree->Branch("CaloTowerdEx"    ,&mCaloTowerdEx  , "CaloTowerdEx/D");	
-  mtree->Branch("CaloTowerdEy"    ,&mCaloTowerdEy  , "CaloTowerdEy/D");	
-
-  mtree->Branch("fastJetRho"      ,&mfastJetRho    , "fastJetRho/D");
-  
+  ///-------------------------------------------------------------------------- 
   /// Calo AK5 Jets
-  mtree->Branch("NCaloAK5Jets"            ,&mNCaloAK5Jets           ,  "NCaloAK5Jets/I"                      );
-  mtree->Branch("CaloAK5JetE"             ,mCaloAK5JetE             ,  "CaloAK5JetE[NCaloAK5Jets]/D"         );
-  mtree->Branch("CaloAK5JetPt"            ,mCaloAK5JetPt            ,  "CaloAK5JetPt[NCaloAK5Jets]/D"        );
-  mtree->Branch("CaloAK5JetPx"            ,mCaloAK5JetPx            ,  "CaloAK5JetPx[NCaloAK5Jets]/D"        );
-  mtree->Branch("CaloAK5JetPy"            ,mCaloAK5JetPy            ,  "CaloAK5JetPy[NCaloAK5Jets]/D"        );
-  mtree->Branch("CaloAK5JetPz"            ,mCaloAK5JetPz            ,  "CaloAK5JetPz[NCaloAK5Jets]/D"        );
-  mtree->Branch("CaloAK5JetEta"           ,mCaloAK5JetEta           ,  "CaloAK5JetEta[NCaloAK5Jets]/D"       );
-  mtree->Branch("CaloAK5JetPhi"           ,mCaloAK5JetPhi           ,  "CaloAK5JetPhi[NCaloAK5Jets]/D"       );
-  mtree->Branch("CaloAK5JetEmf"           ,mCaloAK5JetEmf           ,  "CaloAK5JetFem[NCaloAK5Jets]/D"       ); 
-  mtree->Branch("CaloAK5JetfHPD"          ,mCaloAK5JetfHPD          ,  "CaloAK5JetfHPD[NCaloAK5Jets]/D"      ); 
-  mtree->Branch("CaloAK5JetfRBX"          ,mCaloAK5JetfRBX          ,  "CaloAK5JetfRBX[NCaloAK5Jets]/D"      ); 
-  mtree->Branch("CaloAK5JetN90Hits"       ,mCaloAK5JetN90Hits       ,  "CaloAK5JetN90Hits[NCaloAK5Jets]/D"   ); 
-  mtree->Branch("CaloAK5JetN90"           ,mCaloAK5JetN90           ,  "CaloAK5JetN90[NCaloAK5Jets]/I"       ); 
-  mtree->Branch("CaloAK5JetSigEta"        ,mCaloAK5JetSigEta        ,  "CaloAK5JetSigEta[NCaloAK5Jets]/D"    ); 
-  mtree->Branch("CaloAK5JetSigPhi"        ,mCaloAK5JetSigPhi        ,  "CaloAK5JetSigPhi[NCaloAK5Jets]/D"    ); 
-  mtree->Branch("CaloAK5JetIDEmf"         ,mCaloAK5JetIDEmf         ,  "CaloAK5JetIDEmf[NCaloAK5Jets]/D"     ); 
-  
-  mtree->Branch("CaloAK5JetECor"          ,mCaloAK5JetECor          ,  "CaloAK5JetECor[NCaloAK5Jets]/D"      );
-  mtree->Branch("CaloAK5JetPtCor"         ,mCaloAK5JetPtCor         ,  "CaloAK5JetPtCor[NCaloAK5Jets]/D"     );
-  mtree->Branch("CaloAK5JetPxCor"         ,mCaloAK5JetPxCor         ,  "CaloAK5JetPxCor[NCaloAK5Jets]/D"     );
-  mtree->Branch("CaloAK5JetPyCor"         ,mCaloAK5JetPyCor         ,  "CaloAK5JetPyCor[NCaloAK5Jets]/D"     );
-  mtree->Branch("CaloAK5JetPzCor"         ,mCaloAK5JetPzCor         ,  "CaloAK5JetPzCor[NCaloAK5Jets]/D"     );
-  
-  mtree->Branch("CaloAK5JetBtagTkCountHighEff"   ,mCaloAK5JetBtagTkCountHighEff   ,"CaloAK5JetBtagTkCountHighEff[NCaloAK5Jets]/D"     );
-  mtree->Branch("CaloAK5JetBTagSimpleSecVtx"     ,mCaloAK5JetBTagSimpleSecVtx     ,"CaloAK5JetBTagSimpleSecVtx[NCaloAK5Jets]/D"     );
-  mtree->Branch("CaloAK5JetBTagCombSecVtx"       ,mCaloAK5JetBTagCombSecVtx       ,"CaloAK5JetBTagCombSecVtx[NCaloAK5Jets]/D"     );
-  
-  mtree->Branch("CaloAK5TrackPt"          ,mCaloAK5TrackPt          ,  "CaloAK5TrackPt[NCaloAK5Jets]/D"     );
-  
-  mtree->Branch("CaloAK5JetIDLOOSE"       ,mCaloAK5JetIDLOOSE       ,  "CaloAK5JetIDLOOSE[NCaloAK5Jets]/I"     );
-  mtree->Branch("CaloAK5JetIDTIGHT"       ,mCaloAK5JetIDTIGHT       ,  "CaloAK5JetIDTIGHT[NCaloAK5Jets]/I"     );
-  
-  
+  ///-------------------------------------------------------------------------- 
+  mtree->Branch("NCaloAK5Jets"                                       ,&mNCaloAK5Jets                                      ,"NCaloAK5Jets/I");
+  mtree->Branch("CaloAK5JetE"                                        ,mCaloAK5JetE                                        ,"CaloAK5JetE[NCaloAK5Jets]/D");
+  mtree->Branch("CaloAK5JetPt"                                       ,mCaloAK5JetPt                                       ,"CaloAK5JetPt[NCaloAK5Jets]/D");
+  mtree->Branch("CaloAK5JetPx"                                       ,mCaloAK5JetPx                                       ,"CaloAK5JetPx[NCaloAK5Jets]/D");
+  mtree->Branch("CaloAK5JetPy"                                       ,mCaloAK5JetPy                                       ,"CaloAK5JetPy[NCaloAK5Jets]/D");
+  mtree->Branch("CaloAK5JetPz"                                       ,mCaloAK5JetPz                                       ,"CaloAK5JetPz[NCaloAK5Jets]/D");
+  mtree->Branch("CaloAK5JetEta"                                      ,mCaloAK5JetEta                                      ,"CaloAK5JetEta[NCaloAK5Jets]/D");
+  mtree->Branch("CaloAK5JetPhi"                                      ,mCaloAK5JetPhi                                      ,"CaloAK5JetPhi[NCaloAK5Jets]/D");
+  mtree->Branch("CaloAK5JetEmf"                                      ,mCaloAK5JetEmf                                      ,"CaloAK5JetFem[NCaloAK5Jets]/D"); 
+  mtree->Branch("CaloAK5JetfHPD"                                     ,mCaloAK5JetfHPD                                     ,"CaloAK5JetfHPD[NCaloAK5Jets]/D"); 
+  mtree->Branch("CaloAK5JetfRBX"                                     ,mCaloAK5JetfRBX                                     ,"CaloAK5JetfRBX[NCaloAK5Jets]/D"); 
+  mtree->Branch("CaloAK5JetN90Hits"                                  ,mCaloAK5JetN90Hits                                  ,"CaloAK5JetN90Hits[NCaloAK5Jets]/D"); 
+  mtree->Branch("CaloAK5JetN90"                                      ,mCaloAK5JetN90                                      ,"CaloAK5JetN90[NCaloAK5Jets]/I"); 
+  mtree->Branch("CaloAK5JetSigEta"                                   ,mCaloAK5JetSigEta                                   ,"CaloAK5JetSigEta[NCaloAK5Jets]/D"); 
+  mtree->Branch("CaloAK5JetSigPhi"                                   ,mCaloAK5JetSigPhi                                   ,"CaloAK5JetSigPhi[NCaloAK5Jets]/D"); 
+  mtree->Branch("CaloAK5JetIDEmf"                                    ,mCaloAK5JetIDEmf                                    ,"CaloAK5JetIDEmf[NCaloAK5Jets]/D"); 
+  mtree->Branch("CaloAK5JetECor"                                     ,mCaloAK5JetECor                                     ,"CaloAK5JetECor[NCaloAK5Jets]/D");
+  mtree->Branch("CaloAK5JetPtCor"                                    ,mCaloAK5JetPtCor                                    ,"CaloAK5JetPtCor[NCaloAK5Jets]/D");
+  mtree->Branch("CaloAK5JetPxCor"                                    ,mCaloAK5JetPxCor                                    ,"CaloAK5JetPxCor[NCaloAK5Jets]/D");
+  mtree->Branch("CaloAK5JetPyCor"                                    ,mCaloAK5JetPyCor                                    ,"CaloAK5JetPyCor[NCaloAK5Jets]/D");
+  mtree->Branch("CaloAK5JetPzCor"                                    ,mCaloAK5JetPzCor                                    ,"CaloAK5JetPzCor[NCaloAK5Jets]/D");
+  mtree->Branch("CaloAK5JetBtagTkCountHighEff"                       ,mCaloAK5JetBtagTkCountHighEff                       ,"CaloAK5JetBtagTkCountHighEff[NCaloAK5Jets]/D");
+  mtree->Branch("CaloAK5JetBTagSimpleSecVtx"                         ,mCaloAK5JetBTagSimpleSecVtx                         ,"CaloAK5JetBTagSimpleSecVtx[NCaloAK5Jets]/D");
+  mtree->Branch("CaloAK5JetBTagCombSecVtx"                           ,mCaloAK5JetBTagCombSecVtx                           ,"CaloAK5JetBTagCombSecVtx[NCaloAK5Jets]/D");
+  mtree->Branch("CaloAK5TrackPt"                                     ,mCaloAK5TrackPt                                     ,"CaloAK5TrackPt[NCaloAK5Jets]/D");
+  mtree->Branch("CaloAK5JetIDLOOSE"                                  ,mCaloAK5JetIDLOOSE                                  ,"CaloAK5JetIDLOOSE[NCaloAK5Jets]/I");
+  mtree->Branch("CaloAK5JetIDTIGHT"                                  ,mCaloAK5JetIDTIGHT                                  ,"CaloAK5JetIDTIGHT[NCaloAK5Jets]/I");
   if(isMCTag){
     /// Gen AK5 Jets
-    mtree->Branch("GenAK5JetE"                ,mGenAK5JetE             ,  "GenAK5JetE[NCaloAK5Jets]/D"         );
-    mtree->Branch("GenAK5JetPt"               ,mGenAK5JetPt            ,  "GenAK5JetPt[NCaloAK5Jets]/D"        );
-    mtree->Branch("GenAK5JetPx"               ,mGenAK5JetPx            ,  "GenAK5JetPx[NCaloAK5Jets]/D"        );
-    mtree->Branch("GenAK5JetPy"               ,mGenAK5JetPy            ,  "GenAK5JetPy[NCaloAK5Jets]/D"        );
-    mtree->Branch("GenAK5JetPz"               ,mGenAK5JetPz            ,  "GenAK5JetPz[NCaloAK5Jets]/D"        );
-    mtree->Branch("GenAK5JetEta"              ,mGenAK5JetEta           ,  "GenAK5JetEta[NCaloAK5Jets]/D"       );
-    mtree->Branch("GenAK5JetPhi"              ,mGenAK5JetPhi           ,  "GenAK5JetPhi[NCaloAK5Jets]/D"       );
-    mtree->Branch("GenAK5JetEmEnergy"         ,mGenAK5JetEmEnergy      ,  "GenAK5JetEmEnergy[NCaloAK5Jets]/D"  );
-    mtree->Branch("GenAK5JetHadEnergy"        ,mGenAK5JetHadEnergy     ,  "GenAK5JetHadEnergy[NCaloAK5Jets]/D" );
+    mtree->Branch("GenAK5JetE"                                       ,mGenAK5JetE                                         ,"GenAK5JetE[NCaloAK5Jets]/D");
+    mtree->Branch("GenAK5JetPt"                                      ,mGenAK5JetPt                                        ,"GenAK5JetPt[NCaloAK5Jets]/D");
+    mtree->Branch("GenAK5JetPx"                                      ,mGenAK5JetPx                                        ,"GenAK5JetPx[NCaloAK5Jets]/D");
+    mtree->Branch("GenAK5JetPy"                                      ,mGenAK5JetPy                                        ,"GenAK5JetPy[NCaloAK5Jets]/D");
+    mtree->Branch("GenAK5JetPz"                                      ,mGenAK5JetPz                                        ,"GenAK5JetPz[NCaloAK5Jets]/D");
+    mtree->Branch("GenAK5JetEta"                                     ,mGenAK5JetEta                                       ,"GenAK5JetEta[NCaloAK5Jets]/D");
+    mtree->Branch("GenAK5JetPhi"                                     ,mGenAK5JetPhi                                       ,"GenAK5JetPhi[NCaloAK5Jets]/D");
+    mtree->Branch("GenAK5JetEmEnergy"                                ,mGenAK5JetEmEnergy                                  ,"GenAK5JetEmEnergy[NCaloAK5Jets]/D");
+    mtree->Branch("GenAK5JetHadEnergy"                               ,mGenAK5JetHadEnergy                                 ,"GenAK5JetHadEnergy[NCaloAK5Jets]/D");
   }      
   
-  
+  ///-------------------------------------------------------------------------- 
   /// PF AK5 Jets
-  mtree->Branch("NPFAK5Jets"                  ,&mNPFAK5Jets           ,  "NPFAK5Jets/I"                    );
-  mtree->Branch("PFAK5JetE"                   ,mPFAK5JetE             ,  "PFAK5JetE[NPFAK5Jets]/D"         );
-  mtree->Branch("PFAK5JetPt"                  ,mPFAK5JetPt            ,  "PFAK5JetPt[NPFAK5Jets]/D"        );
-  mtree->Branch("PFAK5JetPx"                  ,mPFAK5JetPx            ,  "PFAK5JetPx[NPFAK5Jets]/D"        );
-  mtree->Branch("PFAK5JetPy"                  ,mPFAK5JetPy            ,  "PFAK5JetPy[NPFAK5Jets]/D"        );
-  mtree->Branch("PFAK5JetPz"                  ,mPFAK5JetPz            ,  "PFAK5JetPz[NPFAK5Jets]/D"        );
-  mtree->Branch("PFAK5JetEta"                 ,mPFAK5JetEta           ,  "PFAK5JetEta[NPFAK5Jets]/D"       );
-  mtree->Branch("PFAK5JetPhi"                 ,mPFAK5JetPhi           ,  "PFAK5JetPhi[NPFAK5Jets]/D"       );
+  ///-------------------------------------------------------------------------- 
+  mtree->Branch("NPFAK5Jets"                                         ,&mNPFAK5Jets                                        ,"NPFAK5Jets/I");
+  mtree->Branch("PFAK5JetE"                                          ,mPFAK5JetE                                          ,"PFAK5JetE[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetPt"                                         ,mPFAK5JetPt                                         ,"PFAK5JetPt[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetPx"                                         ,mPFAK5JetPx                                         ,"PFAK5JetPx[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetPy"                                         ,mPFAK5JetPy                                         ,"PFAK5JetPy[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetPz"                                         ,mPFAK5JetPz                                         ,"PFAK5JetPz[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetEta"                                        ,mPFAK5JetEta                                        ,"PFAK5JetEta[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetPhi"                                        ,mPFAK5JetPhi                                        ,"PFAK5JetPhi[NPFAK5Jets]/D");
+  //
+  mtree->Branch("PFAK5JetfHPD"                                       ,mPFAK5JetfHPD                                       ,"PFAK5JetfHPD[NPFAK5Jets]/D"); 
+  mtree->Branch("PFAK5JetfRBX"                                       ,mPFAK5JetfRBX                                       ,"PFAK5JetfRBX[NPFAK5Jets]/D"); 
+  mtree->Branch("PFAK5JetN90Hits"                                    ,mPFAK5JetN90Hits                                    ,"PFAK5JetN90Hits[NPFAK5Jets]/D"); 
+  mtree->Branch("PFAK5JetN90"                                        ,mPFAK5JetN90                                        ,"PFAK5JetN90[NPFAK5Jets]/I"); 
+  mtree->Branch("PFAK5JetSigEta"                                     ,mPFAK5JetSigEta                                     ,"PFAK5JetSigEta[NPFAK5Jets]/D"); 
+  mtree->Branch("PFAK5JetSigPhi"                                     ,mPFAK5JetSigPhi                                     ,"PFAK5JetSigPhi[NPFAK5Jets]/D"); 
+  mtree->Branch("PFAK5JetIDEmf"                                      ,mPFAK5JetIDEmf                                      ,"PFAK5JetIDEmf[NPFAK5Jets]/D"); 
+  //
+  mtree->Branch("PFAK5JetECor"                                       ,mPFAK5JetECor                                       ,"PFAK5JetECor[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetPtCor"                                      ,mPFAK5JetPtCor                                      ,"PFAK5JetPtCor[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetPxCor"                                      ,mPFAK5JetPxCor                                      ,"PFAK5JetPxCor[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetPyCor"                                      ,mPFAK5JetPyCor                                      ,"PFAK5JetPyCor[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetPzCor"                                      ,mPFAK5JetPzCor                                      ,"PFAK5JetPzCor[NPFAK5Jets]/D");
+  //
+  mtree->Branch("PFAK5JetBtagTkCountHighEff"                         ,mPFAK5JetBtagTkCountHighEff                         ,"PFAK5JetBtagTkCountHighEff[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetBtagTkCountHighPur"                         ,mPFAK5JetBtagTkCountHighPur                         ,"PFAK5JetBtagTkCountHighPur[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetBtagJetProbability"                         ,mPFAK5JetBtagJetProbability                         ,"PFAK5JetBtagJetProbability[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetBtagJetBProbability"                        ,mPFAK5JetBtagJetBProbability                        ,"PFAK5JetBtagJetBProbability[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetBTagSimpleSecVtx"                           ,mPFAK5JetBTagSimpleSecVtx                           ,"PFAK5JetBTagSimpleSecVtx[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetBTagCombSecVtx"                             ,mPFAK5JetBTagCombSecVtx                             ,"PFAK5JetBTagCombSecVtx[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetBTagCombSecVtxMVA"                          ,mPFAK5JetBTagCombSecVtxMVA                          ,"PFAK5JetBTagCombSecVtxMVA[NPFAK5Jets]/D");
+  //
+  mtree->Branch("PFAK5JetNeuEmEngFrac"                               ,mPFAK5JetNeuEmEngFrac                               ,"PFAK5JetNeuEmEngFrac[NPFAK5Jets]/D"); 
+  mtree->Branch("PFAK5JetChaEmEngFrac"                               ,mPFAK5JetChaEmEngFrac                               ,"PFAK5JetChaEmEngFrac[NPFAK5Jets]/D"); 
+  mtree->Branch("PFAK5JetChaHadEngFrac"                              ,mPFAK5JetChaHadEngFrac                              ,"PFAK5JetChaHadEngFrac[NPFAK5Jets]/D"); 
+  mtree->Branch("PFAK5JetNeuHadEngFrac"                              ,mPFAK5JetNeuHadEngFrac                              ,"PFAK5JetNeuHadEngFrac[NPFAK5Jets]/D");
+  // 
+  mtree->Branch("PFAK5JetChaEmEng"                                   ,mPFAK5JetChaEmEng                                   ,"PFAK5JetChaEmEng[NPFAK5Jets]/D"); 
+  mtree->Branch("PFAK5JetNeuEmEng"                                   ,mPFAK5JetNeuEmEng                                   ,"PFAK5JetNeuEmEng[NPFAK5Jets]/D"); 
+  mtree->Branch("PFAK5JetChaHadEng"                                  ,mPFAK5JetChaHadEng                                  ,"PFAK5JetChaHadEng[NPFAK5Jets]/D"); 
+  mtree->Branch("PFAK5JetNeuHadEng"                                  ,mPFAK5JetNeuHadEng                                  ,"PFAK5JetNeuHadEng[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetPhotEng"                                    ,mPFAK5JetPhotEng                                    ,"PFAK5JetPhotEng[NPFAK5Jets]/D"); 
+  mtree->Branch("PFAK5JetElecEng"                                    ,mPFAK5JetElecEng                                    ,"PFAK5JetElecEng[NPFAK5Jets]/D");
+  mtree->Branch("PFAK5JetMuonEng"                                    ,mPFAK5JetMuonEng                                    ,"PFAK5JetMuonEng[NPFAK5Jets]/D"); 
+  mtree->Branch("PFAK5JetHFHadEng"                                   ,mPFAK5JetHFHadEng                                   ,"PFAK5JetHFHadEng[NPFAK5Jets]/D"); 
+  mtree->Branch("PFAK5JetHFEmEng"                                    ,mPFAK5JetHFEmEng                                    ,"PFAK5JetHFEmEng[NPFAK5Jets]/D"); 
+  mtree->Branch("PFAK5JetChaMuEng"                                   ,mPFAK5JetChaMuEng                                   ,"PFAK5JetChaMuEng[NPFAK5Jets]/D"); 
+  //
+  mtree->Branch("PFAK5JetNumOfChaMu"                                 ,mPFAK5JetNumOfChaMu                                 ,"PFAK5JetNumOfChaMu[NPFAK5Jets]/I"); 
+  mtree->Branch("PFAK5JetNumOfMuon"                                  ,mPFAK5JetNumOfMuon                                  ,"PFAK5JetNumOfMuon[NPFAK5Jets]/I"); 
+  mtree->Branch("PFAK5JetNumOfPhot"                                  ,mPFAK5JetNumOfPhot                                  ,"PFAK5JetNumOfPhot[NPFAK5Jets]/I"); 
+  mtree->Branch("PFAK5JetNumOfElec"                                  ,mPFAK5JetNumOfElec                                  ,"PFAK5JetNumOfElec[NPFAK5Jets]/I"); 
+  mtree->Branch("PFAK5JetNumOfNeu"                                   ,mPFAK5JetNumOfNeu                                   ,"PFAK5JetNumOfNeu[NPFAK5Jets]/I"); 
+  mtree->Branch("PFAK5JetNumOfCha"                                   ,mPFAK5JetNumOfCha                                   ,"PFAK5JetNumOfCha[NPFAK5Jets]/I"); 
+  mtree->Branch("PFAK5JetNumOfNeuHad"                                ,mPFAK5JetNumOfNeuHad                                ,"PFAK5JetNumOfNeuHad[NPFAK5Jets]/I"); 
+  mtree->Branch("PFAK5JetNumOfChaHad"                                ,mPFAK5JetNumOfChaHad                                ,"PFAK5JetNumOfChaHad[NPFAK5Jets]/I"); 
+  mtree->Branch("PFAK5JetNumOfHFHad"                                 ,mPFAK5JetNumOfHFHad                                 ,"PFAK5JetNumOfHFHad[NPFAK5Jets]/I"); 
+  mtree->Branch("PFAK5JetNumOfHFEM"                                  ,mPFAK5JetNumOfHFEM                                  ,"PFAK5JetNumOfHFEM[NPFAK5Jets]/I"); 
+  //
+  mtree->Branch("PFAK5JetNumOfDaughters"                             ,mPFAK5JetNumOfDaughters                             ,"PFAK5JetNumOfDaughters[NPFAK5Jets]/I");
+  mtree->Branch("PFAK5JetIDLOOSE"                                    ,mPFAK5JetIDLOOSE                                    ,"PFAK5JetIDLOOSE[NPFAK5Jets]/I");
+  mtree->Branch("PFAK5JetIDTIGHT"                                    ,mPFAK5JetIDTIGHT                                    ,"PFAK5JetIDTIGHT[NPFAK5Jets]/I");
+  mtree->Branch("PFAK5JetPUFullJetId"                                ,mPFAK5JetPUFullJetId                                ,"PFAK5JetPUFullJetId[NPFAK5Jets]/I");
+  mtree->Branch("PFAK5uncer"                                         ,mPFAK5uncer                                         ,"PFAK5uncer[NPFAK5Jets]/D");
   
-  mtree->Branch("PFAK5JetfHPD"                ,mPFAK5JetfHPD          ,  "PFAK5JetfHPD[NPFAK5Jets]/D"      ); 
-  mtree->Branch("PFAK5JetfRBX"                ,mPFAK5JetfRBX          ,  "PFAK5JetfRBX[NPFAK5Jets]/D"      ); 
-  mtree->Branch("PFAK5JetN90Hits"             ,mPFAK5JetN90Hits       ,  "PFAK5JetN90Hits[NPFAK5Jets]/D"   ); 
-  mtree->Branch("PFAK5JetN90"                 ,mPFAK5JetN90           ,  "PFAK5JetN90[NPFAK5Jets]/I"       ); 
-  mtree->Branch("PFAK5JetSigEta"              ,mPFAK5JetSigEta        ,  "PFAK5JetSigEta[NPFAK5Jets]/D"    ); 
-  mtree->Branch("PFAK5JetSigPhi"              ,mPFAK5JetSigPhi        ,  "PFAK5JetSigPhi[NPFAK5Jets]/D"    ); 
-  mtree->Branch("PFAK5JetIDEmf"               ,mPFAK5JetIDEmf         ,  "PFAK5JetIDEmf[NPFAK5Jets]/D"     ); 
+  ///-------------------------------------------------------------------------- 
+  /// MET
+  ///-------------------------------------------------------------------------- 
+  mtree->Branch("NMet"                                               ,&mNMet                                              ,"NMet/I");
+  mtree->Branch("MetPt"                                              ,mMetPt                                              ,"MetPt[NMet]/D");
+  mtree->Branch("MetPx"                                              ,mMetPx                                              ,"MetPx[NMet]/D");
+  mtree->Branch("MetPy"                                              ,mMetPy                                              ,"MetPy[NMet]/D");
+  mtree->Branch("MetPhi"                                             ,mMetPhi                                             ,"MetPhi[NMet]/D");
+  mtree->Branch("MetSumEt"                                           ,mMetSumEt                                           ,"MetSumEt[NMet]/D");
+  mtree->Branch("MetSign"                                            ,mMetSign                                            ,"MetSign[NMet]/D");
   
-  mtree->Branch("PFAK5JetECor"                ,mPFAK5JetECor          ,  "PFAK5JetECor[NPFAK5Jets]/D"      );
-  mtree->Branch("PFAK5JetPtCor"               ,mPFAK5JetPtCor         ,  "PFAK5JetPtCor[NPFAK5Jets]/D"     );
-  mtree->Branch("PFAK5JetPxCor"               ,mPFAK5JetPxCor         ,  "PFAK5JetPxCor[NPFAK5Jets]/D"     );
-  mtree->Branch("PFAK5JetPyCor"               ,mPFAK5JetPyCor         ,  "PFAK5JetPyCor[NPFAK5Jets]/D"     );
-  mtree->Branch("PFAK5JetPzCor"               ,mPFAK5JetPzCor         ,  "PFAK5JetPzCor[NPFAK5Jets]/D"     );
+  ///-------------------------------------------------------------------------- 
+  /// MHT
+  ///--------------------------------------------------------------------------  
+  mtree->Branch("MHTPt"                                              ,&mMHTPt                                             ,"MHTPt/D");
+  mtree->Branch("MHTPhi"                                             ,&mMHTPhi                                            ,"MHTPhi/D");
+  mtree->Branch("MHTSign"                                            ,&mMHTSign                                           ,"MHTSign/D");
   
-  mtree->Branch("PFAK5JetBtagTkCountHighEff"  ,mPFAK5JetBtagTkCountHighEff,  "PFAK5JetBtagTkCountHighEff[NPFAK5Jets]/D");
-  mtree->Branch("PFAK5JetBtagTkCountHighPur"  ,mPFAK5JetBtagTkCountHighPur,  "PFAK5JetBtagTkCountHighPur[NPFAK5Jets]/D");
-  mtree->Branch("PFAK5JetBtagJetProbability"  ,mPFAK5JetBtagJetProbability,  "PFAK5JetBtagJetProbability[NPFAK5Jets]/D");
-  mtree->Branch("PFAK5JetBtagJetBProbability" ,mPFAK5JetBtagJetBProbability, "PFAK5JetBtagJetBProbability[NPFAK5Jets]/D");
-  mtree->Branch("PFAK5JetBTagSimpleSecVtx"    ,mPFAK5JetBTagSimpleSecVtx,    "PFAK5JetBTagSimpleSecVtx[NPFAK5Jets]/D");
-  mtree->Branch("PFAK5JetBTagCombSecVtx"      ,mPFAK5JetBTagCombSecVtx,      "PFAK5JetBTagCombSecVtx[NPFAK5Jets]/D");
-  mtree->Branch("PFAK5JetBTagCombSecVtxMVA"   ,mPFAK5JetBTagCombSecVtxMVA,   "PFAK5JetBTagCombSecVtxMVA[NPFAK5Jets]/D");
-    
-  mtree->Branch("PFAK5JetNeuEmEngFrac"        ,mPFAK5JetNeuEmEngFrac  ,  "PFAK5JetNeuEmEngFrac[NPFAK5Jets]/D" ); 
-  mtree->Branch("PFAK5JetChaEmEngFrac"        ,mPFAK5JetChaEmEngFrac  ,  "PFAK5JetChaEmEngFrac[NPFAK5Jets]/D" ); 
-  mtree->Branch("PFAK5JetChaHadEngFrac"       ,mPFAK5JetChaHadEngFrac ,  "PFAK5JetChaHadEngFrac[NPFAK5Jets]/D" ); 
-  mtree->Branch("PFAK5JetNeuHadEngFrac"       ,mPFAK5JetNeuHadEngFrac ,  "PFAK5JetNeuHadEngFrac[NPFAK5Jets]/D" ); 
-  mtree->Branch("PFAK5JetChaMuEng"            ,mPFAK5JetChaMuEng      ,  "PFAK5JetChaMuEng[NPFAK5Jets]/D" ); 
-  mtree->Branch("PFAK5JetMuonEng"             ,mPFAK5JetMuonEng       ,  "PFAK5JetMuonEng[NPFAK5Jets]/D" ); 
-  mtree->Branch("PFAK5JetPhotEng"             ,mPFAK5JetPhotEng       ,  "PFAK5JetPhotEng[NPFAK5Jets]/D" ); 
-  mtree->Branch("PFAK5JetElecEng"             ,mPFAK5JetElecEng       ,  "PFAK5JetElecEng[NPFAK5Jets]/D" );
-	
-  mtree->Branch("PFAK5JetNumOfChaMu"          ,mPFAK5JetNumOfChaMu   ,  "PFAK5JetNumOfChaMu[NPFAK5Jets]/I" ); 
-  mtree->Branch("PFAK5JetNumOfMuon"           ,mPFAK5JetNumOfMuon    ,  "PFAK5JetNumOfMuon[NPFAK5Jets]/I" ); 
-  mtree->Branch("PFAK5JetNumOfPhot"           ,mPFAK5JetNumOfPhot    ,  "PFAK5JetNumOfPhot[NPFAK5Jets]/I" ); 
-  mtree->Branch("PFAK5JetNumOfElec"           ,mPFAK5JetNumOfElec    ,  "PFAK5JetNumOfElec[NPFAK5Jets]/I" ); 
-  mtree->Branch("PFAK5JetNumOfNeu"            ,mPFAK5JetNumOfNeu     ,  "PFAK5JetNumOfNeu[NPFAK5Jets]/I" ); 
-  mtree->Branch("PFAK5JetNumOfCha"            ,mPFAK5JetNumOfCha     ,  "PFAK5JetNumOfCha[NPFAK5Jets]/I" ); 
-  mtree->Branch("PFAK5JetNumOfNeuHad"         ,mPFAK5JetNumOfNeuHad  ,  "PFAK5JetNumOfNeuHad[NPFAK5Jets]/I" ); 
-  mtree->Branch("PFAK5JetNumOfChaHad"         ,mPFAK5JetNumOfChaHad  ,  "PFAK5JetNumOfChaHad[NPFAK5Jets]/I" ); 
-  mtree->Branch("PFAK5JetNumOfDaughters"      ,mPFAK5JetNumOfDaughters  ,"PFAK5JetNumOfDaughters[NPFAK5Jets]/I" );
-  mtree->Branch("PFAK5JetIDLOOSE"             ,mPFAK5JetIDLOOSE      ,"PFAK5JetIDLOOSE[NPFAK5Jets]/I" );
-  mtree->Branch("PFAK5JetIDTIGHT"             ,mPFAK5JetIDTIGHT      ,"PFAK5JetIDTIGHT[NPFAK5Jets]/I" );
-  mtree->Branch("PFAK5JetPUFullJetId"         ,mPFAK5JetPUFullJetId      ,"PFAK5JetPUFullJetId[NPFAK5Jets]/I" );
-  mtree->Branch("PFAK5uncer"                  ,mPFAK5uncer           ,"PFAK5uncer[NPFAK5Jets]/D");
+  ///-------------------------------------------------------------------------- 
+  /// Muons
+  ///-------------------------------------------------------------------------- 
+  mtree->Branch("NMuon"                                              ,&mNMuon                                             ,"NMuon/I");
+  mtree->Branch("MuonPt"                                             ,mMuonPt                                             ,"MuonPt[NMuon]/D");
+  mtree->Branch("MuonEt"                                             ,mMuonEt                                             ,"MuonEt[NMuon]/D");
+  mtree->Branch("MuonE"                                              ,mMuonE                                              ,"MuonE[NMuon]/D");
+  mtree->Branch("MuonPx"                                             ,mMuonPx                                             ,"MuonPx[NMuon]/D");
+  mtree->Branch("MuonPy"                                             ,mMuonPy                                             ,"MuonPy[NMuon]/D");
+  mtree->Branch("MuonPz"                                             ,mMuonPz                                             ,"MuonPz[NMuon]/D");
+  mtree->Branch("MuonEta"                                            ,mMuonEta                                            ,"MuonEta[NMuon]/D");
+  mtree->Branch("MuonPhi"                                            ,mMuonPhi                                            ,"MuonPhi[NMuon]/D");
+  mtree->Branch("MuonCharge"                                         ,mMuonCharge                                         ,"MuonCharge[NMuon]/D");
+  //
+  mtree->Branch("MuonIsGlobal"                                       ,mMuonIsGlobal                                       ,"MuonIsGlobal[NMuon]/I");
+  mtree->Branch("MuonIsStandAlone"                                   ,mMuonIsStandAlone                                   ,"MuonIsStandAlone[NMuon]/I");
+  mtree->Branch("MuonIsTracker"                                      ,mMuonIsTracker                                      ,"MuonIsTracker[NMuon]/I");
+  //
+  mtree->Branch("MuonIsTight"                                        ,mMuonIsTight                                        ,"MuonIsTight[NMuon]/I");     
+  mtree->Branch("MuonIsLoose"                                        ,mMuonIsLoose                                        ,"MuonIsLoose[NMuon]/I");
+  //
+  mtree->Branch("MuonSumPtDR03"                                      ,mMuonSumPtDR03                                      ,"MuonSumPtDR03[NMuon]/D");
+  mtree->Branch("MuonSumPtDR05"                                      ,mMuonSumPtDR05                                      ,"MuonSumPtDR05[NMuon]/D");
+  mtree->Branch("MuonEmEtDR03"                                       ,mMuonEmEtDR03                                       ,"MuonEmEtDR03[NMuon]/D");
+  mtree->Branch("MuonHadEtDR03"                                      ,mMuonHadEtDR03                                      ,"MuonHadEtDR03[NMuon]/D");
+  mtree->Branch("MuonNumOfMatches"                                   ,mMuonNumOfMatches                                   ,"MuonNumOfMatches[NMuon]/I");
+  //
+  mtree->Branch("MuonCombChi2Norm"                                   ,mMuonCombChi2Norm                                   ,"MuonCombChi2Norm[NMuon]/D");
+  mtree->Branch("MuonCombValidHits"                                  ,mMuonCombValidHits                                  ,"MuonCombValidHits[NMuon]/I");
+  mtree->Branch("MuonCombLostHits"                                   ,mMuonCombLostHits                                   ,"MuonCombLostHits[NMuon]/I");
+  mtree->Branch("MuonCombPt"                                         ,mMuonCombPt                                         ,"MuonCombPt[NMuon]/D");
+  mtree->Branch("MuonCombPz"                                         ,mMuonCombPz                                         ,"MuonCombPz[NMuon]/D");
+  mtree->Branch("MuonCombP"                                          ,mMuonCombP                                          ,"MuonCombP[NMuon]/D");
+  mtree->Branch("MuonCombEta"                                        ,mMuonCombEta                                        ,"MuonCombEta[NMuon]/D");
+  mtree->Branch("MuonCombPhi"                                        ,mMuonCombPhi                                        ,"MuonCombPhi[NMuon]/D");
+  mtree->Branch("MuonCombChi2"                                       ,mMuonCombChi2                                       ,"MuonCombChi2[NMuon]/D");
+  mtree->Branch("MuonCombCharge"                                     ,mMuonCombCharge                                     ,"MuonCombCharge[NMuon]/D");
+  mtree->Branch("MuonCombQOverPError"                                ,mMuonCombQOverPError                                ,"MuonCombQOverPError[NMuon]/D");
+  mtree->Branch("MuonCombNdof"                                       ,mMuonCombNdof                                       ,"MuonCombNdof[NMuon]/D");
+  mtree->Branch("MuonCombVx"                                         ,mMuonCombVx                                         ,"MuonCombVx[NMuon]/D");
+  mtree->Branch("MuonCombVy"                                         ,mMuonCombVy                                         ,"MuonCombVy[NMuon]/D");
+  mtree->Branch("MuonCombVz"                                         ,mMuonCombVz                                         ,"MuonCombVz[NMuon]/D");
+  mtree->Branch("MuonCombD0"                                         ,mMuonCombD0                                         ,"MuonCombD0[NMuon]/D");
+  mtree->Branch("MuonCombDz"                                         ,mMuonCombDz                                         ,"MuonCombDz[NMuon]/D");
+  //
+  mtree->Branch("MuonStandChi2Norm"                                  ,mMuonStandChi2Norm                                  ,"MuonStandChi2Norm[NMuon]/D");
+  mtree->Branch("MuonStandValidHits"                                 ,mMuonStandValidHits                                 ,"MuonStandValidHits[NMuon]/I");
+  mtree->Branch("MuonStandLostHits"                                  ,mMuonStandLostHits                                  ,"MuonStandLostHits[NMuon]/I");
+  mtree->Branch("MuonStandPt"                                        ,mMuonStandPt                                        ,"MuonStandPt[NMuon]/D");
+  mtree->Branch("MuonStandPz"                                        ,mMuonStandPz                                        ,"MuonStandPz[NMuon]/D");
+  mtree->Branch("MuonStandP"                                         ,mMuonStandP                                         ,"MuonStandP[NMuon]/D");
+  mtree->Branch("MuonStandEta"                                       ,mMuonStandEta                                       ,"MuonStandEta[NMuon]/D");
+  mtree->Branch("MuonStandPhi"                                       ,mMuonStandPhi                                       ,"MuonStandPhi[NMuon]/D");
+  mtree->Branch("MuonStandChi2"                                      ,mMuonStandChi2                                      ,"MuonStandChi2[NMuon]/D");
+  mtree->Branch("MuonStandCharge"                                    ,mMuonStandCharge                                    ,"MuonStandCharge[NMuon]/D");
+  mtree->Branch("MuonStandQOverPError"                               ,mMuonStandQOverPError                               ,"MuonStandQOverPError[NMuon]/D");	
+  //
+  mtree->Branch("MuonTrkChi2Norm"                                    ,mMuonTrkChi2Norm                                    ,"MuonTrkChi2Norm[NMuon]/D");
+  mtree->Branch("MuonTrkValidHits"                                   ,mMuonTrkValidHits                                   ,"MuonTrkValidHits[NMuon]/I");
+  mtree->Branch("MuonTrkLostHits"                                    ,mMuonTrkLostHits                                    ,"MuonTrkLostHits[NMuon]/I");
+  mtree->Branch("MuonTrkPt"                                          ,mMuonTrkPt                                          ,"MuonTrkPt[NMuon]/D");
+  mtree->Branch("MuonTrkPz"                                          ,mMuonTrkPz                                          ,"MuonTrkPz[NMuon]/D");
+  mtree->Branch("MuonTrkP"                                           ,mMuonTrkP                                           ,"MuonTrkP[NMuon]/D");
+  mtree->Branch("MuonTrkEta"                                         ,mMuonTrkEta                                         ,"MuonTrkEta[NMuon]/D");
+  mtree->Branch("MuonTrkPhi"                                         ,mMuonTrkPhi                                         ,"MuonTrkPhi[NMuon]/D");
+  mtree->Branch("MuonTrkChi2"                                        ,mMuonTrkChi2                                        ,"MuonTrkChi2[NMuon]/D");
+  mtree->Branch("MuonTrkCharge"                                      ,mMuonTrkCharge                                      ,"MuonTrkCharge[NMuon]/D");
+  mtree->Branch("MuonTrkQOverPError"                                 ,mMuonTrkQOverPError                                 ,"MuonTrkQOverPError[NMuon]/D");
+  mtree->Branch("MuonTrkDxy"                                         ,mMuonTrkDxy                                         ,"MuonTrkDxy[NMuon]/D");
+  mtree->Branch("MuonTrkNumOfValidPixHits"                           ,mMuonTrkNumOfValidPixHits                           ,"MuonTrkNumOfValidPixHits[NMuon]/I");
   
-  
-  /// Met 
-  mtree->Branch("NMet"     ,&mNMet    ,"NMet/I");
-  mtree->Branch("MetPt"    ,mMetPt    ,"MetPt[NMet]/D");
-  mtree->Branch("MetPx"    ,mMetPx    ,"MetPx[NMet]/D");
-  mtree->Branch("MetPy"    ,mMetPy    ,"MetPy[NMet]/D");
-  mtree->Branch("MetPhi"   ,mMetPhi   ,"MetPhi[NMet]/D");
-  mtree->Branch("MetSumEt" ,mMetSumEt ,"MetSumEt[NMet]/D");
-  mtree->Branch("MetSign"  ,mMetSign  ,"MetSign[NMet]/D");
-  
-  
-  /// MHT 
-  mtree->Branch("MHTPt"    ,&mMHTPt    ,"MHTPt/D");
-  //mtree->Branch("MHTPhi"   ,&mMHTPhi   ,"MHTPhi/D");
-  mtree->Branch("MHTSign"  ,&mMHTSign  ,"MHTSign/D");
-	
-  
-  /// Muon
-  mtree->Branch("NMuon"            ,&mNMuon                        ,"NMuon/I");
-  mtree->Branch("MuonPt"           ,mMuonPt                        ,"MuonPt[NMuon]/D" );
-  mtree->Branch("MuonEt"           ,mMuonEt                        ,"MuonEt[NMuon]/D" );
-  mtree->Branch("MuonE"            ,mMuonE                         ,"MuonE[NMuon]/D" );
-  mtree->Branch("MuonPx"           ,mMuonPx                        ,"MuonPx[NMuon]/D" );
-  mtree->Branch("MuonPy"           ,mMuonPy                        ,"MuonPy[NMuon]/D" );
-  mtree->Branch("MuonPz"           ,mMuonPz                        ,"MuonPz[NMuon]/D" );
-  mtree->Branch("MuonEta"          ,mMuonEta                       ,"MuonEta[NMuon]/D" );
-  mtree->Branch("MuonPhi"          ,mMuonPhi                       ,"MuonPhi[NMuon]/D" );
-  mtree->Branch("MuonCharge"       ,mMuonCharge                    ,"MuonCharge[NMuon]/D" );
-  
-  mtree->Branch("MuonIsGlobal"     ,mMuonIsGlobal                  ,"MuonIsGlobal[NMuon]/I" );
-  mtree->Branch("MuonIsStandAlone" ,mMuonIsStandAlone              ,"MuonIsStandAlone[NMuon]/I" );
-  mtree->Branch("MuonIsTracker"    ,mMuonIsTracker                 ,"MuonIsTracker[NMuon]/I" );
-  
-  mtree->Branch("MuonSumPtDR03"    ,mMuonSumPtDR03                 ,"MuonSumPtDR03[NMuon]/D" );
-  mtree->Branch("MuonSumPtDR05"    ,mMuonSumPtDR05                 ,"MuonSumPtDR05[NMuon]/D" );
-  mtree->Branch("MuonEmEtDR03"     ,mMuonEmEtDR03                  ,"MuonEmEtDR03[NMuon]/D" );
-  mtree->Branch("MuonHadEtDR03"    ,mMuonHadEtDR03                 ,"MuonHadEtDR03[NMuon]/D" );
-  mtree->Branch("MuonNumOfMatches" ,mMuonNumOfMatches              ,"MuonNumOfMatches[NMuon]/I" );
-  
-  mtree->Branch("MuonCombChi2Norm" ,mMuonCombChi2Norm              ,"MuonCombChi2Norm[NMuon]/D" );
-  mtree->Branch("MuonCombValidHits",mMuonCombValidHits             ,"MuonCombValidHits[NMuon]/I" );
-  mtree->Branch("MuonCombLostHits" ,mMuonCombLostHits              ,"MuonCombLostHits[NMuon]/I" );
-  mtree->Branch("MuonCombPt"       ,mMuonCombPt                    ,"MuonCombPt[NMuon]/D" );
-  mtree->Branch("MuonCombPz"       ,mMuonCombPz                    ,"MuonCombPz[NMuon]/D" );
-  mtree->Branch("MuonCombP"        ,mMuonCombP                     ,"MuonCombP[NMuon]/D" );
-  mtree->Branch("MuonCombEta"      ,mMuonCombEta                   ,"MuonCombEta[NMuon]/D" );
-  mtree->Branch("MuonCombPhi"      ,mMuonCombPhi                   ,"MuonCombPhi[NMuon]/D" );
-  mtree->Branch("MuonCombChi2"     ,mMuonCombChi2                  ,"MuonCombChi2[NMuon]/D" );
-  mtree->Branch("MuonCombCharge"   ,mMuonCombCharge                ,"MuonCombCharge[NMuon]/D" );
-  mtree->Branch("MuonCombQOverPError",mMuonCombQOverPError         ,"MuonCombQOverPError[NMuon]/D" );
-  mtree->Branch("MuonCombNdof"     ,mMuonCombNdof                  ,"MuonCombNdof[NMuon]/D" );
-  mtree->Branch("MuonCombVx"       ,mMuonCombVx                    ,"MuonCombVx[NMuon]/D" );
-  mtree->Branch("MuonCombVy"       ,mMuonCombVy                    ,"MuonCombVy[NMuon]/D" );
-  mtree->Branch("MuonCombVz"       ,mMuonCombVz                    ,"MuonCombVz[NMuon]/D" );
-  mtree->Branch("MuonCombD0"       ,mMuonCombD0                    ,"MuonCombD0[NMuon]/D" );
-  mtree->Branch("MuonCombDz"       ,mMuonCombDz                    ,"MuonCombDz[NMuon]/D" );
-  
-  mtree->Branch("MuonStandChi2Norm",mMuonStandChi2Norm             ,"MuonStandChi2Norm[NMuon]/D" );
-  mtree->Branch("MuonStandValidHits",mMuonStandValidHits           ,"MuonStandValidHits[NMuon]/I" );
-  mtree->Branch("MuonStandLostHits",mMuonStandLostHits             ,"MuonStandLostHits[NMuon]/I" );
-  mtree->Branch("MuonStandPt"      ,mMuonStandPt                   ,"MuonStandPt[NMuon]/D" );
-  mtree->Branch("MuonStandPz"      ,mMuonStandPz                   ,"MuonStandPz[NMuon]/D" );
-  mtree->Branch("MuonStandP"       ,mMuonStandP                    ,"MuonStandP[NMuon]/D" );
-  mtree->Branch("MuonStandEta"     ,mMuonStandEta                  ,"MuonStandEta[NMuon]/D" );
-  mtree->Branch("MuonStandPhi"     ,mMuonStandPhi                  ,"MuonStandPhi[NMuon]/D" );
-  mtree->Branch("MuonStandChi2"    ,mMuonStandChi2                 ,"MuonStandChi2[NMuon]/D" );
-  mtree->Branch("MuonStandCharge"  ,mMuonStandCharge               ,"MuonStandCharge[NMuon]/D" );
-  mtree->Branch("MuonStandQOverPError",mMuonStandQOverPError       ,"MuonStandQOverPError[NMuon]/D" );	
-  
-  mtree->Branch("MuonTrkChi2Norm"  ,mMuonTrkChi2Norm               ,"MuonTrkChi2Norm[NMuon]/D" );
-  mtree->Branch("MuonTrkValidHits" ,mMuonTrkValidHits              ,"MuonTrkValidHits[NMuon]/I" );
-  mtree->Branch("MuonTrkLostHits"  ,mMuonTrkLostHits               ,"MuonTrkLostHits[NMuon]/I" );
-  mtree->Branch("MuonTrkPt"        ,mMuonTrkPt                     ,"MuonTrkPt[NMuon]/D" );
-  mtree->Branch("MuonTrkPz"        ,mMuonTrkPz                     ,"MuonTrkPz[NMuon]/D" );
-  mtree->Branch("MuonTrkP"         ,mMuonTrkP                      ,"MuonTrkP[NMuon]/D" );
-  mtree->Branch("MuonTrkEta"       ,mMuonTrkEta                    ,"MuonTrkEta[NMuon]/D" );
-  mtree->Branch("MuonTrkPhi"       ,mMuonTrkPhi                    ,"MuonTrkPhi[NMuon]/D" );
-  mtree->Branch("MuonTrkChi2"      ,mMuonTrkChi2                   ,"MuonTrkChi2[NMuon]/D" );
-  mtree->Branch("MuonTrkCharge"    ,mMuonTrkCharge                 ,"MuonTrkCharge[NMuon]/D" );
-  mtree->Branch("MuonTrkQOverPError",mMuonTrkQOverPError           ,"MuonTrkQOverPError[NMuon]/D" );
-  mtree->Branch("MuonTrkDxy"       ,mMuonTrkDxy                    ,"MuonTrkDxy[NMuon]/D" );
-  mtree->Branch("MuonTrkNumOfValidPixHits" ,mMuonTrkNumOfValidPixHits  ,"MuonTrkNumOfValidPixHits[NMuon]/I" );
-  
-     
+  ///-------------------------------------------------------------------------- 
   /// PF Muons
-  mtree->Branch("NPFMuon"                      ,&mNPFMuon                  ,"NPFMuon/I"                   );
-  mtree->Branch("PFMuonPt"                     ,mPFMuonPt                  ,"PFMuonPt[NPFMuon]/D"         );               
-  mtree->Branch("PFMuonEt"                     ,mPFMuonEt                  ,"PFMuonEt[NPFMuon]/D"         );             
-  mtree->Branch("PFMuonE"                      ,mPFMuonE                   ,"PFMuonE[NPFMuon]/D"          );                
-  mtree->Branch("PFMuonPx"                     ,mPFMuonPx                  ,"PFMuonPx[NPFMuon]/D"         );               
-  mtree->Branch("PFMuonPy"                     ,mPFMuonPy                  ,"PFMuonPy[NPFMuon]/D"         );               
-  mtree->Branch("PFMuonPz"                     ,mPFMuonPz                  ,"PFMuonPz[NPFMuon]/D"         );               
-  mtree->Branch("PFMuonEta"                    ,mPFMuonEta                 ,"PFMuonEta[NPFMuon]/D"        );              
-  mtree->Branch("PFMuonPhi"                    ,mPFMuonPhi                 ,"PFMuonPhi[NPFMuon]/D"        );              
-  mtree->Branch("PFMuonCharge"                 ,mPFMuonCharge              ,"PFMuonCharge[NPFMuon]/I"     );           
+  ///-------------------------------------------------------------------------- 
+  mtree->Branch("NPFMuon"                                            ,&mNPFMuon                                           ,"NPFMuon/I");
+  mtree->Branch("PFMuonPt"                                           ,mPFMuonPt                                           ,"PFMuonPt[NPFMuon]/D");               
+  mtree->Branch("PFMuonEt"                                           ,mPFMuonEt                                           ,"PFMuonEt[NPFMuon]/D");             
+  mtree->Branch("PFMuonE"                                            ,mPFMuonE                                            ,"PFMuonE[NPFMuon]/D");                
+  mtree->Branch("PFMuonPx"                                           ,mPFMuonPx                                           ,"PFMuonPx[NPFMuon]/D");               
+  mtree->Branch("PFMuonPy"                                           ,mPFMuonPy                                           ,"PFMuonPy[NPFMuon]/D");               
+  mtree->Branch("PFMuonPz"                                           ,mPFMuonPz                                           ,"PFMuonPz[NPFMuon]/D");               
+  mtree->Branch("PFMuonEta"                                          ,mPFMuonEta                                          ,"PFMuonEta[NPFMuon]/D");              
+  mtree->Branch("PFMuonPhi"                                          ,mPFMuonPhi                                          ,"PFMuonPhi[NPFMuon]/D");              
+  mtree->Branch("PFMuonCharge"                                       ,mPFMuonCharge                                       ,"PFMuonCharge[NPFMuon]/I");           
+  //
+  mtree->Branch("PFMuonIsGlobal"                                     ,mPFMuonIsGlobal                                     ,"PFMuonIsGlobal[NPFMuon]/I");         
+  mtree->Branch("PFMuonIsStandAlone"                                 ,mPFMuonIsStandAlone                                 ,"PFMuonIsStandAlone[NPFMuon]/I");     
+  mtree->Branch("PFMuonIsTracker"                                    ,mPFMuonIsTracker                                    ,"PFMuonIsTracker[NPFMuon]/I");     
+  mtree->Branch("PFMuonIsPF"                                         ,mPFMuonIsPF                                         ,"PFMuonIsPF[NPFMuon]/I");
+  //
+  mtree->Branch("PFMuonIsTight"                                      ,mPFMuonIsTight                                      ,"PFMuonIsTight[NPFMuon]/I");     
+  mtree->Branch("PFMuonIsLoose"                                      ,mPFMuonIsLoose                                      ,"PFMuonIsLoose[NPFMuon]/I");
+  //
+  mtree->Branch("PFMuonChargedHadronIso"                             ,mPFMuonChargedHadronIso                             ,"PFMuonChargedHadronIso[NPFMuon]/D"); 
+  mtree->Branch("PFMuonPhotonIso"                                    ,mPFMuonPhotonIso                                    ,"PFMuonPhotonIso[NPFMuon]/D");        
+  mtree->Branch("PFMuonNeutralHadronIso"                             ,mPFMuonNeutralHadronIso                             ,"PFMuonNeutralHadronIso[NPFMuon]/D"); 
+  mtree->Branch("PFMuonisGMPT"                                       ,mPFMuonisGMPT                                       ,"PFMuonisGMPT[NPFMuon]/I");
+  mtree->Branch("PFMuonR04ChargedHadronPt"                           ,mPFMuonR04ChargedHadronPt                           ,"PFMuonR04ChargedHadronPt[NPFMuon]/D");
+  mtree->Branch("PFMuonR04NeutralHadronEt"                           ,mPFMuonR04NeutralHadronEt                           ,"PFMuonR04NeutralHadronEt[NPFMuon]/D");
+  mtree->Branch("PFMuonR04PhotonEt"                                  ,mPFMuonR04PhotonEt                                  ,"PFMuonR04PhotonEt[NPFMuon]/D");
+  mtree->Branch("PFMuonR04PUPt"                                      ,mPFMuonR04PUPt                                      ,"PFMuonR04PUPt[NPFMuon]/D"); 
+  // 
+  mtree->Branch("PFMuonNumOfMatches"                                 ,mPFMuonNumOfMatches                                 ,"PFMuonNumOfMatches[NPFMuon]/I");  
+  mtree->Branch("PFMuonNumOfMatchesStation"                          ,mPFMuonNumOfMatchesStation                          ,"PFMuonNumOfMatchesStation[NPFMuon]/I"); 
+  //
+  mtree->Branch("PFMuonGlobChi2Norm"                                 ,mPFMuonGlobChi2Norm                                 ,"PFMuonGlobChi2Norm[NPFMuon]/D");  
+  mtree->Branch("PFMuonGlobNumOfValidMuonHits"                       ,mPFMuonGlobNumOfValidMuonHits                       ,"PFMuonGlobNumOfValidMuonHits[NPFMuon]/I"); 
+  //
+  mtree->Branch("PFMuonBestTrkdxy"                                   ,mPFMuonBestTrkdxy                                   ,"PFMuonBestTrkdxy[NPFMuon]/D");  
+  mtree->Branch("PFMuonBestTrkdz"                                    ,mPFMuonBestTrkdz                                    ,"PFMuonBestTrkdz[NPFMuon]/D");
+  //
+  mtree->Branch("PFMuoninnertrackPt"                                 ,mPFMuoninnertrackPt                                 ,"PFMuoninnertrackPt[NPFMuon]/D");     
+  mtree->Branch("PFMuonnValidHits"                                   ,mPFMuonnValidHits                                   ,"PFMuonnValidHits[NPFMuon]/I");       
+  mtree->Branch("PFMuonnValidPixelHits"                              ,mPFMuonnValidPixelHits                              ,"PFMuonnValidPixelHits[NPFMuon]/I");  
+  mtree->Branch("PFMuondxy"                                          ,mPFMuondxy                                          ,"PFMuondxy[NPFMuon]/D");              
+  mtree->Branch("PFMuondz"                                           ,mPFMuondz                                           ,"PFMuondz[NPFMuon]/D");               
+  //
+  mtree->Branch("PFMuonCombChi2Norm"                                 ,mPFMuonCombChi2Norm                                 ,"PFMuonCombChi2Norm[NPFMuon]/D");    
+  mtree->Branch("PFMuonCombValidHits"                                ,mPFMuonCombValidHits                                ,"PFMuonCombValidHits[NPFMuon]/I");   
+  mtree->Branch("PFMuonCombLostHits"                                 ,mPFMuonCombLostHits                                 ,"PFMuonCombLostHits[NPFMuon]/I");    
+  mtree->Branch("PFMuonCombPt"                                       ,mPFMuonCombPt                                       ,"PFMuonCombPt[NPFMuon]/D");          
+  mtree->Branch("PFMuonCombPz"                                       ,mPFMuonCombPz                                       ,"PFMuonCombPz[NPFMuon]/D");          
+  mtree->Branch("PFMuonCombP"                                        ,mPFMuonCombP                                        ,"PFMuonCombP[NPFMuon]/D");           
+  mtree->Branch("PFMuonCombEta"                                      ,mPFMuonCombEta                                      ,"PFMuonCombEta[NPFMuon]/D");         
+  mtree->Branch("PFMuonCombPhi"                                      ,mPFMuonCombPhi                                      ,"PFMuonCombPhi[NPFMuon]/D");         
+  mtree->Branch("PFMuonCombChi2"                                     ,mPFMuonCombChi2                                     ,"PFMuonCombChi2[NPFMuon]/D");        
+  mtree->Branch("PFMuonCombCharge"                                   ,mPFMuonCombCharge                                   ,"PFMuonCombCharge[NPFMuon]/D");      
+  mtree->Branch("PFMuonCombQOverPError"                              ,mPFMuonCombQOverPError                              ,"PFMuonCombQOverPError[NPFMuon]/D"); 
+  mtree->Branch("PFMuonCombNdof"                                     ,mPFMuonCombNdof                                     ,"PFMuonCombNdof[NPFMuon]/D");        
+  mtree->Branch("PFMuonCombVx"                                       ,mPFMuonCombVx                                       ,"PFMuonCombVx[NPFMuon]/D");          
+  mtree->Branch("PFMuonCombVy"                                       ,mPFMuonCombVy                                       ,"PFMuonCombVy[NPFMuon]/D");          
+  mtree->Branch("PFMuonCombVz"                                       ,mPFMuonCombVz                                       ,"PFMuonCombVz[NPFMuon]/D");          
+  mtree->Branch("PFMuonCombD0"                                       ,mPFMuonCombD0                                       ,"PFMuonCombD0[NPFMuon]/D");          
+  mtree->Branch("PFMuonCombDz"                                       ,mPFMuonCombDz                                       ,"PFMuonCombDz[NPFMuon]/D");          
+  //
+  mtree->Branch("PFMuonStandChi2Norm"                                ,mPFMuonStandChi2Norm                                ,"PFMuonStandChi2Norm[NPFMuon]/D");   
+  mtree->Branch("PFMuonStandValidHits"                               ,mPFMuonStandValidHits                               ,"PFMuonStandValidHits[NPFMuon]/I");  
+  mtree->Branch("PFMuonStandLostHits"                                ,mPFMuonStandLostHits                                ,"PFMuonStandLostHits[NPFMuon]/I");   
+  mtree->Branch("PFMuonStandPt"                                      ,mPFMuonStandPt                                      ,"PFMuonStandPt[NPFMuon]/D");         
+  mtree->Branch("PFMuonStandPz"                                      ,mPFMuonStandPz                                      ,"PFMuonStandPz[NPFMuon]/D");         
+  mtree->Branch("PFMuonStandP"                                       ,mPFMuonStandP                                       ,"PFMuonStandP[NPFMuon]/D");         
+  mtree->Branch("PFMuonStandEta"                                     ,mPFMuonStandEta                                     ,"PFMuonStandEta[NPFMuon]/D");        
+  mtree->Branch("PFMuonStandPhi"                                     ,mPFMuonStandPhi                                     ,"PFMuonStandPhi[NPFMuon]/D");        
+  mtree->Branch("PFMuonStandChi2"                                    ,mPFMuonStandChi2                                    ,"PFMuonStandChi2[NPFMuon]/D");
+  mtree->Branch("PFMuonStandCharge"                                  ,mPFMuonStandCharge                                  ,"PFMuonStandCharge[NPFMuon]/D");
+  mtree->Branch("PFMuonStandQOverPError"                             ,mPFMuonStandQOverPError                             ,"PFMuonStandQOverPError[NPFMuon]/D" );
+  //
+  mtree->Branch("PFMuonTrkChi2Norm"                                  ,mPFMuonTrkChi2Norm                                  ,"PFMuonTrkChi2Norm[NPFMuon]/D"); 
+  mtree->Branch("PFMuonTrkValidHits"                                 ,mPFMuonTrkValidHits                                 ,"PFMuonTrkValidHits[NPFMuon]/I");   
+  mtree->Branch("PFMuonTrkLostHits"                                  ,mPFMuonTrkLostHits                                  ,"PFMuonTrkLostHits[NPFMuon]/I");
+  mtree->Branch("PFMuonTrkPt"                                        ,mPFMuonTrkPt                                        ,"PFMuonTrkPt[NPFMuon]/D");     
+  mtree->Branch("PFMuonTrkPz"                                        ,mPFMuonTrkPz                                        ,"PFMuonTrkPz[NPFMuon]/D");
+  mtree->Branch("PFMuonTrkP"                                         ,mPFMuonTrkP                                         ,"PFMuonTrkP[NPFMuon]/D");           
+  mtree->Branch("PFMuonTrkEta"                                       ,mPFMuonTrkEta                                       ,"PFMuonTrkEt[NPFMuon]/D");         
+  mtree->Branch("PFMuonTrkPhi"                                       ,mPFMuonTrkPhi                                       ,"PFMuonTrkPhi[NPFMuon]/D");         
+  mtree->Branch("PFMuonTrkChi2"                                      ,mPFMuonTrkChi2                                      ,"PFMuonTrkChi2[NPFMuon]/D");        
+  mtree->Branch("PFMuonTrkCharge"                                    ,mPFMuonTrkCharge                                    ,"PFMuonTrkCharge[NPFMuon]/D");      
+  mtree->Branch("PFMuonTrkQOverPError"                               ,mPFMuonTrkQOverPError                               ,"PFMuonTrkQOverPError[NPFMuon]/D"); 
+  mtree->Branch("PFMuonTrkDxy"                                       ,mPFMuonTrkDxy                                       ,"PFMuonTrkDxy[NPFMuon]/D");    
+  mtree->Branch("PFMuonTrkNumOfValidPixHits"                         ,mPFMuonTrkNumOfValidPixHits                         ,"PFMuonTrkNumOfValidPixHits[NPFMuon]/D"); 
+  mtree->Branch("PFMuonTrkLayerWithMeasurement"                      ,mPFMuonTrkLayerWithMeasurement                      ,"PFMuonTrkLayerWithMeasurement[NPFMuon]/I");
   
-  mtree->Branch("PFMuonIsGlobal"               ,mPFMuonIsGlobal            ,"PFMuonIsGlobal[NPFMuon]/I"    );         
-  mtree->Branch("PFMuonIsStandAlone"           ,mPFMuonIsStandAlone        ,"PFMuonIsStandAlone[NPFMuon]/I");     
-  mtree->Branch("PFMuonIsTracker"              ,mPFMuonIsTracker           ,"PFMuonIsTracker[NPFMuon]/I"   );        
-  
-  mtree->Branch("PFMuonChargedHadronIso"       ,mPFMuonChargedHadronIso    ,"PFMuonChargedHadronIso[NPFMuon]/D" ); 
-  mtree->Branch("PFMuonPhotonIso"              ,mPFMuonPhotonIso           ,"PFMuonPhotonIso[NPFMuon]/D"        );        
-  mtree->Branch("PFMuonNeutralHadronIso"       ,mPFMuonNeutralHadronIso    ,"PFMuonNeutralHadronIso[NPFMuon]/D" ); 
-  mtree->Branch("PFMuonisGMPT"                 ,mPFMuonisGMPT              ,"PFMuonisGMPT[NPFMuon]/I"           );           
-  mtree->Branch("PFMuonNumOfMatches"           ,mPFMuonNumOfMatches        ,"PFMuonNumOfMatches[NPFMuon]/I"     );  
-  mtree->Branch("PFMuonR04ChargedHadronPt"     ,mPFMuonR04ChargedHadronPt  ,"PFMuonR04ChargedHadronPt[NPFMuon]/D");
-  mtree->Branch("PFMuonR04NeutralHadronEt"     ,mPFMuonR04NeutralHadronEt  ,"PFMuonR04NeutralHadronEt[NPFMuon]/D");
-  mtree->Branch("PFMuonR04PhotonEt"            ,mPFMuonR04PhotonEt         ,"PFMuonR04PhotonEt[NPFMuon]/D");
-  mtree->Branch("PFMuonR04PUPt"                ,mPFMuonR04PUPt             ,"PFMuonR04PUPt[NPFMuon]/D"); 
-  
-  mtree->Branch("PFMuoninnertrackPt"           ,mPFMuoninnertrackPt        ,"PFMuoninnertrackPt[NPFMuon]/D"     );     
-  mtree->Branch("PFMuonnValidHits"             ,mPFMuonnValidHits          ,"PFMuonnValidHits[NPFMuon]/I"       );       
-  mtree->Branch("PFMuonnValidPixelHits"        ,mPFMuonnValidPixelHits     ,"PFMuonnValidPixelHits[NPFMuon]/I"  );  
-  mtree->Branch("PFMuondxy"                    ,mPFMuondxy                 ,"PFMuondxy[NPFMuon]/D"              );              
-  mtree->Branch("PFMuondz"                     ,mPFMuondz                  ,"PFMuondz[NPFMuon]/D"               );               
-  
-  mtree->Branch("PFMuonCombChi2Norm"           ,mPFMuonCombChi2Norm        ,"PFMuonCombChi2Norm[NPFMuon]/D"     );    
-  mtree->Branch("PFMuonCombValidHits"          ,mPFMuonCombValidHits       ,"PFMuonCombValidHits[NPFMuon]/I"    );   
-  mtree->Branch("PFMuonCombLostHits"           ,mPFMuonCombLostHits        ,"PFMuonCombLostHits[NPFMuon]/I"     );    
-  mtree->Branch("PFMuonCombPt"                 ,mPFMuonCombPt              ,"PFMuonCombPt[NPFMuon]/D"           );          
-  mtree->Branch("PFMuonCombPz"                 ,mPFMuonCombPz              ,"PFMuonCombPz[NPFMuon]/D"           );          
-  mtree->Branch("PFMuonCombP"                  ,mPFMuonCombP               ,"PFMuonCombP[NPFMuon]/D"            );           
-  mtree->Branch("PFMuonCombEta"                ,mPFMuonCombEta             ,"PFMuonCombEta[NPFMuon]/D"          );         
-  mtree->Branch("PFMuonCombPhi"                ,mPFMuonCombPhi             ,"PFMuonCombPhi[NPFMuon]/D"          );         
-  mtree->Branch("PFMuonCombChi2"               ,mPFMuonCombChi2            ,"PFMuonCombChi2[NPFMuon]/D"         );        
-  mtree->Branch("PFMuonCombCharge"             ,mPFMuonCombCharge          ,"PFMuonCombCharge[NPFMuon]/D"       );      
-  mtree->Branch("PFMuonCombQOverPError"        ,mPFMuonCombQOverPError     ,"PFMuonCombQOverPError[NPFMuon]/D"  ); 
-  mtree->Branch("PFMuonCombNdof"               ,mPFMuonCombNdof            ,"PFMuonCombNdof[NPFMuon]/D"         );        
-  mtree->Branch("PFMuonCombVx"                 ,mPFMuonCombVx              ,"PFMuonCombVx[NPFMuon]/D" );          
-  mtree->Branch("PFMuonCombVy"                 ,mPFMuonCombVy              ,"PFMuonCombVy[NPFMuon]/D" );          
-  mtree->Branch("PFMuonCombVz"                 ,mPFMuonCombVz              ,"PFMuonCombVz[NPFMuon]/D" );          
-  mtree->Branch("PFMuonCombD0"                 ,mPFMuonCombD0              ,"PFMuonCombD0[NPFMuon]/D" );          
-  mtree->Branch("PFMuonCombDz"                 ,mPFMuonCombDz              ,"PFMuonCombDz[NPFMuon]/D" );          
-  
-  mtree->Branch("PFMuonStandChi2Norm"          ,mPFMuonStandChi2Norm       ,"PFMuonStandChi2Norm[NPFMuon]/D" );;   
-  mtree->Branch("PFMuonStandValidHits"         ,mPFMuonStandValidHits      ,"PFMuonStandValidHits[NPFMuon]/I" );;  
-  mtree->Branch("PFMuonStandLostHits"          ,mPFMuonStandLostHits       ,"PFMuonStandLostHits[NPFMuon]/I" );;   
-  mtree->Branch("PFMuonStandPt"                ,mPFMuonStandPt             ,"PFMuonStandPt[NPFMuon]/D" );;         
-  mtree->Branch("PFMuonStandPz"                ,mPFMuonStandPz             ,"PFMuonStandPz[NPFMuon]/D" );;         
-  mtree->Branch("PFMuonStandP"                 ,mPFMuonStandP              ,"PFMuonStandP[NPFMuon]/D" );;          
-  mtree->Branch("PFMuonStandEta"               ,mPFMuonStandEta            ,"PFMuonStandEta[NPFMuon]/D" );;        
-  mtree->Branch("PFMuonStandPhi"               ,mPFMuonStandPhi            ,"PFMuonStandPhi[NPFMuon]/D" );;        
-  mtree->Branch("PFMuonStandChi2"              ,mPFMuonStandChi2           ,"PFMuonStandChi2[NPFMuon]/D" );;       
-  mtree->Branch("PFMuonStandCharge"            ,mPFMuonStandCharge         ,"PFMuonStandCharge[NPFMuon]/D" );;     
-  mtree->Branch("PFMuonStandQOverPError"       ,mPFMuonStandQOverPError    ,"PFMuonStandQOverPError[NPFMuon]/D" );;
-  
-  mtree->Branch("PFMuonTrkChi2Norm"            ,mPFMuonTrkChi2Norm         ,"PFMuonTrkChi2Norm[NPFMuon]/D" );;    
-  mtree->Branch("PFMuonTrkValidHits"           ,mPFMuonTrkValidHits        ,"PFMuonTrkValidHits[NPFMuon]/I" );;   
-  mtree->Branch("PFMuonTrkLostHits"            ,mPFMuonTrkLostHits         ,"PFMuonTrkLostHits[NPFMuon]/I" );;    
-  mtree->Branch("PFMuonTrkPt"                  ,mPFMuonTrkPt               ,"PFMuonTrkPt[NPFMuon]/D" );;          
-  mtree->Branch("PFMuonTrkPz"                  ,mPFMuonTrkPz               ,"PFMuonTrkPz[NPFMuon]/D" );;          
-  mtree->Branch("PFMuonTrkP"                   ,mPFMuonTrkP                ,"PFMuonTrkP[NPFMuon]/D" );;           
-  mtree->Branch("PFMuonTrkEta"                 ,mPFMuonTrkEta              ,"PFMuonTrkEt[NPFMuon]/D" );;         
-  mtree->Branch("PFMuonTrkPhi"                 ,mPFMuonTrkPhi              ,"PFMuonTrkPhi[NPFMuon]/D" );;         
-  mtree->Branch("PFMuonTrkChi2"                ,mPFMuonTrkChi2             ,"PFMuonTrkChi2[NPFMuon]/D" );;        
-  mtree->Branch("PFMuonTrkCharge"              ,mPFMuonTrkCharge           ,"PFMuonTrkCharge[NPFMuon]/D" );;      
-  mtree->Branch("PFMuonTrkQOverPError"         ,mPFMuonTrkQOverPError      ,"PFMuonTrkQOverPError[NPFMuon]/D" );; 
-  mtree->Branch("PFMuonTrkDxy"                 ,mPFMuonTrkDxy              ,"PFMuonTrkDxy[NPFMuon]/D" );;         
-  mtree->Branch("PFMuonTrkNumOfValidPixHits"   ,mPFMuonTrkNumOfValidPixHits,"PFMuonTrkNumOfValidPixHits[NPFMuon]/D" );;
-  
-  
+  ///-------------------------------------------------------------------------- 
   /// Electrons
-  mtree->Branch("NElec"                    ,&mNElec                         ,"NElec/I");
-  mtree->Branch("ElecE"                    ,mElecE                          ,"ElecE[NElec]/D");
-  mtree->Branch("ElecPt"                   ,mElecPt                         ,"ElecPt[NElec]/D");
-  mtree->Branch("ElecPx"                   ,mElecPx                         ,"ElecPx[NElec]/D");
-  mtree->Branch("ElecPy"                   ,mElecPy                         ,"ElecPy[NElec]/D");
-  mtree->Branch("ElecPz"                   ,mElecPz                         ,"ElecPz[NElec]/D");
-  mtree->Branch("ElecEcalDrivenSeed"       ,mElecEcalDrivenSeed             ,"ElecEcalDrivenSeed[NElec]/I");
-  mtree->Branch("ElecID80"                 ,mElecID80                       ,"ElecID80[NElec]/I");
-  mtree->Branch("ElecID95"                 ,mElecID95                       ,"ElecID95[NElec]/I");
+  ///-------------------------------------------------------------------------- 
+  mtree->Branch("NElec"                                              ,&mNElec                                             ,"NElec/I");
+  mtree->Branch("ElecE"                                              ,mElecE                                              ,"ElecE[NElec]/D");
+  mtree->Branch("ElecPt"                                             ,mElecPt                                             ,"ElecPt[NElec]/D");
+  mtree->Branch("ElecPx"                                             ,mElecPx                                             ,"ElecPx[NElec]/D");
+  mtree->Branch("ElecPy"                                             ,mElecPy                                             ,"ElecPy[NElec]/D");
+  mtree->Branch("ElecPz"                                             ,mElecPz                                             ,"ElecPz[NElec]/D");
+  mtree->Branch("ElecEcalDrivenSeed"                                 ,mElecEcalDrivenSeed                                 ,"ElecEcalDrivenSeed[NElec]/I");
+  mtree->Branch("ElecID80"                                           ,mElecID80                                           ,"ElecID80[NElec]/I");
+  mtree->Branch("ElecID95"                                           ,mElecID95                                           ,"ElecID95[NElec]/I");
   
-  mtree->Branch("ElecEta"                  ,mElecEta                        ,"ElecEta[NElec]/D");
-  mtree->Branch("ElecPhi"                  ,mElecPhi                        ,"ElecPhi[NElec]/D");
-  mtree->Branch("ElecCharge"               ,mElecCharge                     ,"ElecCharge[NElec]/I");
-  mtree->Branch("Elecdr03HcalTowerSumEt"   ,mElecdr03HcalTowerSumEt         ,"Elecdr03HcalTowerSumEt[NElec]/D");
-  mtree->Branch("Elecdr03EcalRecHitSumEt"  ,mElecdr03EcalRecHitSumEt        ,"Elecdr03EcalRecHitSumEt[NElec]/D");
-  mtree->Branch("Elecdr03TkSumPt"          ,mElecdr03TkSumPt                ,"Elecdr03TkSumPt[NElec]/D");
-  mtree->Branch("ElecNumOfValidHits"       ,mElecNumOfValidHits             ,"ElecNumOfValidHits[NElec]/I");
-  mtree->Branch("ElecInnerNumOfHits"       ,mElecInnerNumOfHits             ,"ElecInnerNumOfHits[NElec]/I");
-  mtree->Branch("Elecdist"                 ,mElecdist                       ,"Elecdist[NElec]/D");
-  mtree->Branch("Elecdcot"                 ,mElecdcot                       ,"Elecdcot[NElec]/D");
-  mtree->Branch("ElecNormChi2"             ,mElecNormChi2                   ,"ElecNormChi2[NElec]/D");
-  mtree->Branch("Elecdxy"                  ,mElecdxy                        ,"Elecdxy[NElec]/D");
-  mtree->Branch("Elecdz"                   ,mElecdz                         ,"Elecdz[NElec]/D");
-  mtree->Branch("ElecdB"                   ,mElecdB                         ,"ElecdB[NElec]/I");
-  mtree->Branch("ElecIsEB"                 ,mElecIsEB                       ,"ElecIsEB[NElec]/I");
-  mtree->Branch("Elecfbrem"                ,mElecfbrem                      ,"Elecfbrem[NElec]/D");
-  mtree->Branch("ElecDEtaSuTrAtVtx"        ,mElecDEtaSuTrAtVtx              ,"ElecDEtaSuTrAtVtx[NElec]/D");
-  mtree->Branch("ElecDPhiSuTrAtVtx"        ,mElecDPhiSuTrAtVtx              ,"ElecDPhiSuTrAtVtx[NElec]/D");
-  mtree->Branch("ElecHadronicOverEm"       ,mElecHadronicOverEm             ,"ElecHadronicOverEm[NElec]/D");
-  mtree->Branch("ElecHcalOverEcal"         ,mElecHcalOverEcal               ,"ElecHcalOverEcal[NElec]/D");
-  mtree->Branch("ElecSuperClusOverP"       ,mElecSuperClusOverP             ,"ElecSuperClusOverP[NElec]/D");
-  mtree->Branch("Elecetaeta"               ,mElecetaeta                     ,"Elecetaeta[NElec]/D");
-  mtree->Branch("Elecietaieta"             ,mElecietaieta                   ,"Elecietaieta[NElec]/D");
+  mtree->Branch("ElecEta"                                            ,mElecEta                                            ,"ElecEta[NElec]/D");
+  mtree->Branch("ElecPhi"                                            ,mElecPhi                                            ,"ElecPhi[NElec]/D");
+  mtree->Branch("ElecCharge"                                         ,mElecCharge                                         ,"ElecCharge[NElec]/I");
+  mtree->Branch("Elecdr03HcalTowerSumEt"                             ,mElecdr03HcalTowerSumEt                             ,"Elecdr03HcalTowerSumEt[NElec]/D");
+  mtree->Branch("Elecdr03EcalRecHitSumEt"                            ,mElecdr03EcalRecHitSumEt                            ,"Elecdr03EcalRecHitSumEt[NElec]/D");
+  mtree->Branch("Elecdr03TkSumPt"                                    ,mElecdr03TkSumPt                                    ,"Elecdr03TkSumPt[NElec]/D");
+  mtree->Branch("ElecNumOfValidHits"                                 ,mElecNumOfValidHits                                 ,"ElecNumOfValidHits[NElec]/I");
+  mtree->Branch("ElecInnerNumOfHits"                                 ,mElecInnerNumOfHits                                 ,"ElecInnerNumOfHits[NElec]/I");
+  mtree->Branch("Elecdist"                                           ,mElecdist                                           ,"Elecdist[NElec]/D");
+  mtree->Branch("Elecdcot"                                           ,mElecdcot                                           ,"Elecdcot[NElec]/D");
+  mtree->Branch("ElecNormChi2"                                       ,mElecNormChi2                                       ,"ElecNormChi2[NElec]/D");
+  mtree->Branch("Elecdxy"                                            ,mElecdxy                                            ,"Elecdxy[NElec]/D");
+  mtree->Branch("Elecdz"                                             ,mElecdz                                             ,"Elecdz[NElec]/D");
+  mtree->Branch("ElecdB"                                             ,mElecdB                                             ,"ElecdB[NElec]/I");
+  mtree->Branch("ElecIsEB"                                           ,mElecIsEB                                           ,"ElecIsEB[NElec]/I");
+  mtree->Branch("Elecfbrem"                                          ,mElecfbrem                                          ,"Elecfbrem[NElec]/D");
+  mtree->Branch("ElecDEtaSuTrAtVtx"                                  ,mElecDEtaSuTrAtVtx                                  ,"ElecDEtaSuTrAtVtx[NElec]/D");
+  mtree->Branch("ElecDPhiSuTrAtVtx"                                  ,mElecDPhiSuTrAtVtx                                  ,"ElecDPhiSuTrAtVtx[NElec]/D");
+  mtree->Branch("ElecHadronicOverEm"                                 ,mElecHadronicOverEm                                 ,"ElecHadronicOverEm[NElec]/D");
+  mtree->Branch("ElecHcalOverEcal"                                   ,mElecHcalOverEcal                                   ,"ElecHcalOverEcal[NElec]/D");
+  mtree->Branch("ElecSuperClusOverP"                                 ,mElecSuperClusOverP                                 ,"ElecSuperClusOverP[NElec]/D");
+  mtree->Branch("Elecetaeta"                                         ,mElecetaeta                                         ,"Elecetaeta[NElec]/D");
+  mtree->Branch("Elecietaieta"                                       ,mElecietaieta                                       ,"Elecietaieta[NElec]/D"); 
+  //
+  mtree->Branch("ElecIsTight"                                        ,mElecIsTight                                        ,"ElecIsTight[NElec]/I");     
+  mtree->Branch("ElecIsMedium"                                       ,mElecIsMedium                                       ,"ElecIsMedium[NElec]/I");
+  mtree->Branch("ElecIsLoose"                                        ,mElecIsLoose                                        ,"ElecIsLoose[NElec]/I");     
+  mtree->Branch("ElecIsVeto"                                         ,mElecIsVeto                                         ,"ElecIsVeto[NElec]/I");
   
-  
+  ///-------------------------------------------------------------------------- 
   /// PF Electrons
-  mtree->Branch("NPFElec"            ,&mNPFElec                 ,  "NPFElec/I"                    );
-  mtree->Branch("PFElecCharge"       ,mPFElecCharge             ,  "PFElecCharge[NPFElec]/I"      );
-  mtree->Branch("PFElecIsEB"         ,mPFElecIsEB               ,  "PFElecIsEB[NPFElec]/I"        );  
+  ///-------------------------------------------------------------------------- 
+  mtree->Branch("NPFElec"                                            ,&mNPFElec                                           ,"NPFElec/I");
+  mtree->Branch("PFElecCharge"                                       ,mPFElecCharge                                       ,"PFElecCharge[NPFElec]/I");
+  mtree->Branch("PFElecIsEB"                                         ,mPFElecIsEB                                         ,"PFElecIsEB[NPFElec]/I");  
+  //
+  mtree->Branch("PFElecE"                                            ,mPFElecE                                            ,"PFElecE[NPFElec]/D");                    
+  mtree->Branch("PFElecPt"                                           ,mPFElecPt                                           ,"PFElecPt[NPFElec]/D");                  
+  mtree->Branch("PFElecPx"                                           ,mPFElecPx                                           ,"PFElecPx[NPFElec]/D");                  
+  mtree->Branch("PFElecPy"                                           ,mPFElecPy                                           ,"PFElecPy[NPFElec]/D");                  
+  mtree->Branch("PFElecPz"                                           ,mPFElecPz                                           ,"PFElecPz[NPFElec]/D");                  
+  mtree->Branch("PFElecEta"                                          ,mPFElecEta                                          ,"PFElecEta[NPFElec]/D");                
+  mtree->Branch("PFElecPhi"                                          ,mPFElecPhi                                          ,"PFElecPhi[NPFElec]/D");                
+  mtree->Branch("PFElecCharHadIso"                                   ,mPFElecCharHadIso                                   ,"PFElecCharHadIso[NPFElec]/D");  
+  mtree->Branch("PFElecPhoIso"                                       ,mPFElecPhoIso                                       ,"PFElecPhoIso[NPFElec]/D");          
+  mtree->Branch("PFElecNeuHadIso"                                    ,mPFElecNeuHadIso                                    ,"PFElecNeuHadIso[NPFElec]/D");    
+  mtree->Branch("PFElecMva"                                          ,mPFElecMva                                          ,"PFElecMva[NPFElec]/D"); 
+  mtree->Branch("PFElecEffArea"                                      ,mPFElecEffArea                                      ,"PFElecEffArea[NPFElec]/D");
+  //
+  mtree->Branch("PFElecdxy"                                          ,mPFElecdxy                                          ,"PFElecdxy[NPFElec]/D");                
+  mtree->Branch("PFElecdz"                                           ,mPFElecdz                                           ,"PFElecdz[NPFElec]/D");                  
+  mtree->Branch("PFElecHadOverEm"                                    ,mPFElecHadOverEm                                    ,"PFElecHadOverEm[NPFElec]/D");    
+  mtree->Branch("PFElecHcalOverEm"                                   ,mPFElecHcalOverEm                                   ,"PFElecHcalOverEm[NPFElec]/D");  
+  mtree->Branch("PFElecSupClusOverP"                                 ,mPFElecSupClusOverP                                 ,"PFElecSupClusOverP[NPFElec]/D");
+  mtree->Branch("PFElecInnerHits"                                    ,mPFElecInnerHits                                    ,"PFElecInnerHits[NPFElec]/D");    
+  mtree->Branch("PFElecConvDist"                                     ,mPFElecConvDist                                     ,"PFElecConvDist[NPFElec]/D");      
+  mtree->Branch("PFElecConvDcot"                                     ,mPFElecConvDcot                                     ,"PFElecConvDcot[NPFElec]/D");
+  //
+  mtree->Branch("PFElecEcalDrivenSeed"                               ,mPFElecEcalDrivenSeed                               ,"PFElecEcalDrivenSeed[NPFElec]/I");
+  mtree->Branch("PFElecdB"                                           ,mPFElecdB                                           ,"PFElecdB[NPFElec]/I");
+  mtree->Branch("PFElecNumOfValidHits"                               ,mPFElecNumOfValidHits                               ,"PFElecNumOfValidHits[NPFElec]/I");
+  mtree->Branch("PFElecdr03HcalTowerSumEt"                           ,mPFElecdr03HcalTowerSumEt                           ,"PFElecdr03HcalTowerSumEt[NPFElec]/D");
+  mtree->Branch("PFElecdr03EcalRecHitSumEt"                          ,mPFElecdr03EcalRecHitSumEt                          ,"PFElecdr03EcalRecHitSumEt[NPFElec]/D");
+  mtree->Branch("PFElecdr03TkSumPt"                                  ,mPFElecdr03TkSumPt                                  ,"PFElecdr03TkSumPt[NPFElec]/D");
+  mtree->Branch("PFElecNormChi2"                                     ,mPFElecNormChi2                                     ,"PFElecNormChi2[NPFElec]/D");
+  mtree->Branch("PFElecfbrem"                                        ,mPFElecfbrem                                        ,"PFElecfbrem[NPFElec]/D");
+  mtree->Branch("PFElecDEtaSuTrAtVtx"                                ,mPFElecDEtaSuTrAtVtx                                ,"PFElecDEtaSuTrAtVtx[NPFElec]/D");
+  mtree->Branch("PFElecDPhiSuTrAtVtx"                                ,mPFElecDPhiSuTrAtVtx                                ,"PFElecDPhiSuTrAtVtx[NPFElec]/D");
+  mtree->Branch("PFElecHadronicOverEm"                               ,mPFElecHadronicOverEm                               ,"PFElecHadronicOverEm[NPFElec]/D");
+  mtree->Branch("PFElecHcalOverEcal"                                 ,mPFElecHcalOverEcal                                 ,"PFElecHcalOverEcal[NPFElec]/D");
+  mtree->Branch("PFElecSuperClusOverP"                               ,mPFElecSuperClusOverP                               ,"PFElecSuperClusOverP[NPFElec]/D");
+  mtree->Branch("PFElecetaeta"                                       ,mPFElecetaeta                                       ,"PFElecetaeta[NPFElec]/D");
+  mtree->Branch("PFElecietaieta"                                     ,mPFElecietaieta                                     ,"PFElecietaieta[NPFElec]/D");
+  //
+  mtree->Branch("PFeidLoose"                                         ,mPFeidLoose                                         ,"PFeidLoose[NPFElec]/I");
+  mtree->Branch("PFeidRobustHighEnergy"                              ,mPFeidRobustHighEnergy                              ,"PFeidRobustHighEnergy[NPFElec]/I");
+  mtree->Branch("PFeidRobustLoose"                                   ,mPFeidRobustLoose                                   ,"PFeidRobustLoose[NPFElec]/I");
+  mtree->Branch("PFeidRobustTight"                                   ,mPFeidRobustTight                                   ,"PFeidRobustTight[NPFElec]/I");
+  mtree->Branch("PFeidTight"                                         ,mPFeidTight                                         ,"PFeidTight[NPFElec]/I");
+  mtree->Branch("PFevspi"                                            ,mPFevspi                                            ,"PFevspi[NPFElec]/I");
+  mtree->Branch("PFevsmu"                                            ,mPFevsmu                                            ,"PFevsmu[NPFElec]/I");
+  //
+  mtree->Branch("PFElecIsTight"                                      ,mPFElecIsTight                                      ,"PFElecIsTight[NPFElec]/I");     
+  mtree->Branch("PFElecIsMedium"                                     ,mPFElecIsMedium                                     ,"PFElecIsMedium[NPFElec]/I");
+  mtree->Branch("PFElecIsLoose"                                      ,mPFElecIsLoose                                      ,"PFElecIsLoose[NPFElec]/I");     
+  mtree->Branch("PFElecIsVeto"                                       ,mPFElecIsVeto                                       ,"PFElecIsVeto[NPFElec]/I");
   
-  mtree->Branch("PFElecE"            ,mPFElecE                  ,  "PFElecE[NPFElec]/D"           );                    
-  mtree->Branch("PFElecPt"           ,mPFElecPt                 ,  "PFElecPt[NPFElec]/D"          );                  
-  mtree->Branch("PFElecPx"           ,mPFElecPx                 ,  "PFElecPx[NPFElec]/D"          );                  
-  mtree->Branch("PFElecPy"           ,mPFElecPy                 ,  "PFElecPy[NPFElec]/D"          );                  
-  mtree->Branch("PFElecPz"           ,mPFElecPz                 ,  "PFElecPz[NPFElec]/D"          );                  
-  mtree->Branch("PFElecEta"          ,mPFElecEta                ,  "PFElecEta[NPFElec]/D"         );                
-  mtree->Branch("PFElecPhi"          ,mPFElecPhi                ,  "PFElecPhi[NPFElec]/D"         );                
-  mtree->Branch("PFElecCharHadIso"   ,mPFElecCharHadIso         ,  "PFElecCharHadIso[NPFElec]/D"  );  
-  mtree->Branch("PFElecPhoIso"       ,mPFElecPhoIso             ,  "PFElecPhoIso[NPFElec]/D"      );          
-  mtree->Branch("PFElecNeuHadIso"    ,mPFElecNeuHadIso          ,  "PFElecNeuHadIso[NPFElec]/D"   );    
-  mtree->Branch("PFElecMva"          ,mPFElecMva                ,  "PFElecMva[NPFElec]/D"         ); 
-  mtree->Branch("PFElecEffArea"      ,mPFElecEffArea            ,  "PFElecEffArea[NPFElec]/D"     );
-
-  mtree->Branch("PFElecdxy"          ,mPFElecdxy                ,  "PFElecdxy[NPFElec]/D"         );                
-  mtree->Branch("PFElecdz"           ,mPFElecdz                 ,  "PFElecdz[NPFElec]/D"          );                  
-  mtree->Branch("PFElecHadOverEm"    ,mPFElecHadOverEm          ,  "PFElecHadOverEm[NPFElec]/D"   );    
-  mtree->Branch("PFElecHcalOverEm"   ,mPFElecHcalOverEm         ,  "PFElecHcalOverEm[NPFElec]/D"  );  
-  mtree->Branch("PFElecSupClusOverP" ,mPFElecSupClusOverP       ,  "PFElecSupClusOverP[NPFElec]/D");
-  mtree->Branch("PFElecInnerHits"    ,mPFElecInnerHits          ,  "PFElecInnerHits[NPFElec]/D"   );    
-  mtree->Branch("PFElecConvDist"     ,mPFElecConvDist           ,  "PFElecConvDist[NPFElec]/D"    );      
-  mtree->Branch("PFElecConvDcot"     ,mPFElecConvDcot           ,  "PFElecConvDcot[NPFElec]/D"    );
-  
-  mtree->Branch("PFElecEcalDrivenSeed"      ,mPFElecEcalDrivenSeed       ,  "PFElecEcalDrivenSeed[NPFElec]/I"       );
-  mtree->Branch("PFElecdB"                  ,mPFElecdB                   ,  "PFElecdB[NPFElec]/I"                 );
-  mtree->Branch("PFElecNumOfValidHits"      ,mPFElecNumOfValidHits       ,  "PFElecNumOfValidHits[NPFElec]/I"     );
-  mtree->Branch("PFElecdr03HcalTowerSumEt"  ,mPFElecdr03HcalTowerSumEt   ,  "PFElecdr03HcalTowerSumEt[NPFElec]/D" );
-  mtree->Branch("PFElecdr03EcalRecHitSumEt" ,mPFElecdr03EcalRecHitSumEt  ,  "PFElecdr03EcalRecHitSumEt[NPFElec]/D");
-  mtree->Branch("PFElecdr03TkSumPt"         ,mPFElecdr03TkSumPt          ,  "PFElecdr03TkSumPt[NPFElec]/D"        );
-  mtree->Branch("PFElecNormChi2"            ,mPFElecNormChi2             ,  "PFElecNormChi2[NPFElec]/D"           );
-  mtree->Branch("PFElecfbrem"               ,mPFElecfbrem                ,  "PFElecfbrem[NPFElec]/D"              );
-  mtree->Branch("PFElecDEtaSuTrAtVtx"       ,mPFElecDEtaSuTrAtVtx        ,  "PFElecDEtaSuTrAtVtx[NPFElec]/D"      );
-  mtree->Branch("PFElecDPhiSuTrAtVtx"       ,mPFElecDPhiSuTrAtVtx        ,  "PFElecDPhiSuTrAtVtx[NPFElec]/D"      );
-  mtree->Branch("PFElecHadronicOverEm"      ,mPFElecHadronicOverEm       ,  "PFElecHadronicOverEm[NPFElec]/D"     );
-  mtree->Branch("PFElecHcalOverEcal"        ,mPFElecHcalOverEcal         ,  "PFElecHcalOverEcal[NPFElec]/D"       );
-  mtree->Branch("PFElecSuperClusOverP"      ,mPFElecSuperClusOverP       ,  "PFElecSuperClusOverP[NPFElec]/D"     );
-  mtree->Branch("PFElecetaeta"              ,mPFElecetaeta               ,  "PFElecetaeta[NPFElec]/D"             );
-  mtree->Branch("PFElecietaieta"            ,mPFElecietaieta             ,  "PFElecietaieta[NPFElec]/D"           );
-  
-  mtree->Branch("PFeidLoose"             ,mPFeidLoose             ,  "PFeidLoose[NPFElec]/I"    );
-  mtree->Branch("PFeidRobustHighEnergy"  ,mPFeidRobustHighEnergy  ,  "PFeidRobustHighEnergy[NPFElec]/I"    );
-  mtree->Branch("PFeidRobustLoose"       ,mPFeidRobustLoose       ,  "PFeidRobustLoose[NPFElec]/I"    );
-  mtree->Branch("PFeidRobustTight"       ,mPFeidRobustTight       ,  "PFeidRobustTight[NPFElec]/I"    );
-  mtree->Branch("PFeidTight"             ,mPFeidTight             ,  "PFeidTight[NPFElec]/I"    );
-  mtree->Branch("PFevspi"                ,mPFevspi                ,  "PFevspi[NPFElec]/I"    );
-  mtree->Branch("PFevsmu"                ,mPFevsmu                ,  "PFevsmu[NPFElec]/I"    );
-  
-  
+  ///-------------------------------------------------------------------------- 
   /// Taus
+  ///--------------------------------------------------------------------------
   mtree->Branch("NTau"                                               ,&mNTau                                              ,"NTau/I");
-  mtree->Branch("TauE"                                               ,mTauE                                               ,"TauE[NTau]/D" );
-  mtree->Branch("TauPt"                                              ,mTauPt                                              ,"TauPt[NTau]/D" );
-  mtree->Branch("TauPx"                                              ,mTauPx                                              ,"TauPx[NTau]/D" );
-  mtree->Branch("TauPy"                                              ,mTauPy                                              ,"TauPy[NTau]/D" );
-  mtree->Branch("TauPz"                                              ,mTauPz                                              ,"TauPz[NTau]/D" );
-  mtree->Branch("TauEta"                                             ,mTauEta                                             ,"TauEta[NTau]/D" );
-  mtree->Branch("TauPhi"                                             ,mTauPhi                                             ,"TauPhi[NTau]/D" );
+  mtree->Branch("TauE"                                               ,mTauE                                               ,"TauE[NTau]/D");
+  mtree->Branch("TauPt"                                              ,mTauPt                                              ,"TauPt[NTau]/D");
+  mtree->Branch("TauPx"                                              ,mTauPx                                              ,"TauPx[NTau]/D");
+  mtree->Branch("TauPy"                                              ,mTauPy                                              ,"TauPy[NTau]/D");
+  mtree->Branch("TauPz"                                              ,mTauPz                                              ,"TauPz[NTau]/D");
+  mtree->Branch("TauEta"                                             ,mTauEta                                             ,"TauEta[NTau]/D");
+  mtree->Branch("TauPhi"                                             ,mTauPhi                                             ,"TauPhi[NTau]/D");
   mtree->Branch("TauCharge"                                          ,mTauCharge                                          ,"TauCharge[NTau]/I");
   //
-  mtree->Branch("TauEtaEtaMoment"                                    ,mTauEtaEtaMoment                                    ,"TauEtaEtaMoment[NTau]/D" );
-  mtree->Branch("TauPhiPhiMoment"                                    ,mTauPhiPhiMoment                                    ,"TauPhiPhiMoment[NTau]/D" );
-  mtree->Branch("TauEtaPhiMoment"                                    ,mTauEtaPhiMoment                                    ,"TauEtaPhiMoment[NTau]/D" );
+  mtree->Branch("TauEtaEtaMoment"                                    ,mTauEtaEtaMoment                                    ,"TauEtaEtaMoment[NTau]/D");
+  mtree->Branch("TauPhiPhiMoment"                                    ,mTauPhiPhiMoment                                    ,"TauPhiPhiMoment[NTau]/D");
+  mtree->Branch("TauEtaPhiMoment"                                    ,mTauEtaPhiMoment                                    ,"TauEtaPhiMoment[NTau]/D");
   //
-  mtree->Branch("TauLeadPFChargedHadrCandsignedSipt"                 ,mTauLeadPFChargedHadrCandsignedSipt                 ,"TauLeadPFChargedHadrCandsignedSipt[NTau]/D" );
-  mtree->Branch("TauIsoPFChargedHadrCandsPtSum"                      ,mTauIsoPFChargedHadrCandsPtSum                      ,"TauIsoPFChargedHadrCandsPtSum[NTau]/D" );
-  mtree->Branch("TauIsoPFGammaCandsEtSum"                            ,mTauIsoPFGammaCandsEtSum                            ,"TauIsoPFGammaCandsEtSum[NTau]/D" );
-  mtree->Branch("TauMaximumHCALPFClusterEt"                          ,mTauMaximumHCALPFClusterEt                          ,"TauMaximumHCALPFClusterEt[NTau]/D" );
-  mtree->Branch("TauEmFraction"                                      ,mTauEmFraction                                      ,"TauEmFraction[NTau]/D" );
-  mtree->Branch("TauHcalTotOverPLead"                                ,mTauHcalTotOverPLead                                ,"TauHcalTotOverPLead[NTau]/D" );
-  mtree->Branch("TauHcalMaxOverPLead"                                ,mTauHcalMaxOverPLead                                ,"TauHcalMaxOverPLead[NTau]/D" );
-  mtree->Branch("TauHcal3x3OverPLead"                                ,mTauHcal3x3OverPLead                                ,"TauHcal3x3OverPLead[NTau]/D" );
-  mtree->Branch("TauEcalStripSumEOverPLead"                          ,mTauEcalStripSumEOverPLead                          ,"TauEcalStripSumEOverPLead[NTau]/D" );
-  mtree->Branch("TauBremsRecoveryEOverPLead"                         ,mTauBremsRecoveryEOverPLead                         ,"TauBremsRecoveryEOverPLead[NTau]/D" );
-  mtree->Branch("TauElectronPreIDOutput"                             ,mTauElectronPreIDOutput                             ,"TauElectronPreIDOutput[NTau]/D" );
-  mtree->Branch("TauElectronPreIDDecision"                           ,mTauElectronPreIDDecision                           ,"TauElectronPreIDDecision[NTau]/D" );
-  mtree->Branch("TauCaloComp"                                        ,mTauCaloComp                                        ,"TauCaloComp[NTau]/D" );
-  mtree->Branch("TauSegComp"                                         ,mTauSegComp                                         ,"TauSegComp[NTau]/D" );
-  mtree->Branch("TauMuonDecision"                                    ,mTauMuonDecision                                    ,"TauMuonDecision[NTau]/D" );
+  mtree->Branch("TauLeadPFChargedHadrCandsignedSipt"                 ,mTauLeadPFChargedHadrCandsignedSipt                 ,"TauLeadPFChargedHadrCandsignedSipt[NTau]/D");
+  mtree->Branch("TauIsoPFChargedHadrCandsPtSum"                      ,mTauIsoPFChargedHadrCandsPtSum                      ,"TauIsoPFChargedHadrCandsPtSum[NTau]/D");
+  mtree->Branch("TauIsoPFGammaCandsEtSum"                            ,mTauIsoPFGammaCandsEtSum                            ,"TauIsoPFGammaCandsEtSum[NTau]/D");
+  mtree->Branch("TauMaximumHCALPFClusterEt"                          ,mTauMaximumHCALPFClusterEt                          ,"TauMaximumHCALPFClusterEt[NTau]/D");
+  mtree->Branch("TauEmFraction"                                      ,mTauEmFraction                                      ,"TauEmFraction[NTau]/D");
+  mtree->Branch("TauHcalTotOverPLead"                                ,mTauHcalTotOverPLead                                ,"TauHcalTotOverPLead[NTau]/D");
+  mtree->Branch("TauHcalMaxOverPLead"                                ,mTauHcalMaxOverPLead                                ,"TauHcalMaxOverPLead[NTau]/D");
+  mtree->Branch("TauHcal3x3OverPLead"                                ,mTauHcal3x3OverPLead                                ,"TauHcal3x3OverPLead[NTau]/D");
+  mtree->Branch("TauEcalStripSumEOverPLead"                          ,mTauEcalStripSumEOverPLead                          ,"TauEcalStripSumEOverPLead[NTau]/D");
+  mtree->Branch("TauBremsRecoveryEOverPLead"                         ,mTauBremsRecoveryEOverPLead                         ,"TauBremsRecoveryEOverPLead[NTau]/D");
+  mtree->Branch("TauElectronPreIDOutput"                             ,mTauElectronPreIDOutput                             ,"TauElectronPreIDOutput[NTau]/D");
+  mtree->Branch("TauElectronPreIDDecision"                           ,mTauElectronPreIDDecision                           ,"TauElectronPreIDDecision[NTau]/D");
+  mtree->Branch("TauCaloComp"                                        ,mTauCaloComp                                        ,"TauCaloComp[NTau]/D");
+  mtree->Branch("TauSegComp"                                         ,mTauSegComp                                         ,"TauSegComp[NTau]/D");
+  mtree->Branch("TauMuonDecision"                                    ,mTauMuonDecision                                    ,"TauMuonDecision[NTau]/D");
   //
-  mtree->Branch("TausignalPFChargedHadrCands"                        ,mTausignalPFChargedHadrCands                        ,"TausignalPFChargedHadrCands[NTau]/D" );
+  mtree->Branch("TausignalPFChargedHadrCands"                        ,mTausignalPFChargedHadrCands                        ,"TausignalPFChargedHadrCands[NTau]/D");
   mtree->Branch("TausignalPFGammaCands"                              ,mTausignalPFGammaCands                              ,"TausignalPFGammaCands[NTau]/D" );
   //
   mtree->Branch("TauDisAgainstElectronDeadECAL"                      ,mTauDisAgainstElectronDeadECAL                      ,"TauDisAgainstElectronDeadECAL[NTau]/D");
@@ -3260,8 +3779,9 @@ void NtupleAnalyzer::beginJob()
   mtree->Branch("TauJetEta"                                          ,mTauJetEta                                          ,"TauJetEta[NTau]/D"); 
   mtree->Branch("TauJetPhi"                                          ,mTauJetPhi                                          ,"TauJetPhi[NTau]/D");
   
-  
+  ///-------------------------------------------------------------------------- 
   /// PF Taus
+  ///--------------------------------------------------------------------------
   mtree->Branch("NPFTau"                                             ,&mNPFTau                                            ,"NPFTau/I");
   mtree->Branch("PFTauE"                                             ,mPFTauE                                             ,"PFTauE[NPFTau]/D" );
   mtree->Branch("PFTauPt"                                            ,mPFTauPt                                            ,"PFTauPt[NPFTau]/D" );
@@ -3349,153 +3869,152 @@ void NtupleAnalyzer::beginJob()
   mtree->Branch("PFTauJetEta"                                        ,mPFTauJetEta                                        ,"PFTauJetEta[NPFTau]/D"); 
   mtree->Branch("PFTauJetPhi"                                        ,mPFTauJetPhi                                        ,"PFTauJetPhi[NPFTau]/D");
   
-  
+  ///-------------------------------------------------------------------------- 
   /// Photons
-  mtree->Branch("NPhot"             ,&mNPhot            ,"NPhot/I");
-  mtree->Branch("PhotE"             ,mPhotE             ,"PhotE[NPhot]/D" );
-  mtree->Branch("PhotPt"            ,mPhotPt            ,"PhotPt[NPhot]/D" );
-  mtree->Branch("PhotPx"            ,mPhotPx            ,"PhotPx[NPhot]/D" );
-  mtree->Branch("PhotPy"            ,mPhotPy            ,"PhotPy[NPhot]/D" );
-  mtree->Branch("PhotPz"            ,mPhotPz            ,"PhotPz[NPhot]/D" );
-  mtree->Branch("PhotEta"           ,mPhotEta           ,"PhotEta[NPhot]/D" );
-  mtree->Branch("PhotPhi"           ,mPhotPhi           ,"PhotPhi[NPhot]/D" );
-  mtree->Branch("PhotE1x5"          ,mPhotE1x5          ,"PhotE1x5[NPhot]/D" );
-  mtree->Branch("PhotE2x5"          ,mPhotE2x5          ,"PhotE2x5[NPhot]/D" );
-  mtree->Branch("PhotE5x5"          ,mPhotE5x5          ,"PhotE5x5[NPhot]/D" );
-  mtree->Branch("PhotSigEta"        ,mPhotSigEta        ,"PhotSigEta[NPhot]/D" );
-  mtree->Branch("PhotSigPhi"        ,mPhotSigPhi        ,"PhotSigPhi[NPhot]/D" );
-  mtree->Branch("PhotEcalIso04"     ,mPhotEcalIso04     ,"PhotEcalIso04[NPhot]/D" );
-  mtree->Branch("PhotHcalIso04"     ,mPhotHcalIso04     ,"PhotHcalIso04[NPhot]/D" );
-  mtree->Branch("PhotTrackIso04"    ,mPhotTrackIso04    ,"PhotTrackIso04[NPhot]/D" );
-  mtree->Branch("PhotHasPixSeed"    ,mPhotHasPixSeed    ,"PhotHasPixSeed[NPhot]/D" );
-  mtree->Branch("PhotIsPhot"        ,mPhotIsPhot        ,"PhotIsPhot[NPhot]/D" );
-  	
+  ///--------------------------------------------------------------------------
+  mtree->Branch("NPhot"                                              ,&mNPhot                                             ,"NPhot/I");
+  mtree->Branch("PhotE"                                              ,mPhotE                                              ,"PhotE[NPhot]/D");
+  mtree->Branch("PhotPt"                                             ,mPhotPt                                             ,"PhotPt[NPhot]/D");
+  mtree->Branch("PhotPx"                                             ,mPhotPx                                             ,"PhotPx[NPhot]/D");
+  mtree->Branch("PhotPy"                                             ,mPhotPy                                             ,"PhotPy[NPhot]/D");
+  mtree->Branch("PhotPz"                                             ,mPhotPz                                             ,"PhotPz[NPhot]/D");
+  mtree->Branch("PhotEta"                                            ,mPhotEta                                            ,"PhotEta[NPhot]/D");
+  mtree->Branch("PhotPhi"                                            ,mPhotPhi                                            ,"PhotPhi[NPhot]/D");
+  mtree->Branch("PhotE1x5"                                           ,mPhotE1x5                                           ,"PhotE1x5[NPhot]/D");
+  mtree->Branch("PhotE2x5"                                           ,mPhotE2x5                                           ,"PhotE2x5[NPhot]/D");
+  mtree->Branch("PhotE5x5"                                           ,mPhotE5x5                                           ,"PhotE5x5[NPhot]/D");
+  mtree->Branch("PhotSigEta"                                         ,mPhotSigEta                                         ,"PhotSigEta[NPhot]/D");
+  mtree->Branch("PhotSigPhi"                                         ,mPhotSigPhi                                         ,"PhotSigPhi[NPhot]/D");
+  mtree->Branch("PhotEcalIso04"                                      ,mPhotEcalIso04                                      ,"PhotEcalIso04[NPhot]/D");
+  mtree->Branch("PhotHcalIso04"                                      ,mPhotHcalIso04                                      ,"PhotHcalIso04[NPhot]/D");
+  mtree->Branch("PhotTrackIso04"                                     ,mPhotTrackIso04                                     ,"PhotTrackIso04[NPhot]/D");
+  mtree->Branch("PhotHasPixSeed"                                     ,mPhotHasPixSeed                                     ,"PhotHasPixSeed[NPhot]/D");
+  mtree->Branch("PhotIsPhot"                                         ,mPhotIsPhot                                         ,"PhotIsPhot[NPhot]/D");
   
-  /// Primary Vertices
-  mtree->Branch("NPV"         ,&mNPV         ,"NPV/I");
-  mtree->Branch("PVx"         ,mPVx          ,"PVx[NPV]/D" );
-  mtree->Branch("PVy"         ,mPVy          ,"PVy[NPV]/D" );
-  mtree->Branch("PVz"         ,mPVz          ,"PVz[NPV]/D" );
-  mtree->Branch("PVchi2"      ,mPVchi2       ,"PVchi2[NPV]/D" );
-  mtree->Branch("PVndof"      ,mPVndof       ,"PVndof[NPV]/D" );
-  mtree->Branch("PVntracks"   ,mPVntracks    ,"PVntracks[NPV]/I" );
+  ///-------------------------------------------------------------------------- 
+  /// Primiry vertices
+  ///--------------------------------------------------------------------------
+  mtree->Branch("NPV"                                                ,&mNPV                                               ,"NPV/I");
+  mtree->Branch("PVx"                                                ,mPVx                                                ,"PVx[NPV]/D");
+  mtree->Branch("PVy"                                                ,mPVy                                                ,"PVy[NPV]/D");
+  mtree->Branch("PVz"                                                ,mPVz                                                ,"PVz[NPV]/D");
+  mtree->Branch("PVchi2"                                             ,mPVchi2                                             ,"PVchi2[NPV]/D");
+  mtree->Branch("PVndof"                                             ,mPVndof                                             ,"PVndof[NPV]/D");
+  mtree->Branch("PVntracks"                                          ,mPVntracks                                          ,"PVntracks[NPV]/I");
   
+  ///-------------------------------------------------------------------------- 
+  /// Gen information
+  ///--------------------------------------------------------------------------
   if(isMCTag){
-    /// Gen Particle
-    mtree->Branch("NGenPar"        ,&mNGenPar     , "NGenPar/I" );
-    mtree->Branch("GenParId"       ,mGenParId     , "GenParId[NGenPar]/I");
-    mtree->Branch("GenParStatus"   ,mGenParStatus , "GenParStatus[NGenPar]/I");
-    mtree->Branch("GenParE"        ,mGenParE      , "GenParE[NGenPar]/D");
-    mtree->Branch("GenParPx"       ,mGenParPx     , "GenParPx[NGenPar]/D");
-    mtree->Branch("GenParPy"       ,mGenParPy     , "GenParPy[NGenPar]/D");
-    mtree->Branch("GenParPz"       ,mGenParPz     , "GenParPz[NGenPar]/D");
-    mtree->Branch("GenParEta"      ,mGenParEta    , "GenParEta[NGenPar]/D");
-    mtree->Branch("GenParPhi"      ,mGenParPhi    , "GenParPhi[NGenPar]/D");
-    mtree->Branch("GenParCharge"   ,mGenParCharge , "GenParCharge[NGenPar]/I");
-    mtree->Branch("GenParPt"       ,mGenParPt     , "GenParPt[NGenPar]/D");
-    mtree->Branch("GenParMass"     ,mGenParMass   , "GenParMass[NGenPar]/D");
-    mtree->Branch("GenParDoughterOf"   ,mGenParDoughterOf , "GenParDoughterOf[NGenPar]/I");
-    
-    mtree->Branch("GenParMother1"   ,mGenParMother1 , "GenParMother1[NGenPar]/I");
-    mtree->Branch("GenParMother2"   ,mGenParMother2 , "GenParMother2[NGenPar]/I");	
-    
-    mtree->Branch("GenScale", &mGenScale,     "GenScale/D");
-    mtree->Branch("PDFx1",    &mPdfx1,        "PDFx1/D");
-    mtree->Branch("PDFx2",    &mPdfx2,        "PDFx2/D");
-    mtree->Branch("PDFf1",    &mPdff1,        "PDFf1/I");
-    mtree->Branch("PDFf2",    &mPdff2,        "PDFf2/I");
-    mtree->Branch("PDFscale", &mPdfscale,     "PDFscale/D");
-    mtree->Branch("PDFpdf1",  &mPdfpdf1,      "PDFpdf1/D");
-    mtree->Branch("PDFpdf2",  &mPdfpdf2,      "PDFpdf2/D");
-    
-    mtree->Branch("WTauDecayMode"     ,&mWTauDecayMode  ,"WTauDecayMode/I");
-    mtree->Branch("WTauN"             ,&mWTauN          ,"WTauN/I" );
-    mtree->Branch("WTauDecayId"       ,mWTauDecayId     ,"WTauDecayId[WTauN]/I");
-    mtree->Branch("WTauDecayStatus"   ,mWTauDecayStatus ,"WTauDecayStatus[WTauN]/I");
-    mtree->Branch("WTauDecayPt"       ,mWTauDecayPt     ,"WTauDecayPt[WTauN]/D");
-    mtree->Branch("WTauDecayEta"      ,mWTauDecayEta    ,"WTauDecayEta[WTauN]/D");
-    mtree->Branch("WTauDecayPhi"      ,mWTauDecayPhi    ,"WTauDecayPhi[WTauN]/D"); 
-    mtree->Branch("WTauDecayMass"     ,mWTauDecayMass   ,"WTauDecayMass[WTauN]/D");
-    
+    mtree->Branch("NGenPar"                                          ,&mNGenPar                                           ,"NGenPar/I");
+    mtree->Branch("GenParId"                                         ,mGenParId                                           ,"GenParId[NGenPar]/I");
+    mtree->Branch("GenParStatus"                                     ,mGenParStatus                                       ,"GenParStatus[NGenPar]/I");
+    mtree->Branch("GenParE"                                          ,mGenParE                                            ,"GenParE[NGenPar]/D");
+    mtree->Branch("GenParPx"                                         ,mGenParPx                                           ,"GenParPx[NGenPar]/D");
+    mtree->Branch("GenParPy"                                         ,mGenParPy                                           ,"GenParPy[NGenPar]/D");
+    mtree->Branch("GenParPz"                                         ,mGenParPz                                           ,"GenParPz[NGenPar]/D");
+    mtree->Branch("GenParEta"                                        ,mGenParEta                                          ,"GenParEta[NGenPar]/D");
+    mtree->Branch("GenParPhi"                                        ,mGenParPhi                                          ,"GenParPhi[NGenPar]/D");
+    mtree->Branch("GenParCharge"                                     ,mGenParCharge                                       ,"GenParCharge[NGenPar]/I");
+    mtree->Branch("GenParPt"                                         ,mGenParPt                                           ,"GenParPt[NGenPar]/D");
+    mtree->Branch("GenParMass"                                       ,mGenParMass                                         ,"GenParMass[NGenPar]/D");
+    mtree->Branch("GenParDoughterOf"                                 ,mGenParDoughterOf                                   ,"GenParDoughterOf[NGenPar]/I");
+    mtree->Branch("GenParMother1"                                    ,mGenParMother1                                      ,"GenParMother1[NGenPar]/I");
+    mtree->Branch("GenParMother2"                                    ,mGenParMother2                                      ,"GenParMother2[NGenPar]/I");	
+    mtree->Branch("GenScale"                                         ,&mGenScale                                          ,"GenScale/D");
+    // PDF
+    mtree->Branch("PDFx1"                                            ,&mPdfx1                                             ,"PDFx1/D");
+    mtree->Branch("PDFx2"                                            ,&mPdfx2                                             ,"PDFx2/D");
+    mtree->Branch("PDFf1"                                            ,&mPdff1                                             ,"PDFf1/I");
+    mtree->Branch("PDFf2"                                            ,&mPdff2                                             ,"PDFf2/I");
+    mtree->Branch("PDFscale"                                         ,&mPdfscale                                          ,"PDFscale/D");
+    mtree->Branch("PDFpdf1"                                          ,&mPdfpdf1                                           ,"PDFpdf1/D");
+    mtree->Branch("PDFpdf2"                                          ,&mPdfpdf2                                           ,"PDFpdf2/D");
+    // W-Decay mode
+    mtree->Branch("WTauDecayMode"                                    ,&mWTauDecayMode                                     ,"WTauDecayMode/I");
+    mtree->Branch("WTauN"                                            ,&mWTauN                                             ,"WTauN/I" );
+    mtree->Branch("WTauDecayId"                                      ,mWTauDecayId                                        ,"WTauDecayId[WTauN]/I");
+    mtree->Branch("WTauDecayStatus"                                  ,mWTauDecayStatus                                    ,"WTauDecayStatus[WTauN]/I");
+    mtree->Branch("WTauDecayPt"                                      ,mWTauDecayPt                                        ,"WTauDecayPt[WTauN]/D");
+    mtree->Branch("WTauDecayEta"                                     ,mWTauDecayEta                                       ,"WTauDecayEta[WTauN]/D");
+    mtree->Branch("WTauDecayPhi"                                     ,mWTauDecayPhi                                       ,"WTauDecayPhi[WTauN]/D"); 
+    mtree->Branch("WTauDecayMass"                                    ,mWTauDecayMass                                      ,"WTauDecayMass[WTauN]/D");
+    // PDF
+    if(isSignalTag==1.){
+      mtree->Branch("NPDFWeights1"                                   ,&mNPdfWeights1                                      ,"NPDFWeights1/I");
+      mtree->Branch("PDFWeights1"                                    ,mPdfWeights1                                        ,"PDFWeights1[NPDFWeights1]/D");
+    }
+    if(isSignalTag==2.){
+      mtree->Branch("NPDFWeights"                                    ,&mNPdfWeights                                       ,"NPDFWeights/I");
+      mtree->Branch("PDFWeights"                                     ,mPdfWeights                                         ,"PDFWeights[NPDFWeights]/D");
+    }
+    if(isSignalTag==3.){
+      mtree->Branch("NPDFWeights"                                    ,&mNPdfWeights                                       ,"NPDFWeights/I");
+      mtree->Branch("PDFWeights"                                     ,mPdfWeights                                         ,"PDFWeights[NPDFWeights]/D");
+    }
   }
   
-  if(isSignalTag==1.)
-    {
-      mtree->Branch("NPDFWeights1", &mNPdfWeights1, "NPDFWeights1/I");
-      mtree->Branch("PDFWeights1",  mPdfWeights1,   "PDFWeights1[NPDFWeights1]/D");
-    }
-  if(isSignalTag==2.)
-    {
-      mtree->Branch("NPDFWeights", &mNPdfWeights, "NPDFWeights/I");
-      mtree->Branch("PDFWeights",  mPdfWeights,   "PDFWeights[NPDFWeights]/D");
-    }
-  if(isSignalTag==3.)
-    {
-      mtree->Branch("NPDFWeights", &mNPdfWeights, "NPDFWeights/I");
-      mtree->Branch("PDFWeights",  mPdfWeights,   "PDFWeights[NPDFWeights]/D");
-    }
-  
-  
+  ///-------------------------------------------------------------------------- 
   /// HLT
-  mtree->Branch("nHLT"           ,&nHLT          ,"nHLT/I");
-  mtree->Branch("HLTArray"       ,HLTArray       ,"HLTArray[nHLT]/I");
-  mtree->Branch("HLTArray2"      ,HLTArray2      ,"HLTArray2[100]/I");
-  mtree->Branch("HLTNames"       ,trgnm          ,"HLTNames/C");
-  mtree->Branch("HLTPreScale2"   ,HLTPreScale2   ,"HLTPreScale2[100]/I");
+  ///--------------------------------------------------------------------------
+  mtree->Branch("nHLT"                                               ,&nHLT                                               ,"nHLT/I");
+  mtree->Branch("HLTArray"                                           ,HLTArray                                            ,"HLTArray[nHLT]/I");
+  mtree->Branch("HLTArray2"                                          ,HLTArray2                                           ,"HLTArray2[100]/I");
+  mtree->Branch("HLTNames"                                           ,trgnm                                               ,"HLTNames/C");
+  mtree->Branch("HLTPreScale2"                                       ,HLTPreScale2                                        ,"HLTPreScale2[100]/I");
   
-  mtree->Branch("nNoiseFlag"     ,&nNoiseFlag    ,"nNoiseFlag/I");
-  mtree->Branch("NoiseFlag"      ,NoiseFlag      ,"NoiseFlag[nNoiseFlag]/I"); //Before it was [10]!!
+  ///-------------------------------------------------------------------------- 
+  /// Noise flags
+  ///--------------------------------------------------------------------------
+  mtree->Branch("nNoiseFlag"                                         ,&nNoiseFlag                                         ,"nNoiseFlag/I");
+  mtree->Branch("NoiseFlag"                                          ,NoiseFlag                                           ,"NoiseFlag[nNoiseFlag]/I");
+  mtree->Branch("HCFlag"                                             ,&flg_hnoise                                         ,"HCFlag/I");
+  mtree->Branch("HFFlag"                                             ,&flg_hfbadhit                                       ,"HFFlag/I");
+  mtree->Branch("ESFlag"                                             ,&flg_ecalspike                                      ,"ESFlag/I");
+  mtree->Branch("BeamHaloTight"                                      ,&mbeamHaloTight                                     ,"BeamHaloTight/I");
+  mtree->Branch("BeamHaloLoose"                                      ,&mbeamHaloLoose                                     ,"BeamHaloLoose/I");
+  mtree->Branch("SumTrackPt"                                         ,&mSumTrackPt                                        ,"SumTrackPt/D");
   
-  
+  ///-------------------------------------------------------------------------- 
+  /// L1
+  ///--------------------------------------------------------------------------
   if(!isMCTag){
     /// L1
-    mtree->Branch("nL1"        ,&nL1      ,"nL1/I");
-    mtree->Branch("L1Array"    ,L1Array   ,"L1Array[nL1]/I");
+    mtree->Branch("nL1"                                              ,&nL1                                                ,"nL1/I");
+    mtree->Branch("L1Array"                                          ,L1Array                                             ,"L1Array[nL1]/I");
     
     /// L1T
-    mtree->Branch("nL1T"       ,&nL1T     ,"nL1T/I");
-    mtree->Branch("L1TArray"   ,L1TArray  ,"L1TArray[nL1T]/I");
+    mtree->Branch("nL1T"                                             ,&nL1T                                               ,"nL1T/I");
+    mtree->Branch("L1TArray"                                         ,L1TArray                                            ,"L1TArray[nL1T]/I");
   }
   
-  
-  ///Flags
-  mtree->Branch("HCFlag"           ,&flg_hnoise     , "HCFlag/I");
-  mtree->Branch("HFFlag"           ,&flg_hfbadhit   , "HFFlag/I");
-  mtree->Branch("ESFlag"           ,&flg_ecalspike  , "ESFlag/I");
-  mtree->Branch("BeamHaloTight"    ,&mbeamHaloTight  , "BeamHaloTight/I");
-  mtree->Branch("BeamHaloLoose"    ,&mbeamHaloLoose  , "BeamHaloLoose/I");
-  
-  mtree->Branch("SumTrackPt"    ,&mSumTrackPt  , "SumTrackPt/D");
-  
-  
-  ///TIV
-  mtree->Branch("TIV_N",&tivN,"TIV_N/I");
-  mtree->Branch("TIV",TIV,"TIV[TIV_N]/F");
-  mtree->Branch("TIV_pt",TIV_pt,"TIV_pt[TIV_N]/F");
-  mtree->Branch("TIV_px",TIV_px,"TIV_px[TIV_N]/F");
-  mtree->Branch("TIV_py",TIV_py,"TIV_py[TIV_N]/F");
-  mtree->Branch("TIV_pz",TIV_pz,"TIV_pz[TIV_N]/F");
-  mtree->Branch("TIV_phi",TIV_phi,"TIV_phi[TIV_N]/F");
-  mtree->Branch("TIV_eta",TIV_eta,"TIV_eta[TIV_N]/F");
-  mtree->Branch("TIV_dsz",TIV_dsz,"TIV_dsz[TIV_N]/F");
-  mtree->Branch("TIV_dxy",TIV_dxy,"TIV_dxy[TIV_N]/F");
-  mtree->Branch("TIV_d0",TIV_d0,"TIV_d0[TIV_N]/F");
-  mtree->Branch("TIV_dz",TIV_dz,"TIV_dz[TIV_N]/F");
-  
-  mtree->Branch("TIV_dsz_corr",TIV_dsz_corr,"TIV_dsz_corr[TIV_N]/F");
-  mtree->Branch("TIV_dxy_corr",TIV_dxy_corr,"TIV_dxy_corr[TIV_N]/F");
-  mtree->Branch("TIV_d0_corr",TIV_d0_corr,"TIV_d0_corr[TIV_N]/F");
-  mtree->Branch("TIV_dz_corr",TIV_dz_corr,"TIV_dz_corr[TIV_N]/F");
-  mtree->Branch("TIV_dR",TIV_dR,"TIV_dR[TIV_N]/F");
-  mtree->Branch("TIV_lead",TIV_lead,"TIV_lead[TIV_N]/I");
-  
-  mtree->Branch("LowTIV",&LowTIV,"LowTIV/F");
+  ///-------------------------------------------------------------------------- 
+  /// TIV
+  ///--------------------------------------------------------------------------
+  mtree->Branch("TIV_N"                                              ,&tivN                                               ,"TIV_N/I");
+  mtree->Branch("TIV"                                                ,TIV                                                 ,"TIV[TIV_N]/F");
+  mtree->Branch("TIV_pt"                                             ,TIV_pt                                              ,"TIV_pt[TIV_N]/F");
+  mtree->Branch("TIV_px"                                             ,TIV_px                                              ,"TIV_px[TIV_N]/F");
+  mtree->Branch("TIV_py"                                             ,TIV_py                                              ,"TIV_py[TIV_N]/F");
+  mtree->Branch("TIV_pz"                                             ,TIV_pz                                              ,"TIV_pz[TIV_N]/F");
+  mtree->Branch("TIV_phi"                                            ,TIV_phi                                             ,"TIV_phi[TIV_N]/F");
+  mtree->Branch("TIV_eta"                                            ,TIV_eta                                             ,"TIV_eta[TIV_N]/F");
+  mtree->Branch("TIV_dsz"                                            ,TIV_dsz                                             ,"TIV_dsz[TIV_N]/F");
+  mtree->Branch("TIV_dxy"                                            ,TIV_dxy                                             ,"TIV_dxy[TIV_N]/F");
+  mtree->Branch("TIV_d0"                                             ,TIV_d0                                              ,"TIV_d0[TIV_N]/F");
+  mtree->Branch("TIV_dz"                                             ,TIV_dz                                              ,"TIV_dz[TIV_N]/F");
+  mtree->Branch("TIV_dsz_corr"                                       ,TIV_dsz_corr                                        ,"TIV_dsz_corr[TIV_N]/F");
+  mtree->Branch("TIV_dxy_corr"                                       ,TIV_dxy_corr                                        ,"TIV_dxy_corr[TIV_N]/F");
+  mtree->Branch("TIV_d0_corr"                                        ,TIV_d0_corr                                         ,"TIV_d0_corr[TIV_N]/F");
+  mtree->Branch("TIV_dz_corr"                                        ,TIV_dz_corr                                         ,"TIV_dz_corr[TIV_N]/F");
+  mtree->Branch("TIV_dR"                                             ,TIV_dR                                              ,"TIV_dR[TIV_N]/F");
+  mtree->Branch("TIV_lead"                                           ,TIV_lead                                            ,"TIV_lead[TIV_N]/I");
+  mtree->Branch("LowTIV"                                             ,&LowTIV                                             ,"LowTIV/F");
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
 void NtupleAnalyzer::endJob() 
 {
-
 }
 
 
