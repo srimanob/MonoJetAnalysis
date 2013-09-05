@@ -13,6 +13,7 @@
 <use   name="FWCore/PluginManager"/>
 <use   name="FWCore/ServiceRegistry"/>
 <use   name="clhep"/>
+<use   name="rootcintex" />
 <use   name="root"/>
 <use   name="HLTrigger/HLTcore"/>
 <use   name="L1Trigger/GlobalTriggerAnalyzer"/>
@@ -24,5 +25,5 @@
 <use   name="CondFormats/EcalObjects"/>
 <use   name="CondFormats/JetMETObjects"/>
 <use   name="RecoEgamma/EgammaTools"/>
+<use   name="EGamma/EGammaAnalysisTools"/>
 <use   name="lhapdf"/> 
-
