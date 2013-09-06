@@ -1,10 +1,20 @@
-Monojet Analysis package
+Monojet Analysis Package
 ===============
 
 For monojet analysis
 
 How to checkout the package
 --------------
+<pre><code>cmsrel CMSSW_5_3_11_patch6
+cd CMSSW_5_3_11_patch6/src
+cmsenv
+git init
+git clone https://github.com/srimanob/MonoJetAnalysis
+git checkout tags/V53X_V06D_01
+cvs co -r V00-03-04 -d CMGTools/External UserCode/CMG/CMGTools/External
+cvs co -r V00-00-31_patch1 -d EGamma/EGammaAnalysisTools UserCode/EGamma/EGammaAnalysisTools
+scram b
+</code></pre>
 
 How to run ntuple maker
 --------------
