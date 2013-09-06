@@ -101,36 +101,57 @@ namespace Operation
   /// ----------------------------------------------
   /// PFMuon Tight Selection
   bool PFMuonTightCuts(EventData& ev , int i, double pt, double eta){
-    bool  pass    = false;
-    //float dxy     = ev.PFMuondxy(i);
-    //float dz      = ev.PFMuondz(i);
-    bool  passIso = false;
-    bool  passKin = false;
-    //bool  passVtx = false;
-    bool  passID  = false;
-    
-    float Iso = 0.0;
-    Iso = (ev.PFMuonNeutralHadronIso(i) + ev.PFMuonChargedHadronIso(i) + ev.PFMuonPhotonIso(i))/ev.PFMuonPt(i);
-    
-    if(Iso <  0.2 ) 
+    /*
+      bool  pass    = false;
+      bool  passIso = false;
+      bool  passKin = false;
+      //bool  passVtx = false;
+      bool  passID  = false;
+      
+      float Iso = 0.0;
+      Iso = (ev.PFMuonNeutralHadronIso(i) + ev.PFMuonChargedHadronIso(i) + ev.PFMuonPhotonIso(i))/ev.PFMuonPt(i);
+      
+      if(Iso <  0.2 ) 
       passIso = true;
-    if(ev.PFMuonPt(i) > pt && fabs(ev.PFMuonEta(i)) < eta )  
+      if(ev.PFMuonPt(i) > pt && fabs(ev.PFMuonEta(i)) < eta )  
+      passKin = true;
+      
+      //float dxy     = ev.PFMuondxy(i);
+      //float dz      = ev.PFMuondz(i);
+      //if(fabs(dxy) < 0.02  && fabs(dz) < 1.0 ) passVtx = true;
+      //if(ev.PFMuonisGMPT(i) && ev.PFMuonnValidHits(i) >= 11 ) passID = true;
+      
+      if( ev.PFMuonIsTracker(i)==1 && 
+      ev.PFMuonIsGlobal(i)==1 && 
+      ev.PFMuonNumOfMatches(i)>1  && 
+      ev.PFMuonCombChi2Norm(i) < 10.0  &&
+      ev.PFMuonTrkDxy(i)< 0.2 && 
+      ev.PFMuonTrkValidHits(i) > 10 && 
+      ev.PFMuonTrkNumOfValidPixHits(i) > 0  &&  
+      ev.PFMuonStandValidHits(i) >0 )  
+      passID = true; 
+      
+      if(passKin && passIso && passID) 
+      pass = true;
+      
+      return pass;
+    */
+    bool  pass    = false;
+    bool  passID  = false;
+    bool  passKin = false;
+    bool  passIso = false;
+    
+    if(ev.PFMuonIsTight(i)>0)
+      passID = true;
+    
+    if(ev.PFMuonPt(i)>pt && fabs(ev.PFMuonEta(i))<eta)
       passKin = true;
     
-    //if(fabs(dxy) < 0.02  && fabs(dz) < 1.0 ) passVtx = true;
-    //if(ev.PFMuonisGMPT(i) && ev.PFMuonnValidHits(i) >= 11 ) passID = true;
+    float Iso = (ev.PFMuonR04ChargedHadronPt(i) + std::max(0., ev.PFMuonR04NeutralHadronEt(i) + ev.PFMuonR04PhotonEt(i) - 0.5*ev.PFMuonR04PUPt(i)))/ev.PFMuonPt(i);
+    if(Iso <  0.12)
+      passIso = true;
     
-    if( ev.PFMuonIsTracker(i)==1 && 
-	ev.PFMuonIsGlobal(i)==1 && 
-	ev.PFMuonNumOfMatches(i)>1  && 
-	ev.PFMuonCombChi2Norm(i) < 10.0  &&
-	ev.PFMuonTrkDxy(i)< 0.2 && 
-	ev.PFMuonTrkValidHits(i) > 10 && 
-	ev.PFMuonTrkNumOfValidPixHits(i) > 0  &&  
-	ev.PFMuonStandValidHits(i) >0 )  
-      passID = true; 
-    
-    if(passKin && passIso && passID) 
+    if(passID && passKin && passIso) 
       pass = true;
     
     return pass;
@@ -140,17 +161,38 @@ namespace Operation
   /// ----------------------------------------------
   /// PFMuon Loose Selection 
   bool PFMuonLooseCuts(EventData& ev , int i, double pt, double eta){
+    /*
+      bool  pass    = false;
+      bool  passKin = false;
+      bool  passID  = false;
+      
+      if(ev.PFMuonPt(i) > pt && fabs(ev.PFMuonEta(i)) < eta )  
+      passKin = true;
+      
+      if( ev.PFMuonIsTracker(i)==1 || ev.PFMuonIsGlobal(i)==1 )  
+      passID = true; 
+      
+      if(passKin && passID) 
+      pass = true;
+      
+      return pass;
+    */
     bool  pass    = false;
-    bool  passKin = false;
     bool  passID  = false;
+    bool  passKin = false;
+    bool  passIso = false;
     
-    if(ev.PFMuonPt(i) > pt && fabs(ev.PFMuonEta(i)) < eta )  
+    if(ev.PFMuonIsLoose(i)>0)
+      passID = true;
+    
+    if(ev.PFMuonPt(i)>pt && fabs(ev.PFMuonEta(i))<eta)
       passKin = true;
     
-    if( ev.PFMuonIsTracker(i)==1 || ev.PFMuonIsGlobal(i)==1 )  
-      passID = true; 
+    float Iso = (ev.PFMuonR04ChargedHadronPt(i) + std::max(0., ev.PFMuonR04NeutralHadronEt(i) + ev.PFMuonR04PhotonEt(i) - 0.5*ev.PFMuonR04PUPt(i)))/ev.PFMuonPt(i);
+    if(Iso <  0.20)
+      passIso = true;
     
-    if(passKin && passID) 
+    if(passID && passKin && passIso) 
       pass = true;
     
     return pass;
@@ -160,6 +202,26 @@ namespace Operation
   /// ----------------------------------------------
   /// PFElectron Tight Selection 
   bool PFElecTightCuts(EventData& ev , int i, double pt, double eta){
+    
+    bool  pass    = false;
+    bool  passID  = false;
+    bool  passKin = false;
+    bool  passIso = false;
+    
+    if(ev.PFElecIsTight(i)>0){
+      passID  = true;
+      passIso = true; //Already calculated in EGammaTools
+    }
+    
+    if(ev.PFElecPt(i)>pt && fabs(ev.PFElecEta(i))<eta)
+      passKin = true;
+    
+    if(passID && passKin && passIso) 
+      pass = true;
+    
+    return pass;
+    
+    /*
     // kinematic and fiducial
     float cutE_pt              = pt;
     float cutE_eta             = eta;
@@ -198,32 +260,32 @@ namespace Operation
     
     bool useWP95ID = false;
     
-    /*if(useWP95ID){
+    //if(useWP95ID){
+    //
+    //float cutE_EB_hadem        = 0.15;
+    //float cutE_EE_hadem        = 0.07;
+    //
+    //float cutE_EB_ietaieta     = 0.01;
+    //float cutE_EE_ietaieta     = 0.03;
+    //
+    //float cutE_EB_deta         = 0.007;
+    //float cutE_EE_deta         = 0.01;
+    //
+    //float cutE_EB_dphi         = 0.8;
+    //float cutE_EE_dphi         = 0.7;
+    //
+    //float cutE_dxy             = 0.02;
+    //float cutE_dz              = 1.0;
+    //
+    ////conversion rejection
+    //int cutE_innerhits         = 1;
+    //float cutE_dcot            = 0.02;
+    //float cutE_dist            = 0.02;
       
-    float cutE_EB_hadem        = 0.15;
-    float cutE_EE_hadem        = 0.07;
-    
-    float cutE_EB_ietaieta     = 0.01;
-    float cutE_EE_ietaieta     = 0.03;
-    
-    float cutE_EB_deta         = 0.007;
-    float cutE_EE_deta         = 0.01;
-    
-    float cutE_EB_dphi         = 0.8;
-    float cutE_EE_dphi         = 0.7;
-    
-    float cutE_dxy             = 0.02;
-    float cutE_dz              = 1.0;
-    
-    //conversion rejection
-    int cutE_innerhits         = 1;
-    float cutE_dcot            = 0.02;
-    float cutE_dist            = 0.02;
-    
-    //PF ID
-    float cutE_EB_combiso_PF   = 0.2;
-    //float cutE_EE_combiso_PF   = 0.11;
-    }*/
+    ////PF ID
+    //float cutE_EB_combiso_PF   = 0.2;
+    ////float cutE_EE_combiso_PF   = 0.11;
+    //}
 
     bool pass      = false;
     bool passID    = false;
@@ -277,13 +339,32 @@ namespace Operation
     if(passIso && passID && passCR && passKin && passVtx) pass = true;
     
     return pass;
+    */
   }
   
   
   /// ----------------------------------------------
   /// PFElectron Loose Selection
   bool PFElecVetoCuts(EventData& ev , int i, double pt, double eta){
+
+    bool  pass    = false;
+    bool  passID  = false;
+    bool  passKin = false;
+    bool  passIso = false;
     
+    if(ev.PFElecIsVeto(i)>0){
+      passID  = true;
+      passIso = true; //Already calculated in EGammaTools
+    }
+    
+    if(ev.PFElecPt(i)>pt && fabs(ev.PFElecEta(i))<eta)
+      passKin = true;
+    
+    if(passID && passKin && passIso) 
+      pass = true;
+    
+    return pass;
+    /*
     // kinematic and fiducial
     float cutE_pt              = pt;
     float cutE_eta             = eta;
@@ -355,6 +436,7 @@ namespace Operation
       pass = true;
     
     return pass;
+    */
   }
   
   
@@ -369,8 +451,22 @@ namespace Operation
       send = PFElecTightCuts( ev , i, pt,eta);
     }
     return send;
-  }
+  } 
+
   
+  /// ----------------------------------------------
+  /// PFLepton Loose Selection 
+  bool PFLepLooseCuts(EventData& ev , int i, double pt, double eta){
+    bool send=false;
+    if(ev.LepType()=="m" ){
+      send = PFMuonLooseCuts( ev , i, pt, eta);  
+    }
+    else if(ev.LepType()=="e"){
+      send = PFElecVetoCuts( ev , i, pt,eta);
+    }
+    return send;
+  }
+
   
   /// ----------------------------------------------
   /// Isolated Muon Selection
@@ -441,7 +537,7 @@ namespace Operation
   
   
   /// ----------------------------------------------
-  /// MET+mu
+  /// MET exclude all muons
   double  MetLepPt(double MetPx , double MetPy , EventData & ev){
     double Metx = MetPx;
     double Mety = MetPy;
@@ -452,6 +548,23 @@ namespace Operation
 	Metx =  Metx + ev.PFLepPx(i);
 	Mety =  Mety + ev.PFLepPy(i);
 	//}
+      }
+    }	
+    return sqrt( Metx*Metx + Mety*Mety );
+  }
+
+  
+  /// ----------------------------------------------
+  /// MET exclude tight muons
+  double  MetTightLepPt(double MetPx , double MetPy , EventData & ev){
+    double Metx = MetPx;
+    double Mety = MetPy;
+    if( ev.MetType()>9){  // pf or tc Met
+      for(int i=0; i<ev.NPFLep(); i++ ){
+	if( PFLepTightCuts(ev ,i, 20, 2.1) ){
+	  Metx =  Metx + ev.PFLepPx(i);
+	  Mety =  Mety + ev.PFLepPy(i);
+	}
       }
     }	
     return sqrt( Metx*Metx + Mety*Mety );
@@ -495,6 +608,7 @@ namespace Operation
 	if( ev.PFAK5JetPtCor(i)>ev.SecJetCut() 
 	    && abs(ev.PFAK5JetEta(i))< 4.5
 	    && LepInJet2(i , ev )==false 
+	    && ev.PFAK5JetIDLOOSE(i) > 0
 	    ){
 	  if(njets==ind)send=i;
 	  njets++ ;
@@ -583,13 +697,14 @@ namespace Operation
 	if( ev.PFAK5JetPtCor(i)>ev.SecJetCut() 
 	    && abs(ev.PFAK5JetEta(i)) < 4.5
 	    && LepInJet2(i,ev)==false
+	    && ev.PFAK5JetIDLOOSE(i) > 0
 	    ){
 	  njets++ ;
 	}
       }
     }
     else if(ev.JetType()=="widepf"){
-      int useAlgo = 1;
+      int useAlgo = 0;
       
       if(useAlgo == 0){ //Phat's method
 	//First - count normal NJet
@@ -896,28 +1011,42 @@ namespace Operation
   PrintEvent::~PrintEvent() {}
   
   bool PrintEvent::Process(EventData & ev){
+    //int ixjet1 = JetIndex(0, ev);
+    //int ixjet2 = JetIndex(1, ev);
+    /*
     //if(ev.run()==mRun && ev.lumi()==mLumi && ev.event()==mEvent)
-      {
-	int ixjet1 = JetIndex(0, ev);
-	int ixjet2 = JetIndex(1, ev);
-	if(ixjet1<99 && ixjet2<99){
-	  cout<<"----------------------------"<<endl;
-	  cout<<"Run: "<<ev.run()<<", Lumi: "<<ev.lumi()<<", Event: "<<ev.event()<<endl;
-	  cout<<"----------------------------"<<endl;
-	  cout<<"Jet-1: ind= "<<ixjet1<<" pt= "<<ev.PFAK5JetPtCor(ixjet1)<<" eta= "<<ev.PFAK5JetEta(ixjet1)<<" phi= "<<ev.PFAK5JetPhi(ixjet1)<<endl;
-	  cout<<"       CHEF= "<<ev.PFAK5JetChaHadEngFrac(ixjet1)<<" NHEF= "<<ev.PFAK5JetNeuHadEngFrac(ixjet1)
-	      <<" CEMF= "<<ev.PFAK5JetChaEmEngFrac(ixjet1)<<" NEMF= "<<ev.PFAK5JetNeuEmEngFrac(ixjet1)<<endl;
-	  cout<<"       MuEF= "<<ev.PFAK5JetMuonEng(ixjet1)/ev.PFAK5JetE(ixjet1)
-	      <<" ElecEF= "<<ev.PFAK5JetElecEng(ixjet1)/ev.PFAK5JetE(ixjet1)
-	      <<" PhotEF= "<<ev.PFAK5JetPhotEng(ixjet1)/ev.PFAK5JetE(ixjet1)<<endl;
-	  cout<<"Jet-2: ind= "<<ixjet2<<" pt= "<<ev.PFAK5JetPtCor(ixjet2)<<" eta= "<<ev.PFAK5JetEta(ixjet2)<<" phi= "<<ev.PFAK5JetPhi(ixjet2)<<endl;
-	  cout<<"       CHEF= "<<ev.PFAK5JetChaHadEngFrac(ixjet2)<<" NHEF= "<<ev.PFAK5JetNeuHadEngFrac(ixjet2)
-	      <<" CEMF= "<<ev.PFAK5JetChaEmEngFrac(ixjet2)<<" NEMF= "<<ev.PFAK5JetNeuEmEngFrac(ixjet2)<<endl;
-	  cout<<"       MuEF= "<<ev.PFAK5JetMuonEng(ixjet2)/ev.PFAK5JetE(ixjet2)
-	      <<" ElecEF= "<<ev.PFAK5JetElecEng(ixjet2)/ev.PFAK5JetE(ixjet2)
-	      <<" PhotEF= "<<ev.PFAK5JetPhotEng(ixjet2)/ev.PFAK5JetE(ixjet2)<<endl;	
-	}
-      }
+    {
+    
+    if(ixjet1<99 && ixjet2<99){
+    cout<<"----------------------------"<<endl;
+    cout<<"Run: "<<ev.run()<<", Lumi: "<<ev.lumi()<<", Event: "<<ev.event()<<endl;
+    cout<<"----------------------------"<<endl;
+    cout<<"Jet-1: ind= "<<ixjet1<<" pt= "<<ev.PFAK5JetPtCor(ixjet1)<<" eta= "<<ev.PFAK5JetEta(ixjet1)<<" phi= "<<ev.PFAK5JetPhi(ixjet1)<<endl;
+    cout<<"       CHEF= "<<ev.PFAK5JetChaHadEngFrac(ixjet1)<<" NHEF= "<<ev.PFAK5JetNeuHadEngFrac(ixjet1)
+    <<" CEMF= "<<ev.PFAK5JetChaEmEngFrac(ixjet1)<<" NEMF= "<<ev.PFAK5JetNeuEmEngFrac(ixjet1)<<endl;
+    cout<<"       MuEF= "<<ev.PFAK5JetMuonEng(ixjet1)/ev.PFAK5JetE(ixjet1)
+    <<" ElecEF= "<<ev.PFAK5JetElecEng(ixjet1)/ev.PFAK5JetE(ixjet1)
+    <<" PhotEF= "<<ev.PFAK5JetPhotEng(ixjet1)/ev.PFAK5JetE(ixjet1)<<endl;
+    cout<<"Jet-2: ind= "<<ixjet2<<" pt= "<<ev.PFAK5JetPtCor(ixjet2)<<" eta= "<<ev.PFAK5JetEta(ixjet2)<<" phi= "<<ev.PFAK5JetPhi(ixjet2)<<endl;
+    cout<<"       CHEF= "<<ev.PFAK5JetChaHadEngFrac(ixjet2)<<" NHEF= "<<ev.PFAK5JetNeuHadEngFrac(ixjet2)
+    <<" CEMF= "<<ev.PFAK5JetChaEmEngFrac(ixjet2)<<" NEMF= "<<ev.PFAK5JetNeuEmEngFrac(ixjet2)<<endl;
+    cout<<"       MuEF= "<<ev.PFAK5JetMuonEng(ixjet2)/ev.PFAK5JetE(ixjet2)
+    <<" ElecEF= "<<ev.PFAK5JetElecEng(ixjet2)/ev.PFAK5JetE(ixjet2)
+    <<" PhotEF= "<<ev.PFAK5JetPhotEng(ixjet2)/ev.PFAK5JetE(ixjet2)<<endl;	
+    }
+    }
+    */ 
+
+    Double_t genpt = 0.0;
+    for(int i=0; i<ev.NGenPar(); i++){
+      if(abs(ev.GenParId(i))!=23 || ev.GenParStatus(i)!=3) continue;
+      genpt = ev.GenParPt(i);
+      break;
+    }
+    if(MetLepPt(ev.MetPx(10), ev.MetPy(10), ev) < 0.7*genpt){
+      std::cout<<"MetLepPt = "<<MetLepPt(ev.MetPx(10), ev.MetPy(10), ev)<<", GenPt = "<<genpt<<std::endl;
+      std::cout<<"if(run=="<<ev.run()<<" && lumi=="<<ev.lumi()<<" && event=="<<ev.event()<<") return true;"<<std::endl;
+    }
     return true;
   }
   
@@ -1033,6 +1162,7 @@ namespace Operation
 	  && ev.PFAK5JetChaEmEngFrac(ixjet1) < 0.7
 	  && ev.PFAK5JetNeuEmEngFrac(ixjet1) < 0.7
 	  && ev.PFAK5JetNeuHadEngFrac(ixjet2)< 0.7
+	  && ev.PFAK5JetNeuEmEngFrac(ixjet2) < 0.9
 	  ){
 	send=true;
       }
@@ -1431,14 +1561,131 @@ namespace Operation
   bool GenParExist::Process(EventData & ev){
     bool send = false; 
     for(int i=0; i<ev.NGenPar(); i++){
-      if(abs(ev.GenParId(i) )==mPdgId && ev.GenParStatus(i)==3 ){
+      if(abs(ev.GenParId(i))==mPdgId && ev.GenParStatus(i)==3){
 	send=true;
+	break;
       }
     }
     return send;
   }
   std::ostream& GenParExist::Description(std::ostream &ostrm){
     ostrm << "  Gen PdgID:" << mPdgId << " Exist  :.................";
+    return ostrm;
+  }
+
+  
+  /// ----------------------------------------------
+  /// GenPar Selection Mass window
+  GenParMassWindow::GenParMassWindow(int pdgId, double lowM, double highM) :  mPdgId(pdgId),  mLowM(lowM), mHighM(highM){} 
+  GenParMassWindow::~GenParMassWindow() {}
+  
+  bool GenParMassWindow::Process(EventData & ev){
+    bool send = false; 
+    for(int i=0; i<ev.NGenPar(); i++){
+      if(abs(ev.GenParId(i))==mPdgId && ev.GenParStatus(i)==3){
+        if(ev.GenParMass(i) > mLowM && ev.GenParMass(i) < mHighM){
+          send=true;
+	  break;
+        }
+      }
+    }
+    return send;
+  }
+  std::ostream& GenParMassWindow::Description(std::ostream &ostrm){
+    ostrm << "  Gen PdgID:" << mPdgId << " mass window "<< mLowM << " - "<< mHighM << ":.................";
+    return ostrm;
+  }
+  
+  
+  /// ----------------------------------------------
+  /// GenParZ->mumu
+  GenZmumu::GenZmumu(int pdgId) :  mPdgId(pdgId){} 
+  GenZmumu::~GenZmumu() {}
+  
+  bool GenZmumu::Process(EventData & ev){
+    bool send  = false; 
+    bool posMu = false;
+    bool negMu = false;
+    for(int i=0; i<ev.NGenPar(); i++){
+      if(abs(ev.GenParId(i))==13 && abs(ev.GenParDoughterOf(i))==23){
+	//cout<<"muon :"<<ev.GenParCharge(i)  <<endl;
+	if(ev.GenParCharge(i)>0) posMu = true;
+	if(ev.GenParCharge(i)<0) negMu = true;
+      }
+    }
+    if(posMu && negMu) send=true;
+    return send;
+  }
+  std::ostream& GenZmumu::Description(std::ostream &ostrm){
+    ostrm << "  Gen Zmumu :" << ":.................";
+    return ostrm;
+  }
+
+  
+  /// ----------------------------------------------
+  /// Gen Z PT
+  GenParPt::GenParPt(int pdgId ,  double pt) : mPdgId(pdgId) ,  mPt(pt) {} 
+  GenParPt::~GenParPt() {}
+  
+  bool GenParPt::Process(EventData & ev){
+    bool send = false;	
+    for(int i=0; i<ev.NGenPar(); i++){
+      if(abs(ev.GenParId(i))==mPdgId && ev.GenParStatus(i)==3 && ev.GenParPt(i) > mPt ){
+        send=true;
+	break;
+      }
+    }
+    return send;
+  }
+  std::ostream& GenParPt::Description(std::ostream &ostrm){
+    ostrm << "  Gen pT > :" << mPt << " :.................";
+    return ostrm;
+  }
+
+  
+  /// ----------------------------------------------
+  /// Gen Z PT AND MET
+  GenParPtAndMET::GenParPtAndMET(int pdgId , double genpt , double met) : mPdgId(pdgId) ,  mGenPt(genpt) , mMet(met) {} 
+  GenParPtAndMET::~GenParPtAndMET() {}
+  
+  bool GenParPtAndMET::Process(EventData & ev){
+    bool send = false;	
+    for(int i=0; i<ev.NGenPar(); i++){
+      if(abs(ev.GenParId(i))==mPdgId 
+	 && ev.GenParStatus(i)==3 && ev.GenParPt(i) > mGenPt 
+	 && MetLepPt(ev.MetPx(ev.MetType()), ev.MetPy(ev.MetType()), ev)> mMet
+	 ){
+        send=true;
+	break;
+      }
+    }
+    return send;
+  }
+  std::ostream& GenParPtAndMET::Description(std::ostream &ostrm){
+    ostrm << "  Gen pT > " << mGenPt << " & METNoMuon > "<< mMet << " :.................";
+    return ostrm;
+  }
+
+
+  /// ----------------------------------------------
+  /// Gen Z PT OR MET
+  GenParPtOrMET::GenParPtOrMET(int pdgId , double genpt , double met) : mPdgId(pdgId) ,  mGenPt(genpt) , mMet(met) {} 
+  GenParPtOrMET::~GenParPtOrMET() {}
+  
+  bool GenParPtOrMET::Process(EventData & ev){
+    bool send = false;	
+    for(int i=0; i<ev.NGenPar(); i++){
+      if((abs(ev.GenParId(i))==mPdgId && ev.GenParStatus(i)==3 && ev.GenParPt(i) > mGenPt) 
+	 || MetLepPt(ev.MetPx(ev.MetType()), ev.MetPy(ev.MetType()), ev)> mMet
+	 ){
+        send=true;
+	break;
+      }
+    }
+    return send;
+  }
+  std::ostream& GenParPtOrMET::Description(std::ostream &ostrm){
+    ostrm << "  Gen pT > " << mGenPt << " OR METNoMuon > "<< mMet << " :.................";
     return ostrm;
   }
   
@@ -1456,7 +1703,7 @@ namespace Operation
     int LepCharge=0;
     
     for(int i=0; i<ev.NPFLep(); i++ ){
-      if( PFLepTightCuts(ev ,i) ){
+      if( PFLepTightCuts(ev ,i, 20, 2.1) ){
 	IsoLepIndex++;
 	LepCharge = ev.PFLepCharge(i);
       }
@@ -1467,7 +1714,7 @@ namespace Operation
       double MTPt=0;
       
       for(int i=0; i<ev.NPFLep(); i++ ){
-	if( PFLepTightCuts(ev ,i) ){  
+	if( PFLepTightCuts(ev ,i, 20, 2.1) ){  
 	  double MTEn= ev.PFLepPt(i)+ ev.MetPt(t);
 	  double MTPx= ev.PFLepPx(i)+ ev.MetPx(t);
 	  double MTPy= ev.PFLepPy(i)+ ev.MetPy(t);
@@ -1514,7 +1761,7 @@ namespace Operation
     bool  check2=true;
     for(int i=0; i<ev.NPFLep(); i++ ){
       bool  check1=true;
-      if( PFLepTightCuts(ev ,i) ){
+      if( PFLepTightCuts(ev ,i, 20, 2.1) ){
 	check1=false;
 	IsoLepIndex++;
 	//LepCharge = ev.PFLepCharge(i);
@@ -1575,7 +1822,7 @@ namespace Operation
     ostrm << "  Z Selection  Sign:" << mCharge << " :.................";
     return ostrm;
   }
-
+  
   
   /// ----------------------------------------------
   /// PF Lep Iso
@@ -1604,20 +1851,8 @@ namespace Operation
   bool NoPFMuon::Process(EventData & ev){
     bool  send=true;
     for(int i=0; i<ev.NPFMuon(); i++ ){
-      //if(  PFMuonTightCuts(ev , i,  mPt, mEta) == true ) send =false ;
-      if(  PFMuonLooseCuts(ev , i,  mPt, mEta) == true ) send =false ;
-      
+      if(PFMuonLooseCuts(ev, i, mPt, mEta) == true) send=false;
     }
-    
-    /*for(int i=0; i<ev.NGenPar(); i++)
-      {
-      if( (abs(ev.GenParId(i) )==12 || abs(ev.GenParId(i) )==14 || abs(ev.GenParId(i) )==16 ) && ev.GenParStatus(i)==3 )
-      {
-      if(ev.GenParPt(i) <20. || abs(ev.GenParEta(i))>2.1  ) send=false;
-      }
-      }*/
-    
-    
     return send;
   }
   std::ostream& NoPFMuon::Description(std::ostream &ostrm) 
@@ -1625,7 +1860,7 @@ namespace Operation
     ostrm << "  No PFMuon   pt>" <<  mPt << " GeV :............";
     return ostrm;
   }
-
+  
   
   /// ----------------------------------------------
   /// No PFElectron for monojet 
@@ -1635,10 +1870,8 @@ namespace Operation
   bool NoPFElec::Process(EventData & ev){
     bool  send=true;
     for(int i=0; i<ev.NPFElec(); i++ ){
-      //if(  PFElecTightCuts(ev , i,  mPt, mEta) == true ) send =false ;
-      if(  PFElecVetoCuts(ev , i,  mPt, mEta) == true ) send =false ;
+      if(PFElecVetoCuts(ev , i,  mPt, mEta) == true) send=false ;
     }
-    
     return send;
   }
   std::ostream& NoPFElec::Description(std::ostream &ostrm) 
@@ -1686,6 +1919,36 @@ namespace Operation
     return weight;
   }
 
+
+  /// ----------------------------------------------
+  /// Tight Muon Weight
+  double  muonWeight(double pt, double eta){
+    double weight;
+    if(pt>=20.00 && std::fabs(eta)<=2.40){
+      if(std::fabs(eta)>=0.00 && std::fabs(eta)<0.90) weight = 0.9925*0.9959; 
+      if(std::fabs(eta)>=0.90 && std::fabs(eta)<1.20) weight = 0.9928*0.9878;
+      if(std::fabs(eta)>=1.20 && std::fabs(eta)<2.10) weight = 0.9960*1.0027; 
+      if(std::fabs(eta)>=2.10 && std::fabs(eta)<=2.40) weight = 0.9952*1.0633;
+    }
+    else weight = 0.;
+    return weight;
+  }
+
+  
+  /// ----------------------------------------------
+  /// Loose Muon Weight
+  double  muonWeightLoose(double pt, double eta){
+    double weight;
+    if(pt>=20.00 && std::fabs(eta)<=2.40){
+      if(std::fabs(eta)>=0.00 && std::fabs(eta)<0.90) weight = 0.9984*0.9990; 
+      if(std::fabs(eta)>=0.90 && std::fabs(eta)<1.20) weight = 0.9990*1.0011;
+      if(std::fabs(eta)>=1.20 && std::fabs(eta)<2.10) weight = 0.9986*1.0013; 
+      if(std::fabs(eta)>=2.10 && std::fabs(eta)<=2.40) weight = 1.0000*1.0242;
+    }
+    else weight = 0.;
+    return weight;
+  }
+  
   
   /// ----------------------------------------------
   /// Tau Cut 

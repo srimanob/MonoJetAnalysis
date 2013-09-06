@@ -26,7 +26,7 @@ using namespace std;
 
 int main(int argc, char ** argv) 
 {
-  if(argc < 6){
+  if (argc < 6){
     cerr << "Program need more than this parameter " << endl;
     cerr << "Example:   Analysis  sampleName(ex:wjets or met or ...)   maxEvents   isMC(0 or 1)   cuts(jet,met,jetmet)   folder(./results/...)" << endl;
     return 1;
@@ -49,7 +49,7 @@ int main(int argc, char ** argv)
     cerr << "Check the defined cuts. It should be [jet,met,jetmet]" << endl;
     return 1;
   }
-  
+
   int  isMC;
   sscanf(argv[3], "%d", &isMC);
   
@@ -60,6 +60,7 @@ int main(int argc, char ** argv)
   std::string logFileName = anaout + "/";
   logFileName += argv[1];
   logFileName += ".log";
+  
   
   Manager manager(logFileName);
   
@@ -72,7 +73,7 @@ int main(int argc, char ** argv)
   if(varycutIndex==2) cout<<"Jet";
   if(varycutIndex==3) cout<<"JetMET";
   cout<<endl;
-  
+
   //---------------------------------------CUTS & Fill Hist--------------------------------------------------------------
   
   vector<int> abrun;
@@ -81,7 +82,7 @@ int main(int argc, char ** argv)
   
   //hWSourceAnalysis WSourceAnalysis(histFile+"_WSource.root"); manager.Add(&WSourceAnalysis);
   //GenParExist CGenParExist(13);     manager.Add(&CGenParExist);
-  
+
   
   CutHLT CHLT0(0);   // Primary vertex
   CutHLT CHLT1(1);   // HLT
@@ -89,18 +90,30 @@ int main(int argc, char ** argv)
   manager.Add(&CHLT1);
   manager.Add(&CHLT0);                                          
   manager.Add(&CAbnormalEvents);
-  hDataMcMatching DataMcMatching0(histFile+"_AnaMuon_0.root");
+  hDataMcMatching DataMcMatching0(histFile+"_AnaMuonTauGenZ_0.root");
   manager.Add(&DataMcMatching0);
+  hMuonAna MuonAnalysis0(histFile+"_MuonAnalysis_0.root");
+  manager.Add(&MuonAnalysis0);
   
   
-  CutMet CMet(250); 
-  manager.Add(&CMet);
-  hDataMcMatching DataMcMatching1(histFile+"_AnaMuon_1.root");
+  GenParExist CGenParExist(23);
+  GenParMassWindow CGenParMassWindow(23,60,120);
+  GenZmumu CGenZmumu(23);
+  manager.Add(&CGenParExist);
+  manager.Add(&CGenParMassWindow);
+  manager.Add(&CGenZmumu);
+  CutMet CMet(250);
+  GenParPt CGenZPt(23,250);
+  //manager.Add(&CMet);
+  manager.Add(&CGenZPt);
+  hDataMcMatching DataMcMatching1(histFile+"_AnaMuonTauGenZ_1.root");
   manager.Add(&DataMcMatching1);
+  hMuonAna MuonAnalysis1(histFile+"_MuonAnalysis_1.root");
+  manager.Add(&MuonAnalysis1);
   
   
-  CutNoiseClean CNoiseClean( 0.95 , 0.98, 1,  0.01, 0.99); 
-  manager.Add(&CNoiseClean); 
+  CutNoiseClean CNoiseClean(0.95 , 0.98, 1,  0.01, 0.99);
+  manager.Add(&CNoiseClean);
   CutHLT CHLT2(2);   // No scraping
   CutHLT CHLT3(3);   // HBHE
   CutHLT CHLT4(4);   // CSC Tight Halo
@@ -127,146 +140,184 @@ int main(int argc, char ** argv)
     manager.Add(&CHLT12);   //Trk POG
     manager.Add(&CHLT13);   //HCal Laser 2012
   */
-  hWZAnalysis WZAnalysis0(histFile+"_WZAnalysis_0.root");
-  manager.Add(&WZAnalysis0);
-  hDataMcMatching DataMcMatching2(histFile+"_AnaMuon_2.root");
+  hWZAnalysis WZAnalysis0(histFile+"_WZTauAnalysis_0.root");
+  manager.Add(&WZAnalysis0); 
+  hDataMcMatching DataMcMatching2(histFile+"_AnaMuonTauGenZ_2.root");    
   manager.Add(&DataMcMatching2);
+  hMuonAna MuonAnalysis2(histFile+"_MuonAnalysis_2.root");    
+  manager.Add(&MuonAnalysis2);
   
   
   CutJet1 CJet1(110 , 2.4,  0.02, 0.98);
   manager.Add(&CJet1);
   //CutJet2 CJet20(30,4.7);
   //manager.Add(&CJet20);
-  hDataMcMatching DataMcMatching3(histFile+"_AnaMuon_3.root");
+  hDataMcMatching DataMcMatching3(histFile+"_AnaMuonTauGenZ_3.root");    
   manager.Add(&DataMcMatching3);
+  hMuonAna MuonAnalysis3(histFile+"_MuonAnalysis_3.root");
+  manager.Add(&MuonAnalysis3);
   
   
   CutNJet CNJet(3);
   manager.Add(&CNJet);
-  hDataMcMatching DataMcMatching4(histFile+"_AnaMuon_4.root");
+  hDataMcMatching DataMcMatching4(histFile+"_AnaMuonTauGenZ_4.root");
   manager.Add(&DataMcMatching4);
+  hMuonAna MuonAnalysis4(histFile+"_MuonAnalysis_4.root");
+  manager.Add(&MuonAnalysis4);
   
   
   CutDeltaPhi3 CDeltaPhi3(2.5);
-  manager.Add(&CDeltaPhi3);
+  manager.Add(&CDeltaPhi3); 
   hWSourceAnalysis WSourceAnalysis(histFile+"_hWSourceAnalysis.root");
   manager.Add(&WSourceAnalysis);
-  hWZAnalysis WZAnalysis1(histFile+"_WZAnalysis_1.root");
+  hWZAnalysis WZAnalysis1(histFile+"_WZTauAnalysis_1.root");
   manager.Add(&WZAnalysis1);
-  hDataMcMatching DataMcMatching5(histFile+"_AnaMuon_5.root");
+  hDataMcMatching DataMcMatching5(histFile+"_AnaMuonTauGenZ_5.root");
   manager.Add(&DataMcMatching5);
+  hMuonAna MuonAnalysis5(histFile+"_MuonAnalysis_5.root");
+  manager.Add(&MuonAnalysis5);
   
   
   //PFLepIso CPFLepIso(20.);
   //manager.Add( &CPFLepIso );	
   //WsignSelection CWsignSelection(1.0);
   //manager.Add( & CWsignSelection );
-  //CutTIV  CTIV(0.01);
-  //manager.Add(&CTIV);
-  //CutTau CTau(1,1);
-  //manager.Add(&CTau); 
-  hWZAnalysis WZAnalysis2(histFile+"_WZAnalysis_2.root");
-  manager.Add(&WZAnalysis2);
-  hDataMcMatching DataMcMatching6(histFile+"_AnaMuon_6.root");
+  CutTau CTau(1,1);
+  manager.Add(&CTau);
+  hWZAnalysis WZAnalysis2(histFile+"_WZTauAnalysis_2.root");
+  manager.Add(&WZAnalysis2); 
+  hDataMcMatching DataMcMatching6(histFile+"_AnaMuonTauGenZ_6.root");
   manager.Add(&DataMcMatching6);
- 
+  hMuonAna MuonAnalysis6(histFile+"_MuonAnalysis_6.root");
+  manager.Add(&MuonAnalysis6);
+  
   
   CutMet   CMet2(250);
+  GenParPt CGenZPt2(23,250);
   CutJet1  CJet2(250, 2.4, 0.02, 0.98);
+  //PrintEvent CPrintEvent(0,0,0);
   if(varycutIndex==1 || varycutIndex==3){
-    manager.Add(&CMet2);
+    //manager.Add(&CMet2);
+    manager.Add(&CGenZPt2);
   }
   if(varycutIndex==2 || varycutIndex==3){
     manager.Add(&CJet2);
   }
-  hWZAnalysis WZAnalysis3(histFile+"_WZAnalysis_3.root");
+  //manager.Add(&CPrintEvent);
+  hWZAnalysis WZAnalysis3(histFile+"_WZTauAnalysis_3.root");
   manager.Add(&WZAnalysis3);
-  hDataMcMatching DataMcMatching7(histFile+"_AnaMuon_7.root");
+  hDataMcMatching DataMcMatching7(histFile+"_AnaMuonTauGenZ_7.root");
   manager.Add(&DataMcMatching7);
-
+  hMuonAna MuonAnalysis7(histFile+"_MuonAnalysis_7.root");
+  manager.Add(&MuonAnalysis7);
   
-  CutMet   CMet3(300);
-  CutJet1  CJet3(300, 2.4, 0.02, 0.98);
+  
+  CutMet   CMet3(300); 
+  GenParPt CGenZPt3(23,300);
+  CutJet1  CJet3(300, 2.4, 0.02, 0.98);  
   if(varycutIndex==1 || varycutIndex==3){
-    manager.Add(&CMet3);
+    //manager.Add(&CMet3);
+    manager.Add(&CGenZPt3);
   }
   if(varycutIndex==2 || varycutIndex==3){
     manager.Add(&CJet3);
-  }  
-  hWZAnalysis WZAnalysis4(histFile+"_WZAnalysis_4.root");
+  }
+  hWZAnalysis WZAnalysis4(histFile+"_WZTauAnalysis_4.root");
   manager.Add(&WZAnalysis4);
-  hDataMcMatching DataMcMatching8(histFile+"_AnaMuon_8.root");
+  hDataMcMatching DataMcMatching8(histFile+"_AnaMuonTauGenZ_8.root");
   manager.Add(&DataMcMatching8);
-
+  hMuonAna MuonAnalysis8(histFile+"_MuonAnalysis_8.root");
+  manager.Add(&MuonAnalysis8);
   
-  CutMet  CMet4(350);
-  CutJet1 CJet4(350 , 2.4,  0.02, 0.98);
+  
+  CutMet   CMet4(350); 
+  GenParPt CGenZPt4(23,350);                                      
+  CutJet1  CJet4(350, 2.4, 0.02, 0.98); 
   if(varycutIndex==1 || varycutIndex==3){
-    manager.Add(&CMet4);
+    //manager.Add(&CMet4);
+    manager.Add(&CGenZPt4);
   }
   if(varycutIndex==2 || varycutIndex==3){
     manager.Add(&CJet4);
-  }
-  hWZAnalysis WZAnalysis5(histFile+"_WZAnalysis_5.root");
+  }                  
+  hWZAnalysis WZAnalysis5(histFile+"_WZTauAnalysis_5.root");
   manager.Add(&WZAnalysis5);
-  hDataMcMatching DataMcMatching9(histFile+"_AnaMuon_9.root");
+  hDataMcMatching DataMcMatching9(histFile+"_AnaMuonTauGenZ_9.root");   
   manager.Add(&DataMcMatching9);
-     
+  hMuonAna MuonAnalysis9(histFile+"_MuonAnalysis_9.root");
+  manager.Add(&MuonAnalysis9);
+  
   
   CutMet   CMet5(400);
+  GenParPt CGenZPt5(23,400);
   CutJet1  CJet5(400, 2.4, 0.02, 0.98);
   if(varycutIndex==1 || varycutIndex==3){
-    manager.Add(&CMet5);
+    //manager.Add(&CMet5);
+    manager.Add(&CGenZPt5);
   }
   if(varycutIndex==2 || varycutIndex==3){
     manager.Add(&CJet5);
   }
-  hWZAnalysis WZAnalysis6(histFile+"_WZAnalysis_6.root");
+  hWZAnalysis WZAnalysis6(histFile+"_WZTauAnalysis_6.root");
   manager.Add(&WZAnalysis6);
-  hDataMcMatching DataMcMatching10(histFile+"_AnaMuon_10.root");
+  hDataMcMatching DataMcMatching10(histFile+"_AnaMuonTauGenZ_10.root");
   manager.Add(&DataMcMatching10);
- 
+  hMuonAna MuonAnalysis10(histFile+"_MuonAnalysis_10.root");
+  manager.Add(&MuonAnalysis10);
   
-  CutMet  CMet6(450);
-  CutJet1 CJet6(450, 2.4, 0.02, 0.98);
+  
+  CutMet   CMet6(450);  
+  GenParPt CGenZPt6(23,450);                                      
+  CutJet1  CJet6(450, 2.4, 0.02, 0.98);
   if(varycutIndex==1 || varycutIndex==3){
-    manager.Add(&CMet6);
+    //manager.Add(&CMet6);
+    manager.Add(&CGenZPt6);
   }
   if(varycutIndex==2 || varycutIndex==3){
     manager.Add(&CJet6);
-  }      
-  hWZAnalysis WZAnalysis7(histFile+"_WZAnalysis_7.root");
+  }                
+  hWZAnalysis WZAnalysis7(histFile+"_WZTauAnalysis_7.root");
   manager.Add(&WZAnalysis7);
-  hDataMcMatching DataMcMatching11(histFile+"_AnaMuon_11.root");
+  hDataMcMatching DataMcMatching11(histFile+"_AnaMuonTauGenZ_11.root");
   manager.Add(&DataMcMatching11);
+  hMuonAna MuonAnalysis11(histFile+"_MuonAnalysis_11.root");  
+  manager.Add(&MuonAnalysis11);
   
   
-  CutMet  CMet7(500);
-  CutJet1 CJet7(500, 2.4, 0.02, 0.98);
+  CutMet   CMet7(500);
+  GenParPt CGenZPt7(23,500);
+  CutJet1  CJet7(500, 2.4, 0.02, 0.98);
   if(varycutIndex==1 || varycutIndex==3){
-    manager.Add(&CMet7);
+    //manager.Add(&CMet7);
+    manager.Add(&CGenZPt7);
   }
   if(varycutIndex==2 || varycutIndex==3){
     manager.Add(&CJet7);
-  }
-  hWZAnalysis  WZAnalysis8(histFile+"_WZAnalysis_8.root");
+  }             
+  hWZAnalysis WZAnalysis8(histFile+"_WZTauAnalysis_8.root");
   manager.Add(&WZAnalysis8);
-  hDataMcMatching DataMcMatching12(histFile+"_AnaMuon_12.root");
+  hDataMcMatching DataMcMatching12(histFile+"_AnaMuonTauGenZ_12.root");  
   manager.Add(&DataMcMatching12);
+  hMuonAna MuonAnalysis12(histFile+"_MuonAnalysis_12.root");  
+  manager.Add(&MuonAnalysis12);
   
   
-  CutMet  CMet8(550);
-  CutJet1 CJet8(550 , 2.4,  0.02, 0.98);
+  CutMet   CMet8(550);
+  GenParPt CGenZPt8(23,550);
+  CutJet1  CJet8(550, 2.4, 0.02, 0.98);
   if(varycutIndex==1 || varycutIndex==3){
-    manager.Add(&CMet8);
+    //manager.Add(&CMet8);
+    manager.Add(&CGenZPt8);
   }
   if(varycutIndex==2 || varycutIndex==3){
     manager.Add(&CJet8);
   }
-  hWZAnalysis WZAnalysis9(histFile+"_WZAnalysis_9.root");
+  hWZAnalysis WZAnalysis9(histFile+"_WZTauAnalysis_9.root");
   manager.Add(&WZAnalysis9);
-  hDataMcMatching DataMcMatching13(histFile+"_AnaMuon_13.root");
-  manager.Add(&DataMcMatching13);
+  hDataMcMatching DataMcMatching13(histFile+"_AnaMuonTauGenZ_13.root");
+  manager.Add(&DataMcMatching13); 
+  hMuonAna MuonAnalysis13(histFile+"_MuonAnalysis_13.root");
+  manager.Add(&MuonAnalysis13);
   
   //-------------------------------------------------------------------------------------------------------------------------
   
@@ -276,5 +327,4 @@ int main(int argc, char ** argv)
   
   // Loop over events
   manager.Run(eventData);
-  
 }

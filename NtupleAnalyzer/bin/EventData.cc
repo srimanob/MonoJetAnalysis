@@ -19,16 +19,16 @@ using namespace LHAPDF;
 EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDataSet("undefined") 
 {
   // CERN
-  string fileDirectory  = "root://eoscms//eos/cms/store/user/srimanob/monojet/ntuple-2012-v6B/";
-  //string fileDirectory  = "file:/data0/srimanob/Data/monojet/ntuple-2012-v6B/";
+  string fileDirectory = "root://eoscms//eos/cms/store/user/srimanob/monojet/ntuple-2012-v6D/";
+  //string fileDirectory = "file:/data1/srimanob/Data-Monojet/ntuple-2012-v6D/";
   // FNAL
   //string fileDirectory  = "file:/uscms_data/d2/lpcjm/DATA/2012/ntuple_v6A_temp";
   
   // Pileup - CERN
-  mydataset["pileup"]   = "/afs/cern.ch/user/s/srimanob/public/ForMonoJet/PUHist/pileup_monojet_20130101_All2012_v6A_69300.root";
+  mydataset["pileup"]   = "/afs/cern.ch/user/s/srimanob/public/ForMonoJet/PUHist/pileup_monojet_22JanReReco_pixelLumi.root";
   // Pileup - FNAL
   //mydataset["pileup"]   = "/uscms_data/d3/srimanob/ntuple_v6A/pileup_monojet_20130101_All2012_v6A_69300.root";  
-
+  
   // Check me before run
   mEvent       = 0;
   mMaxEvents   = maxEvents;
@@ -41,117 +41,128 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
   mSecJetCut   = 30;
   
   // Data
-  mydataset["met1"]       = fileDirectory + "Data_V6B_2012A_part1.root";
-  mydataset["met2"]       = fileDirectory + "Data_V6B_2012A_part2.root";
-  mydataset["met3"]       = fileDirectory + "Data_V6B_2012B_part1.root";
-  mydataset["met4"]       = fileDirectory + "Data_V6B_2012B_part2.root";
-  mydataset["met5"]       = fileDirectory + "Data_V6B_2012B_part3.root";
-  mydataset["met6"]       = fileDirectory + "Data_V6B_2012C_part1.root";
-  mydataset["met7"]       = fileDirectory + "Data_V6B_2012C_part2.root";
-  mydataset["met8"]       = fileDirectory + "Data_V6B_2012C_part3.root";
-  mydataset["met9"]       = fileDirectory + "Data_V6B_2012C_part4.root";
-  mydataset["met10"]      = fileDirectory + "Data_V6B_2012C_part5.root";
-  mydataset["met11"]      = fileDirectory + "Data_V6B_2012C_part6.root";
-  mydataset["met12"]      = fileDirectory + "Data_V6B_2012D_part1.root";
-  mydataset["met13"]      = fileDirectory + "Data_V6B_2012D_part2.root";
-  mydataset["met14"]      = fileDirectory + "Data_V6B_2012D_part3.root";
-  mydataset["met15"]      = fileDirectory + "Data_V6B_2012D_part4.root";
-  mydataset["met16"]      = fileDirectory + "Data_V6B_2012D_part5.root";
-  mylumi["met1"]          = 19596.;
-  mylumi["met2"]          = 19596.;
-  mylumi["met3"]          = 19596.;
-  mylumi["met4"]          = 19596.;
-  mylumi["met5"]          = 19596.;
-  mylumi["met6"]          = 19596.;
-  mylumi["met7"]          = 19596.;   
-  mylumi["met8"]          = 19596.;
-  mylumi["met9"]          = 19596.;
-  mylumi["met10"]         = 19596.;
-  mylumi["met11"]         = 19596.;
-  mylumi["met12"]         = 19596.;
-  mylumi["met13"]         = 19596.;
-  mylumi["met14"]         = 19596.;
-  mylumi["met15"]         = 19596.;
-  mylumi["met16"]         = 19596.;
+  mydataset["met1"]       = fileDirectory + "Data_22Jan13_V6D_2012A_part1.root";
+  mydataset["met2"]       = fileDirectory + "Data_22Jan13_V6D_2012A_part2.root";
+  mydataset["met3"]       = fileDirectory + "Data_22Jan13_V6D_2012B_part1.root";
+  mydataset["met4"]       = fileDirectory + "Data_22Jan13_V6D_2012B_part2.root";
+  mydataset["met5"]       = fileDirectory + "Data_22Jan13_V6D_2012B_part3.root";
+  mydataset["met6"]       = fileDirectory + "Data_22Jan13_V6D_2012C_part1.root";
+  mydataset["met7"]       = fileDirectory + "Data_22Jan13_V6D_2012C_part2.root";
+  mydataset["met8"]       = fileDirectory + "Data_22Jan13_V6D_2012C_part3.root";
+  mydataset["met9"]       = fileDirectory + "Data_22Jan13_V6D_2012C_part4.root";
+  mydataset["met10"]      = fileDirectory + "Data_22Jan13_V6D_2012C_part5.root";
+  mydataset["met11"]      = fileDirectory + "Data_22Jan13_V6D_2012C_part6.root";
+  mydataset["met12"]      = fileDirectory + "Data_22Jan13_V6D_2012D_part1.root";
+  mydataset["met13"]      = fileDirectory + "Data_22Jan13_V6D_2012D_part2.root";
+  mydataset["met14"]      = fileDirectory + "Data_22Jan13_V6D_2012D_part3.root";
+  mydataset["met15"]      = fileDirectory + "Data_22Jan13_V6D_2012D_part4.root";
+  mydataset["met16"]      = fileDirectory + "Data_22Jan13_V6D_2012D_part5.root";
+  mylumi["met1"]          = 19712.;
+  mylumi["met2"]          = 19712.;
+  mylumi["met3"]          = 19712.;
+  mylumi["met4"]          = 19712.;
+  mylumi["met5"]          = 19712.;
+  mylumi["met6"]          = 19712.;
+  mylumi["met7"]          = 19712.;   
+  mylumi["met8"]          = 19712.;
+  mylumi["met9"]          = 19712.;
+  mylumi["met10"]         = 19712.;
+  mylumi["met11"]         = 19712.;
+  mylumi["met12"]         = 19712.;
+  mylumi["met13"]         = 19712.;
+  mylumi["met14"]         = 19712.;
+  mylumi["met15"]         = 19712.;
+  mylumi["met16"]         = 19712.;
   
   // Znunu S10
-  mydataset["znunu50"]    = fileDirectory + "MC_S10_V6B_ZJetsToNuNu_050_HT_100_10600pb.root";
-  mydataset["znunu100"]   = fileDirectory + "MC_S10_V6B_ZJetsToNuNu_100_HT_200_27552pb.root";
-  mydataset["znunu200"]   = fileDirectory + "MC_S10_V6B_ZJetsToNuNu_200_HT_400_121858pb.root"; 
-  mydataset["znunu400"]   = fileDirectory + "MC_S10_V6B_ZJetsToNuNu_400_HT_inf_190923pb.root";
-  mylumi["znunu50"]       = 10600.;
+  mydataset["znunu50"]    = fileDirectory + "MC_S10_V6D_ZJetsToNuNu_050_HT_100_10601pb.root";
+  mydataset["znunu100"]   = fileDirectory + "MC_S10_V6D_ZJetsToNuNu_100_HT_200_27552pb.root";
+  mydataset["znunu200p1"] = fileDirectory + "MC_S10_V6D_ZJetsToNuNu_200_HT_400_part1_121858pb.root"; 
+  mydataset["znunu200p2"] = fileDirectory + "MC_S10_V6D_ZJetsToNuNu_200_HT_400_part2_121858pb.root"; 
+  mydataset["znunu400"]   = fileDirectory + "MC_S10_V6D_ZJetsToNuNu_400_HT_inf_190923pb.root";
+  mylumi["znunu50"]       = 10601.;
   mylumi["znunu100"]      = 27552.;
-  mylumi["znunu200"]      = 121858.;
+  mylumi["znunu200p1"]    = 121858.; 
+  mylumi["znunu200p2"]    = 121858.;
   mylumi["znunu400"]      = 190923.;
   
   // W+Jets S10
-  mydataset["wjets1"]     = fileDirectory + "MC_S10_V6B_WJetsToLNu_PtW-100_part1_55449pb.root";
-  mydataset["wjets2"]     = fileDirectory + "MC_S10_V6B_WJetsToLNu_PtW-100_part2_55449pb.root";
-  mydataset["wjets3"]     = fileDirectory + "MC_S10_V6B_WJetsToLNu_PtW-100_part3_55449pb.root";
-  mydataset["wjets4"]     = fileDirectory + "MC_S10_V6B_WJetsToLNu_PtW-100_part4_55449pb.root";
-  mydataset["wjets5"]     = fileDirectory + "MC_S10_V6B_WJetsToLNu_PtW-100_part5_55449pb.root";
-  mydataset["w4jets"]     = fileDirectory + "MC_S10_V6B_W4JetsToLNu_50598pb.root";
-  mylumi["wjets1"]        = 55449.;
-  mylumi["wjets2"]        = 55449.;
-  mylumi["wjets3"]        = 55449.;
-  mylumi["wjets4"]        = 55449.; 
-  mylumi["wjets5"]        = 55449.;
-  mylumi["w4jets"]        = 50598.;
+  mydataset["wjets1"]     = fileDirectory + "MC_S10_V6D_WJetsToLNu_PtW-100_part1_55668pb.root";
+  mydataset["wjets2"]     = fileDirectory + "MC_S10_V6D_WJetsToLNu_PtW-100_part2_55668pb.root";
+  mydataset["wjets3"]     = fileDirectory + "MC_S10_V6D_WJetsToLNu_PtW-100_part3_55668pb.root";
+  mydataset["wjets4"]     = fileDirectory + "MC_S10_V6D_WJetsToLNu_PtW-100_part4_55668pb.root";
+  mydataset["wjets5"]     = fileDirectory + "MC_S10_V6D_WJetsToLNu_PtW-100_part5_55668pb.root";
+  mydataset["w4jets"]     = fileDirectory + "MC_S10_V6D_W4JetsToLNu_50692pb.root";
+  mylumi["wjets1"]        = 55668.;
+  mylumi["wjets2"]        = 55668.;
+  mylumi["wjets3"]        = 55668.;
+  mylumi["wjets4"]        = 55668.; 
+  mylumi["wjets5"]        = 55668.;
+  mylumi["w4jets"]        = 50692.;
   
   // Z+Jets S10
-  mydataset["zjets"]      = fileDirectory + "MC_S10_V6B_DYJetsToLL_PtZ-100_72790pb.root";
-  mylumi["zjets"]         = 72790.;
+  mydataset["zjets"]      = fileDirectory + "MC_S10_V6D_DYJetsToLL_PtZ-100_65732pb.root";
+  mylumi["zjets"]         = 65732.; //NLO
+  mydataset["zmumujets"]  = fileDirectory + "MC_S10_V6D_DYJetsToLL_PtZ-100_Zmumu_NoTrig_65732pb.root";
+  mylumi["zmumujets"]     = 65732.; //NLO
   
-  // TTbar S10 (NNLO - No factor need)
-  mydataset["ttbar"]      = fileDirectory + "MC_S10_V6B_TTbar_MassiveBin_21929pb.root";
-  mylumi["ttbar"]         = 21929.;
+  // TTbar S10 (NNLO)
+  mydataset["ttbar"]      = fileDirectory + "MC_S10_V6D_TTbar_MassiveBin_29332pb.root";
+  mylumi["ttbar"]         = 29332./0.97;
   
-  // QCD S10 (1.24 from DiJet resonance analysis)
-  mydataset["qcd50"]      = fileDirectory + "MC_S10_V6B_QCD_Pt-0050to0080_0p7681pb.root";
-  mydataset["qcd80"]      = fileDirectory + "MC_S10_V6B_QCD_Pt-0080to0120_6p54pb.root";
-  mydataset["qcd120"]     = fileDirectory + "MC_S10_V6B_QCD_Pt-0120to0170_42pb.root";
-  mydataset["qcd170"]     = fileDirectory + "MC_S10_V6B_QCD_Pt-0170to0300_170pb.root"; 
-  mydataset["qcd300"]     = fileDirectory + "MC_S10_V6B_QCD_Pt-0300to0470_3384pb.root"; 
-  mydataset["qcd470"]     = fileDirectory + "MC_S10_V6B_QCD_Pt-0470to0600_35080pb.root"; 
-  mydataset["qcd600"]     = fileDirectory + "MC_S10_V6B_QCD_Pt-0600to0800_148075pb.root";
-  mydataset["qcd800"]     = fileDirectory + "MC_S10_V6B_QCD_Pt-0800to1000_1126344pb.root"; 
-  mydataset["qcd1000"]    = fileDirectory + "MC_S10_V6B_QCD_Pt-1000to1400_2661929pb.root";
-  mydataset["qcd1400"]    = fileDirectory + "MC_S10_V6B_QCD_Pt-1400to1800_59663538pb.root";
-  mydataset["qcd1800"]    = fileDirectory + "MC_S10_V6B_QCD_Pt-1800_534490611pb.root";
-  mylumi["qcd50"]         = 0.7681/1.24;
-  mylumi["qcd80"]         = 6.54/1.24;
-  mylumi["qcd120"]        = 42./1.24;
-  mylumi["qcd170"]        = 170./1.24;
-  mylumi["qcd300"]        = 3384./1.24;
-  mylumi["qcd470"]        = 35080./1.24;
-  mylumi["qcd600"]        = 148075./1.24;
-  mylumi["qcd800"]        = 1126344./1.24;
-  mylumi["qcd1000"]       = 2661929./1.24;
-  mylumi["qcd1400"]       = 59663538./1.24;
-  mylumi["qcd1800"]       = 534490611./1.24;
+  // QCD S10 (use scale factor 1.6 from Robyn study)
+  mydataset["qcd80"]      = fileDirectory + "MC_S10_V6D_QCD_Pt-0080to0120_6p60pb.root";
+  mydataset["qcd120"]     = fileDirectory + "MC_S10_V6D_QCD_Pt-0120to0170_44pb.root";
+  mydataset["qcd170"]     = fileDirectory + "MC_S10_V6D_QCD_Pt-0170to0300_179pb.root"; 
+  mydataset["qcd300"]     = fileDirectory + "MC_S10_V6D_QCD_Pt-0300to0470_3398pb.root"; 
+  mydataset["qcd470"]     = fileDirectory + "MC_S10_V6D_QCD_Pt-0470to0600_35080pb.root"; 
+  mydataset["qcd600"]     = fileDirectory + "MC_S10_V6D_QCD_Pt-0600to0800_148075pb.root";
+  mydataset["qcd800"]     = fileDirectory + "MC_S10_V6D_QCD_Pt-0800to1000_1126344pb.root"; 
+  mydataset["qcd1000"]    = fileDirectory + "MC_S10_V6D_QCD_Pt-1000to1400_2661929pb.root";
+  mydataset["qcd1400"]    = fileDirectory + "MC_S10_V6D_QCD_Pt-1400to1800_59066921pb.root";
+  mydataset["qcd1800"]    = fileDirectory + "MC_S10_V6D_QCD_Pt-1800_534490611pb.root";
+  mylumi["qcd80"]         = 6.60/1.6;
+  mylumi["qcd120"]        = 44./1.6;
+  mylumi["qcd170"]        = 179./1.6;
+  mylumi["qcd300"]        = 3398./1.6;
+  mylumi["qcd470"]        = 35080./1.6;
+  mylumi["qcd600"]        = 148075./1.6;
+  mylumi["qcd800"]        = 1126344./1.6;
+  mylumi["qcd1000"]       = 2661929./1.6;
+  mylumi["qcd1400"]       = 59066921./1.6;
+  mylumi["qcd1800"]       = 534490611./1.6;
   
   // Single-t S10 (NLO - No factor need)
-  mydataset["sints"]      = fileDirectory + "MC_S10_V6B_SingleT_s_68591pb.root";
-  mydataset["sintt"]      = fileDirectory + "MC_S10_V6B_SingleT_t_66635pb.root";
-  mydataset["sinttw"]     = fileDirectory + "MC_S10_V6B_SingleT_tw_31320pb.root";
-  mydataset["sintbars"]   = fileDirectory + "MC_S10_V6B_SingleTbar_s_79531pb.root";
-  mydataset["sintbart"]   = fileDirectory + "MC_S10_V6B_SingleTbar_t_63032pb.root";
-  mydataset["sintbartw"]  = fileDirectory + "MC_S10_V6B_SingleTbar_tw_30942pb.root";
+  mydataset["sints"]      = fileDirectory + "MC_S10_V6D_SingleT_s_68591pb.root";
+  mydataset["sintt"]      = fileDirectory + "MC_S10_V6D_SingleT_t_66635pb.root";
+  mydataset["sinttw"]     = fileDirectory + "MC_S10_V6D_SingleT_tw_44834pb.root";
+  mydataset["sintbars"]   = fileDirectory + "MC_S10_V6D_SingleTbar_s_79531pb.root";
+  mydataset["sintbart"]   = fileDirectory + "MC_S10_V6D_SingleTbar_t_62380pb.root";
+  mydataset["sintbartw"]  = fileDirectory + "MC_S10_V6D_SingleTbar_tw_44456pb.root";
   mylumi["sints"]         = 68591.;
   mylumi["sintt"]         = 66635.;
-  mylumi["sinttw"]        = 31320.;
+  mylumi["sinttw"]        = 44834.;
   mylumi["sintbars"]      = 79531.;
-  mylumi["sintbart"]      = 63032.; 
-  mylumi["sintbartw"]     = 30942.;
+  mylumi["sintbart"]      = 62380.; 
+  mylumi["sintbartw"]     = 44456.;
   
   // Diboson (NLO - No factor need)
-  mydataset["dibosonWW"]  = fileDirectory + "MC_S10_V6B_WW_179171pb.root";
-  mydataset["dibosonWZ"]  = fileDirectory + "MC_S10_V6B_WZ_240597pb.root";
-  mydataset["dibosonZZ"]  = fileDirectory + "MC_S10_V6B_ZZ_373848pb.root";
-  mylumi["dibosonWW"]     = 179171.;
-  mylumi["dibosonWZ"]     = 240597.;
-  mylumi["dibosonZZ"]     = 373848.;
+  mydataset["dibosonWW"]  = fileDirectory + "MC_S10_V6D_DiBoson_WW_182363pb.root";
+  mydataset["dibosonWZ"]  = fileDirectory + "MC_S10_V6D_DiBoson_WZ_301123pb.root";
+  mydataset["dibosonZZ"]  = fileDirectory + "MC_S10_V6D_DiBoson_ZZ_555110pb.root";
+  mydataset["dibosonWG"]  = fileDirectory + "MC_S10_V6D_DiBoson_WGToLNuG_10404pb.root";
+  mydataset["dibosonZG"]  = fileDirectory + "MC_S10_V6D_DiBoson_ZGInclusive_40471pb.root";
+  mydataset["dibosonZLLG"]= fileDirectory + "MC_S10_V6D_DiBoson_ZGToLLG_42178pb.root";
+  mydataset["dibosonZvvG"]= fileDirectory + "MC_S10_V6D_DiBoson_ZGTovvG_1460804evt.root";
+  mylumi["dibosonWW"]     = 182363.;
+  mylumi["dibosonWZ"]     = 301123.;
+  mylumi["dibosonZZ"]     = 555110.;
+  mylumi["dibosonWG"]     = 10404.;
+  mylumi["dibosonZG"]     = 40471.;
+  mylumi["dibosonZLLG"]   = 42178.;
+  mylumi["dibosonZvvG"]   = 111879.; 
 
+  /*
   // VBF-Invisible Higgs
   //mydataset["vbf"]    = "file:/data0/srimanob/Data/monojet/ntuple-2012-v2/VBF_InvisibleHiggs.root";
   //mylumi["vbf"]  = 12100.;
@@ -261,24 +272,25 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
   mydataset["dmv400"]    = fileDirectory + "Signal_DM/Signal_S10_V6A_DM_40TeV_V_400.root";
   mydataset["dmv700"]    = fileDirectory + "Signal_DM/Signal_S10_V6A_DM_40TeV_V_700.root";
   mydataset["dmv1000"]   = fileDirectory + "Signal_DM/Signal_S10_V6A_DM_40TeV_V_1000.root";
-  mylumi["dmav01"]       = 19596.;  
-  mylumi["dmav1"]        = 19596.; 
-  mylumi["dmav10"]       = 19596.;
-  mylumi["dmav100"]      = 19596.;
-  mylumi["dmav200"]      = 19596.;
-  mylumi["dmav300"]      = 19596.;
-  mylumi["dmav400"]      = 19596.;
-  mylumi["dmav700"]      = 19596.;
-  mylumi["dmav1000"]     = 19596.;
-  mylumi["dmv01"]        = 19596.;
-  mylumi["dmv1"]         = 19596.;
-  mylumi["dmv10"]        = 19596.;
-  mylumi["dmv100"]       = 19596.;
-  mylumi["dmv200"]       = 19596.;
-  mylumi["dmv300"]       = 19596.;
-  mylumi["dmv400"]       = 19596.;
-  mylumi["dmv700"]       = 19596.;
-  mylumi["dmv1000"]      = 19596.;
+  mylumi["dmav01"]       = 19712.;  
+  mylumi["dmav1"]        = 19712.; 
+  mylumi["dmav10"]       = 19712.;
+  mylumi["dmav100"]      = 19712.;
+  mylumi["dmav200"]      = 19712.;
+  mylumi["dmav300"]      = 19712.;
+  mylumi["dmav400"]      = 19712.;
+  mylumi["dmav700"]      = 19712.;
+  mylumi["dmav1000"]     = 19712.;
+  mylumi["dmv01"]        = 19712.;
+  mylumi["dmv1"]         = 19712.;
+  mylumi["dmv10"]        = 19712.;
+  mylumi["dmv100"]       = 19712.;
+  mylumi["dmv200"]       = 19712.;
+  mylumi["dmv300"]       = 19712.;
+  mylumi["dmv400"]       = 19712.;
+  mylumi["dmv700"]       = 19712.;
+  mylumi["dmv1000"]      = 19712.;
+  */
   
   TFile f1( mydataset["pileup"].c_str()  );
   TH1D *his = (TH1D*) f1.Get("pileup")->Clone();
@@ -337,6 +349,7 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
   mDataTree->SetBranchAddress("npv0"                                  ,&mnpv0                       );
   mDataTree->SetBranchAddress("npvp1"                                 ,&mnpvp1                      );
   mDataTree->SetBranchAddress("ptHat"                                 ,&mptHat                      );
+  mDataTree->SetBranchAddress("fastJetRho"                            ,&mfastJetRho                 );  
   
   //NoiseFlag
   mDataTree->SetBranchAddress("NoiseFlag"                             ,mNoiseFlag                   );
@@ -503,7 +516,9 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
   mDataTree->SetBranchAddress("PFMuonCharge"                          ,mPFMuonCharge              );  
   mDataTree->SetBranchAddress("PFMuonIsGlobal"                        ,mPFMuonIsGlobal            );  
   mDataTree->SetBranchAddress("PFMuonIsStandAlone"                    ,mPFMuonIsStandAlone        );  
-  mDataTree->SetBranchAddress("PFMuonIsTracker"                       ,mPFMuonIsTracker           );  
+  mDataTree->SetBranchAddress("PFMuonIsTracker"                       ,mPFMuonIsTracker           );
+  mDataTree->SetBranchAddress("PFMuonIsTight"                         ,mPFMuonIsTight             );     
+  mDataTree->SetBranchAddress("PFMuonIsLoose"                         ,mPFMuonIsLoose             );
   mDataTree->SetBranchAddress("PFMuonChargedHadronIso"                ,mPFMuonChargedHadronIso    );  
   mDataTree->SetBranchAddress("PFMuonPhotonIso"                       ,mPFMuonPhotonIso           );  
   mDataTree->SetBranchAddress("PFMuonNeutralHadronIso"                ,mPFMuonNeutralHadronIso    );  
@@ -554,7 +569,11 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
   mDataTree->SetBranchAddress("PFMuonTrkCharge"                       ,mPFMuonTrkCharge           );  
   mDataTree->SetBranchAddress("PFMuonTrkQOverPError"                  ,mPFMuonTrkQOverPError      );  
   mDataTree->SetBranchAddress("PFMuonTrkDxy"                          ,mPFMuonTrkDxy              );  
-  mDataTree->SetBranchAddress("PFMuonTrkNumOfValidPixHits"            ,mPFMuonTrkNumOfValidPixHits);  
+  mDataTree->SetBranchAddress("PFMuonTrkNumOfValidPixHits"            ,mPFMuonTrkNumOfValidPixHits);
+  mDataTree->SetBranchAddress("PFMuonR04ChargedHadronPt"              ,mPFMuonR04ChargedHadronPt  );
+  mDataTree->SetBranchAddress("PFMuonR04NeutralHadronEt"              ,mPFMuonR04NeutralHadronEt  );
+  mDataTree->SetBranchAddress("PFMuonR04PhotonEt"                     ,mPFMuonR04PhotonEt         );
+  mDataTree->SetBranchAddress("PFMuonR04PUPt"                         ,mPFMuonR04PUPt             ); 
   
   //Electrons
   mDataTree->SetBranchAddress("NElec"                                 ,&mNElec                   );   
@@ -620,7 +639,12 @@ EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC) : mDa
   mDataTree->SetBranchAddress("PFElecHcalOverEcal"                    ,mPFElecHcalOverEcal        );   
   mDataTree->SetBranchAddress("PFElecetaeta"                          ,mPFElecetaeta              );   
   mDataTree->SetBranchAddress("PFElecietaieta"                        ,mPFElecietaieta            );
-  
+  mDataTree->SetBranchAddress("PFElecIsTight"                         ,mPFElecIsTight             );     
+  mDataTree->SetBranchAddress("PFElecIsMedium"                        ,mPFElecIsMedium            );
+  mDataTree->SetBranchAddress("PFElecIsLoose"                         ,mPFElecIsLoose             );     
+  mDataTree->SetBranchAddress("PFElecIsVeto"                          ,mPFElecIsVeto              );
+  mDataTree->SetBranchAddress("PFElecEffArea"                         ,mPFElecEffArea             );  
+
   //Tau
   mDataTree->SetBranchAddress("NTau"                                               ,&mNTau);
   mDataTree->SetBranchAddress("TauE"                                               ,mTauE);
@@ -1000,7 +1024,6 @@ return w1;
 */
 
 
-
 Int_t           EventData::IsMC()                                            {   return misMC;                                    }
 string          EventData::JetType()                                         {   return mJetType;                                 }
 string          EventData::LepType()                                         {   return mLepType;                                 }
@@ -1009,10 +1032,6 @@ int             EventData::MetType()                                         {  
 float           EventData::SecJetCut()                                       {   return mSecJetCut;                               }
 Double_t        EventData::PDFWeights(UInt_t id)                             {   return mPDFWeights[id];                          } 
 float           EventData::EnergyScale()                                     {   return mEnergyScale;                             }
-
-
-
-
 
 Int_t           EventData::run()                                             {   return  mrun;                                     }
 Long64_t        EventData::event()                                           {   return  mevent;                                   }
@@ -1025,6 +1044,7 @@ Int_t           EventData::npvp1()                                           {  
 Double_t        EventData::ptHat()                                           {   return  mptHat;                                   }
 Int_t           EventData::NoiseFlag(UInt_t id)                              {   return  mNoiseFlag[id];                           }
 
+Double_t        EventData::fastJetRho()                                      {   return  mfastJetRho;                              }
 										
 Int_t           EventData::NCaloAK5Jets()                                    {   return  mNCaloAK5Jets;                            }
 Double_t        EventData::CaloAK5JetE(UInt_t id)                            {   return  mCaloAK5JetE[id];                         }
@@ -1316,6 +1336,8 @@ Int_t           EventData::PFMuonCharge(UInt_t id)                           {  
 Int_t           EventData::PFMuonIsGlobal(UInt_t id)                         {   return  mPFMuonIsGlobal[id];                      }
 Int_t           EventData::PFMuonIsStandAlone(UInt_t id)                     {   return  mPFMuonIsStandAlone[id];                  }
 Int_t           EventData::PFMuonIsTracker(UInt_t id)                        {   return  mPFMuonIsTracker[id];                     }
+Int_t           EventData::PFMuonIsTight(UInt_t id)                          {   return  mPFMuonIsTight[id];                       }
+Int_t           EventData::PFMuonIsLoose(UInt_t id)                          {   return  mPFMuonIsLoose[id];                       }
 Double_t        EventData::PFMuonChargedHadronIso(UInt_t id)                 {   return  mPFMuonChargedHadronIso[id];              }
 Double_t        EventData::PFMuonPhotonIso(UInt_t id)                        {   return  mPFMuonPhotonIso[id];                     }
 Double_t        EventData::PFMuonNeutralHadronIso(UInt_t id)                 {   return  mPFMuonNeutralHadronIso[id];              }
@@ -1367,6 +1389,10 @@ Double_t        EventData::PFMuonTrkCharge(UInt_t id)                        {  
 Double_t        EventData::PFMuonTrkQOverPError(UInt_t id)                   {   return  mPFMuonTrkQOverPError[id];                }
 Double_t        EventData::PFMuonTrkDxy(UInt_t id)                           {   return  mPFMuonTrkDxy[id];                        }
 Double_t        EventData::PFMuonTrkNumOfValidPixHits(UInt_t id)             {   return  mPFMuonTrkNumOfValidPixHits[id];          }
+Double_t        EventData::PFMuonR04ChargedHadronPt(UInt_t id)               {   return  mPFMuonR04ChargedHadronPt[id];            }
+Double_t        EventData::PFMuonR04NeutralHadronEt(UInt_t id)               {   return  mPFMuonR04NeutralHadronEt[id];            }
+Double_t        EventData::PFMuonR04PhotonEt(UInt_t id)                      {   return  mPFMuonR04PhotonEt[id];                   }
+Double_t        EventData::PFMuonR04PUPt(UInt_t id)                          {   return  mPFMuonR04PUPt[id];                       }
 						
 Int_t           EventData::NElec()                                           {   return  mNElec;                                   }
 Double_t        EventData::ElecE(UInt_t id)                                  {   return  mElecE[id];                               }
@@ -1430,6 +1456,11 @@ Double_t        EventData::PFElecHadronicOverEm(UInt_t id)                   {  
 Double_t        EventData::PFElecHcalOverEcal(UInt_t id)                     {   return  mPFElecHcalOverEcal[id];                  }
 Double_t        EventData::PFElecetaeta(UInt_t id)                           {   return  mPFElecetaeta[id];                        }
 Double_t        EventData::PFElecietaieta(UInt_t id)                         {   return  mPFElecietaieta[id];                      }
+Int_t           EventData::PFElecIsTight(UInt_t id)                          {   return  mPFElecIsTight[id];                       }
+Int_t           EventData::PFElecIsMedium(UInt_t id)                         {   return  mPFElecIsMedium[id];                      }
+Int_t           EventData::PFElecIsLoose(UInt_t id)                          {   return  mPFElecIsLoose[id];                       }
+Int_t           EventData::PFElecIsVeto(UInt_t id)                           {   return  mPFElecIsVeto[id];                        }
+Double_t        EventData::PFElecEffArea(UInt_t id)                          {   return  mPFElecEffArea[id];                       }
 
 Int_t           EventData::NTau()                                                       {   return  mNTau;                                                 }            
 Double_t        EventData::TauE(UInt_t id)                                              {   return  mTauE[id];                                             }            

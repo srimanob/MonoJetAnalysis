@@ -26,6 +26,7 @@ namespace Operation
   bool    LepInJet3(double JetEta , double JetPhi , int pf , EventData & eventData);
   
   double  MetLepPt(double MetPx , double MetPy , EventData & eventData);
+  double  MetTightLepPt(double MetPx , double MetPy , EventData & eventData);
   
   double  MetLepPhi(double MetPx , double MetPy , EventData & eventData);
 
@@ -38,12 +39,17 @@ namespace Operation
   TLorentzVector WideJet1(EventData & eventData);
   
   double  electronWeight(double pt, double eta);
+  double  muonWeight(double pt, double eta); 
+  double  muonWeightLoose(double pt, double eta);
   
-  bool    PFLepTightCuts(EventData&  ev , int i, double pt=20., double eta=2.1);
-  bool    PFMuonTightCuts(EventData& ev , int i, double pt=20., double eta=2.1);
-  bool    PFMuonLooseCuts(EventData& ev , int i, double pt=20., double eta=2.1);
+  bool    PFLepTightCuts(EventData&  ev , int i, double pt=20., double eta=2.4);
+  bool    PFLepLooseCuts(EventData&  ev , int i, double pt=10., double eta=2.4);
+  
+  bool    PFMuonTightCuts(EventData& ev , int i, double pt=20., double eta=2.4);
+  bool    PFMuonLooseCuts(EventData& ev , int i, double pt=10., double eta=2.4);
+  
   bool    PFElecTightCuts(EventData& ev , int i, double pt=20., double eta=2.5);
-  bool    PFElecVetoCuts(EventData& ev ,  int i, double pt=20., double eta=2.5);
+  bool    PFElecVetoCuts(EventData& ev ,  int i, double pt=10., double eta=2.5);
   
   vector<double> generate_flat10_weights(TH1D* data_npu_estimated, int puVersion);
   
@@ -379,7 +385,77 @@ namespace Operation
     std::ostream& Description(std::ostream& ostrm);
   private:
     int mPdgId;  
+  };
+
+  //-----------------------GenPar mass window Exist-------------------------------------------
+  class GenParMassWindow: public Operation::_Base 
+  {
+  public:
+    GenParMassWindow(int pdgId, double lowM, double highM);
+    ~GenParMassWindow();
+    bool Process(EventData & eventData);
+    std::ostream& Description(std::ostream& ostrm);
+  private:
+    int mPdgId;  
+    double mLowM;
+    double mHighM;
+  };
+  
+  //-----------------------Gen Muon Exist----------------------------------------------------
+  class GenZmumu : public Operation::_Base 
+  {
+  public:
+    GenZmumu (int pdgId);
+    ~GenZmumu ();
+    bool Process(EventData & eventData);
+    std::ostream& Description(std::ostream& ostrm);
+  private:
+    int mPdgId;
   };	
+  
+  //-----------------------Gen Pt Exist----------------------------------------------------
+  class GenParPt : public Operation::_Base 
+  {
+  public:
+    GenParPt (int pdgId , double pt);
+    ~GenParPt ();
+    bool Process(EventData & eventData);
+    std::ostream& Description(std::ostream& ostrm);
+  private:
+    int mPdgId;
+    double mPt;
+  };
+  
+  
+  //-----------------------Gen PtZ AND METnoMuons Cuts ------------------------------------
+  class GenParPtAndMET : public Operation::_Base 
+  {
+  public:
+    GenParPtAndMET (int pdgId , double genpt , double met);
+    ~GenParPtAndMET ();
+    bool Process(EventData & eventData);
+    std::ostream& Description(std::ostream& ostrm);
+  private:
+    int mPdgId;
+    double mGenPt;
+    double mMet;
+  };
+
+  
+  //-----------------------Gen PtZ OR METnoMuons Cuts--------------------------------------
+  class GenParPtOrMET : public Operation::_Base 
+  {
+  public:
+    GenParPtOrMET (int pdgId , double genpt , double met);
+    ~GenParPtOrMET ();
+    bool Process(EventData & eventData);
+    std::ostream& Description(std::ostream& ostrm);
+  private:
+    int mPdgId;
+    double mGenPt;
+    double mMet;
+  };	
+  
   
   //-----------------------W +/- Selection---------------------------------------------------
   class WsignSelection : public Operation::_Base 
