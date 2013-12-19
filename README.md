@@ -11,7 +11,7 @@ cmsenv
 git init
 git clone https://github.com/srimanob/MonoJetAnalysis
 cd MonoJetAnalysis
-git checkout tags/V53X_V06D_04
+git checkout tags/accbb9f
 cd ..
 cvs co -r V00-03-04 -d CMGTools/External UserCode/CMG/CMGTools/External
 cvs co -r V00-00-31_patch1 -d EGamma/EGammaAnalysisTools UserCode/EGamma/EGammaAnalysisTools
