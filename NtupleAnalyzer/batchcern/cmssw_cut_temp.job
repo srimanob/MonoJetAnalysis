@@ -1,0 +1,74 @@
+#!/bin/csh -f
+
+
+#
+# ---------------------------------------------------------
+# LSF parameters
+# ---------------------------------------------------------
+#
+set nonomatch
+echo ""
+echo "Job is running on `uname -a`"
+echo "Job started on `date`"
+echo ""
+echo "Job has been submitted from : " $LS_SUBCWD
+if ( ${OS} != "Solaris" && ${OS} != "Linux" ) exit
+#setenv OS_VERS Linux__2.6
+
+
+#
+#----------------------------------------------------------
+# S e t   t h e   r u n t i m e   e n v i r o n m e n t
+#----------------------------------------------------------
+#
+echo "Step 1 : Setting the environment"
+setenv SCRAM_ARCH slc5_amd64_gcc462
+setenv SCRATCH_SRC /afs/cern.ch/work/s/srimanob/Monojet/Analysis/ntuple-2012-v6D/INPUT1
+setenv CODE_SRC    /afs/cern.ch/user/s/srimanob/scratch0/BatchCode/FastSim/Analysis/monojet-ntuple-2012-v6D
+rm -rf ${CODE_SRC}/CMSSW_INPUT1_INPUT2_INPUT3_INPUT4_INPUT5_INPUT6.job
+
+echo "- - - - - PATH SETTING- - - - -"
+echo "SCRAM_ARCH is : " ${SCRAM_ARCH}
+echo "WorkDir    is : " ${WORKDIR}
+echo "Disk space on this batch machine:"
+df -h
+
+
+#
+#----------------------------------------------------------
+# Run CMSSW
+#----------------------------------------------------------
+#
+echo "Step 2 : Run"
+#####################################
+# Step-1:                           #
+#####################################
+echo "Start Step-1: Generator"
+cd ${WORKDIR}
+scramv1 project CMSSW CMSSW_5_3_11_patch6
+cd CMSSW_5_3_11_patch6/src
+cp -a ${SCRATCH_SRC}/CMSSW_5_3_11_patch6/src/* .
+eval `scramv1 runtime -csh`
+scramv1 b
+cd MonoJetAnalysis/NtupleAnalyzer/
+../../../bin/slc5_amd64_gcc462/INPUT2 INPUT3 -1 INPUT4 INPUT5 INPUT6 INPUT2 | & tee run.log
+cp run.log /afs/cern.ch/work/s/srimanob/Monojet/Analysis/ntuple-2012-v6D/INPUT1/CMSSW_5_3_11_patch6/src/MonoJetAnalysis/NtupleAnalyzer/results/INPUT2/Log_INPUT3_INPUT5_INPUT6.log
+
+
+#
+#----------------------------------------------------------
+# Clear job and log
+#----------------------------------------------------------
+#
+rm -rf ${CODE_SRC}/Log_*
+rm -rf ${CODE_SRC}/LSF*
+rm -rf ${CODE_SRC}/core*
+rm -rf /afs/cern.ch/user/s/srimanob/LSF*
+cd ${WORKDIR}
+rm -rf CMSSW*
+
+echo ""
+echo "Job end `date`"
+echo ""
+
+exit ${status}
