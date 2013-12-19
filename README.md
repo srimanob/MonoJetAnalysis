@@ -23,6 +23,7 @@ How to run ntuple maker
 
 How to run analysis code
 --------------
+AnaMonoJet  [sample name]  -1  (0 for MC, 1 for MC)  (jet,met,jetmet,btagjet,btagmet,btagjetmet)  AnaMonoJet
 
 How to commit new version of code
 --------------
