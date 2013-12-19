@@ -44,7 +44,7 @@ namespace Operation
     
     //Official Pileup 
     if(puVersion==7){ //S7
-      cout<<"S7 PU condition"<<endl;
+      cout<<" - S7 PU condition"<<endl;
       double npu_probs_temp[60] = {
 	2.344E-05, 2.344E-05, 2.344E-05, 2.344E-05, 4.687E-04, 4.687E-04, 7.032E-04, 9.414E-04, 1.234E-03, 1.603E-03,
 	2.464E-03, 3.250E-03, 5.021E-03, 6.644E-03, 8.502E-03, 1.121E-02, 1.518E-02, 2.033E-02, 2.608E-02, 3.171E-02,
@@ -57,7 +57,7 @@ namespace Operation
 	npu_probs[i] = npu_probs_temp[i];
     }
     else if(puVersion==10){ //S10 
-      cout<<"S10 PU condition"<<endl;
+      cout<<" - S10 PU condition"<<endl;
       double npu_probs_temp[60] = {
 	2.56e-06, 5.239e-06, 1.42e-05, 5.005e-05, 0.0001001, 0.0002705, 0.001999,  0.006097,  0.01046,   0.01383,
 	0.01685,  0.02055,   0.02572,  0.03262,   0.04121,   0.04977,   0.05539,   0.05725,   0.05607,   0.05312,
@@ -70,7 +70,7 @@ namespace Operation
 	npu_probs[i] = npu_probs_temp[i];
     }
     else{
-      cout<<"Data"<<endl;
+      cout<<" - Data"<<endl;
       double npu_probs_temp[60] = {
 	1., 1., 1., 1., 1., 1., 1., 1., 1., 1.,
 	1., 1., 1., 1., 1., 1., 1., 1., 1., 1.,
@@ -1204,6 +1204,47 @@ namespace Operation
 
   
   /// ----------------------------------------------
+  /// Cut Gamma
+  CutGamma::CutGamma(double gamPt ) : 
+    mGamPt(gamPt)  {} 
+  CutGamma::~CutGamma() {}
+  
+  bool CutGamma::Process(EventData & ev){
+    bool send=true;
+    
+    //cout<<"i ev.GenParId(i) ev.GenParStatus(i) ev.GenParDoughterOf(i) ev.GenParPt(i) " <<endl;
+    
+    for(int i=0; i<ev.NGenPar(); i++){
+      //cout<<i<<" "<<ev.GenParId(i)<<" "<<ev.GenParStatus(i)<<" "<<ev.GenParDoughterOf(i)<<" "<<ev.GenParPt(i)<<endl;
+      if(abs(ev.GenParId(i))==22	 && ev.GenParStatus(i)==1 ) {
+	//cut event if > 5GeV and parent is quark/antiquark
+        if( ev.GenParPt(i) > mGamPt &&  abs( ev.GenParDoughterOf(i) ) < 7 ){
+          send=false;
+        }
+        //first in list
+        break;
+      }
+      //continue;
+    }
+    
+
+    // for(int i=0; i<ev.NGenPar(); i++){
+    //    if(send && abs(ev.GenParId(i))==22	 && ev.GenParStatus(i)==1 ){
+    //      send=true;
+    //      cout<<ev.GenParPt(i)<<endl;
+    //    }
+    //  }
+    
+    //cout<<"Cutting on the pt "<< mGamPt <<"of status 1 gamma (ID 22)"<<endl; 
+    return send;
+  }
+  std::ostream& CutGamma::Description(std::ostream &ostrm){
+    ostrm << "  Gamma Cut "  << " :............";
+    return ostrm;
+  }
+
+  
+  /// ----------------------------------------------
   /// NJet Cut 
   CutNJet::CutNJet(int cut) : mCut(cut) {} 
   CutNJet::~CutNJet() {}
@@ -1255,6 +1296,9 @@ namespace Operation
     else if(ev.JetType()=="pf"){
       int ixjet1= JetIndex(0, ev);
       if( ixjet1<99 &&  ev.PFAK5JetPtCor(ixjet1)>mJetPt && abs(ev.PFAK5JetEta(ixjet1))<mJetEta ){
+	//if(mJetPt == 400 && ev.PFAK5JetPtCor(ixjet1)>400 && ev.PFAK5JetPtCor(ixjet1)<450){
+	//cout<<ev.PFAK5JetPtCor(ixjet1)<<" eta: "<< abs(ev.PFAK5JetEta(ixjet1)) <<endl;
+        //}
 	send=true;
       }
     }
@@ -1271,8 +1315,32 @@ namespace Operation
   std::ostream& CutJet1::Description(std::ostream &ostrm){
     ostrm << "  Jet1Cut...  Jet1Pt>" << mJetPt << "  |Jet1Eta|<"<<  mJetEta <<"  " << mJetIDEmfMin <<  "<JetIDEmf<" << mJetIDEmfMax  << " :............";
     return ostrm;
-  }  
+  }    
 
+  /// ----------------------------------------------
+  /// Jet1-BTag Cut
+  CutJet1BTag::CutJet1BTag(double CombinedSecondaryVertex) : 
+    mCombinedSecondaryVertex(CombinedSecondaryVertex) {} 
+  CutJet1BTag::~CutJet1BTag() {}
+  
+  bool CutJet1BTag::Process(EventData & ev){
+    bool send=false;
+    if(ev.JetType()=="pf"){
+      int ixjet1= JetIndex(0, ev);
+      if( ixjet1<99 &&  ev.PFAK5JetBTagCombSecVtx(ixjet1)>mCombinedSecondaryVertex ){
+	send=true;
+      }
+    }
+    else
+      send = false;
+    
+    return send;
+  }
+  std::ostream& CutJet1BTag::Description(std::ostream &ostrm){
+    ostrm << "  Jet1 BTag Cut... CSV > "<< mCombinedSecondaryVertex <<" :............";
+    return ostrm;
+  }  
+  
 
   /// ----------------------------------------------
   /// Jet2 Cut

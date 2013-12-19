@@ -185,7 +185,19 @@ namespace Operation
     std::ostream& Description(std::ostream& ostrm);
   private:
     int mBit;
-  };
+  };  
+
+  //-----------------------Gamma Cut----------------------------------------------------------
+  class CutGamma : public Operation::_Base 
+  {
+  public:
+    CutGamma(double gamPt );
+    ~CutGamma();
+    bool Process(EventData & eventData);
+    std::ostream& Description(std::ostream& ostrm);
+  private:
+    double mGamPt;
+  };  
   
   //-----------------------NJet Cut----------------------------------------------------------
   class CutNJet : public Operation::_Base 
@@ -224,6 +236,18 @@ namespace Operation
     double mJetEta;
     double mJetIDEmfMin;
     double mJetIDEmfMax;
+  }; 
+
+  //-----------------------Jet1BTag Cut-------------------------------------------------------
+  class CutJet1BTag : public Operation::_Base 
+  {
+  public:
+    CutJet1BTag(double CombinedSecondaryVertex);
+    ~CutJet1BTag();
+    bool Process(EventData & eventData);
+    std::ostream& Description(std::ostream& ostrm);
+  private:
+    double mCombinedSecondaryVertex;
   }; 
 
   //-----------------------Jet2 Cut-------------------------------------------------------

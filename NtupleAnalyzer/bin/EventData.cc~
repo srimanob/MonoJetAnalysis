@@ -19,8 +19,8 @@ using namespace LHAPDF;
 EventData::EventData(const string &  fileName, UInt_t maxEvents, int isMC, float secJetCut) : mDataSet("undefined") 
 {
   // CERN
-  string fileDirectory = "root://eoscms//eos/cms/store/user/srimanob/monojet/ntuple-2012-v6D/";
-  //string fileDirectory = "file:/data1/srimanob/Data-Monojet/ntuple-2012-v6D/";
+  //string fileDirectory = "root://eoscms//eos/cms/store/user/srimanob/monojet/ntuple-2012-v6D/";
+  string fileDirectory = "file:/data1/srimanob/Data-Monojet/ntuple-2012-v6D/";
   // FNAL
   //string fileDirectory  = "file:/uscms_data/d2/lpcjm/DATA/2012/ntuple_v6A_temp";
   

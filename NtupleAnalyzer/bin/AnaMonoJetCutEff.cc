@@ -25,16 +25,19 @@ using namespace std;
 
 int main(int argc, char ** argv) 
 {
-  if(argc < 7){
+  if(argc < 8){
     cerr << "Program need more than this parameter " << endl;
-    cerr << "Example:  Analysis  sampleName(ex:wjets or met or ...)   maxEvents  cutNumber  isMC(0 or 1)   cuts(jet,met,jetmet)   folder(./results/...)" << endl;
+    cerr << "Example:  Analysis  sampleName(ex:wjets or met or ...)  maxEvents  cutNumber  isMC(0 or 1)  cuts(jet,met,jetmet,btagjet,btagmet,btagjetmet)  jetThreshold  folder(./results/...)" << endl;
     return 1;
   }
   
   string anaout = Constants::outputDir; 
   anaout += "results/";
-  anaout += argv[6];
+  anaout += argv[7]; 
 
+  int secJetCut;
+  sscanf(argv[6], "%d", &secJetCut);
+  
   int varycutIndex = 0;
   string varycut = "";
   varycut += argv[5];
@@ -42,6 +45,8 @@ int main(int argc, char ** argv)
     varycutIndex += 1;
   if(varycut.find("jet") != std::string::npos || varycut.find("Jet") != std::string::npos || varycut.find("JET") != std::string::npos)
     varycutIndex += 2;
+  if(varycut.find("btag") != std::string::npos || varycut.find("BTag") != std::string::npos || varycut.find("BTAG") != std::string::npos)
+    varycutIndex += 4;
   if(varycutIndex<=0){
     cerr << "Check the defined cuts. It should be [jet,met,jetmet]" << endl;
     return 1;
@@ -56,22 +61,44 @@ int main(int argc, char ** argv)
   
   int nev;
   if ( argc >= 5 ) sscanf ( argv[2], "%d", &nev );
-  else nev = 100000000;
+  else nev = 100000000; 
+
+  int wjet_zjet = 0;
+  std::string dataset = "";
+  dataset += argv[1];
+  if(dataset.find("zjets") != std::string::npos ||dataset.find("w4jets") != std::string::npos||dataset.find("wjets") != std::string::npos){
+    wjet_zjet += 1;
+    cout<<"Including Gamma Cut"<<endl;
+  }
   
   std::string logFileName = anaout + "/";
   logFileName += argv[1];
+  logFileName += "_";
+  logFileName += argv[5];
+  logFileName += "_";
+  logFileName += argv[6];
   logFileName += ".log";
   
   Manager manager(logFileName);
   
   string histFile = anaout + "/";
-  histFile += argv[1];
+  histFile += argv[1];  
+  histFile += "_";
+  histFile += argv[5];
+  histFile += "_";
+  histFile += argv[6];
   
   cout << "Starting to Run ........" << endl;
-  cout << "Vary cuts by ";
+  cout << " - Vary cuts by ";
   if(varycutIndex==1) cout<<"MET"; 
   if(varycutIndex==2) cout<<"Jet";
   if(varycutIndex==3) cout<<"JetMET";
+  if(varycutIndex==4) cout<<"BTag"; 
+  if(varycutIndex==5) cout<<"BTag + MET";
+  if(varycutIndex==6) cout<<"BTag + Jet";
+  if(varycutIndex==7) cout<<"BTag + JetMET";
+  cout<<endl;
+  cout << " - Count only jets which pt > "<<secJetCut<<" GeV";
   cout<<endl;
 
 
@@ -81,6 +108,7 @@ int main(int argc, char ** argv)
   vector<int> abevt;
 	
   CutAbnormalEvents  CAbnormalEvents(abrun , abevt); 
+  CutGamma           CGamma(5.0);
   CutHLT             CHLT(0);
   CutHLT             CHLT1(1);   //HLT
   CutHLT             CHLT2(2);   //No scraping
@@ -99,6 +127,7 @@ int main(int argc, char ** argv)
   CutNoiseClean      CNoiseClean(0.95 , 0.98, 1,  0.01, 0.99);
   CutJet1            CJet1(110 , 2.4,  0.02, 0.98);
   CutJet1            CJet2(250 , 2.4,  0.02, 0.98);
+  CutJet1BTag        CJet1BTag(0.679); 
   CutNJet            CNJet(3);
   CutDeltaPhi3       CDeltaPhi3(2.5); 
   CutMet             CMet(250);
@@ -107,7 +136,8 @@ int main(int argc, char ** argv)
   NoPFElec           CNoPFElec(10., 66.);
 	
   manager.Add(&CAbnormalEvents);
-  manager.Add(&CHLT); 
+  manager.Add(&CHLT);
+  if(wjet_zjet==1) manager.Add(&CGamma);
   /*
     manager.Add(&CHLT1);  //HLT
     manager.Add(&CHLT2);  //No scraping
@@ -130,6 +160,9 @@ int main(int argc, char ** argv)
       manager.Add(&CJet1);
     else
       manager.Add(&CJet2);
+    if(varycutIndex==4 || varycutIndex==5 || varycutIndex==6 || varycutIndex==7){
+      manager.Add(&CJet1BTag);
+    }
   }
   if(sel!=3) manager.Add(&CNJet);
   if(sel!=4) manager.Add(&CDeltaPhi3);
@@ -142,9 +175,9 @@ int main(int argc, char ** argv)
   
   //-------------------------------------------------------------------------------------------------------------------------
   
-  cout << "Running over sample " << argv[1] << endl;
+  cout << " - Running over sample " << argv[1] << endl;
   
-  EventData eventData(argv[1], nev, isMC); 
+  EventData eventData(argv[1], nev, isMC, (float)secJetCut); 
   
   // Loop over events
   manager.Run(eventData); 

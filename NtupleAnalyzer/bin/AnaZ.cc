@@ -8,7 +8,6 @@
 #include "Histogram02.h"
 #include "Constants.h"
 
-
 // ROOT includes
 #include <TStyle.h>
 #include <TROOT.h>
@@ -27,9 +26,9 @@ using namespace std;
 
 int main(int argc, char ** argv) 
 {
-  if (argc < 6){
+  if(argc < 7){
     cerr << "Program need more than this parameter " << endl;
-    cerr << "Example:   Analysis  sampleName(ex:wjets or met or ...)   maxEvents   isMC(0 or 1)   cuts(jet,met,jetmet)   folder(./results/...)" << endl;
+    cerr << "Example:   Analysis  sampleName(ex:wjets or met or ...)  maxEvents  isMC(0 or 1)  cuts(jet,met,jetmet,btagjet,btagmet,btagjetmet)  jetThreshold  folder(./results/...)" << endl;
     return 1;
   }
   
@@ -37,7 +36,10 @@ int main(int argc, char ** argv)
   
   string anaout = Constants::outputDir; 
   anaout += "results/";
-  anaout += argv[5];
+  anaout += argv[6];
+
+  int secJetCut;
+  sscanf(argv[5], "%d", &secJetCut);
   
   int varycutIndex = 0;
   string varycut = "";
@@ -46,8 +48,10 @@ int main(int argc, char ** argv)
     varycutIndex += 1;
   if(varycut.find("jet") != std::string::npos || varycut.find("Jet") != std::string::npos || varycut.find("JET") != std::string::npos)
     varycutIndex += 2;
+  if(varycut.find("btag") != std::string::npos || varycut.find("BTag") != std::string::npos || varycut.find("BTAG") != std::string::npos)
+    varycutIndex += 4;
   if(varycutIndex<=0){
-    cerr << "Check the defined cuts. It should be [jet,met,jetmet]" << endl;
+    cerr << "Check the defined cuts. It should be [jet,met,jetmet,btagjet,btagmet,btagjetmet]" << endl;
     return 1;
   }
   
@@ -56,23 +60,44 @@ int main(int argc, char ** argv)
   
   int nev;
   if ( argc >= 3 ) sscanf ( argv[2], "%d", &nev );
-  else nev = 100000000;
+  else nev = 100000000; 
+
+  int wjet_zjet = 0;
+  std::string dataset = "";
+  dataset += argv[1];
+  if(dataset.find("zjets") != std::string::npos ||dataset.find("w4jets") != std::string::npos||dataset.find("wjets") != std::string::npos){
+    wjet_zjet += 1;
+    cout<<"Including Gamma Cut"<<endl;
+  }
   
   std::string logFileName = anaout + "/";
-  logFileName += argv[1];
+  logFileName += argv[1]; 
+  logFileName += "_";
+  logFileName += argv[4];
+  logFileName += "_";
+  logFileName += argv[5];
   logFileName += ".log";
-  
   
   Manager manager(logFileName);
   
   string histFile = anaout + "/";
   histFile += argv[1];
-  
+  histFile += "_";
+  histFile += argv[4];
+  histFile += "_";
+  histFile += argv[5];
+
   cout << "Starting to Run ........" << endl;
-  cout << "Vary cuts by ";
+  cout << " - Vary cuts by ";
   if(varycutIndex==1) cout<<"MET"; 
   if(varycutIndex==2) cout<<"Jet";
   if(varycutIndex==3) cout<<"JetMET";
+  if(varycutIndex==4) cout<<"BTag"; 
+  if(varycutIndex==5) cout<<"BTag + MET";
+  if(varycutIndex==6) cout<<"BTag + Jet";
+  if(varycutIndex==7) cout<<"BTag + JetMET";
+  cout<<endl;
+  cout << " - Count only jets which pt > "<<secJetCut<<" GeV";
   cout<<endl;
 
 
@@ -86,9 +111,11 @@ int main(int argc, char ** argv)
   CutHLT    CHLT0(0);    //Primay vertex
   CutHLT    CHLT1(1);   // HLT
   CutAbnormalEvents  CAbnormalEvents(abrun , abevt); 
+  CutGamma CGamma(5.0);
   manager.Add(&CHLT0);   
   manager.Add(&CHLT1);   
-  manager.Add(&CAbnormalEvents);	
+  manager.Add(&CAbnormalEvents);
+  if(wjet_zjet==1) manager.Add(&CGamma);
   hDataMcMatching    DataMcMatching0(histFile+"_AnaZ_0.root"); 
   manager.Add(&DataMcMatching0);
 
@@ -135,8 +162,10 @@ int main(int argc, char ** argv)
   
   CutJet1 CJet1(110 , 2.4,  0.02, 0.98);
   manager.Add(&CJet1);
-  //CutJet2 CJet20(30,4.7);
-  //manager.Add(&CJet20);
+  CutJet1BTag CJet1BTag(0.679); 
+  if(varycutIndex==4 || varycutIndex==5 || varycutIndex==6 || varycutIndex==7){
+    manager.Add(&CJet1BTag);
+  }
   hDataMcMatching DataMcMatching3(histFile+"_AnaZ_3.root");    
   manager.Add(&DataMcMatching3);
     
@@ -188,10 +217,10 @@ int main(int argc, char ** argv)
   //-----------
   GenParPt           CGenZPt2(23 , 250); 
   CutJet1            CJet2(250 , 2.4,  0.02, 0.98); 
-  if(varycutIndex==1 || varycutIndex==3){
+  if(varycutIndex==1 || varycutIndex==3 || varycutIndex==5 || varycutIndex==7){
     manager.Add(&CGenZPt2);
   }
-  if(varycutIndex==2 || varycutIndex==3){
+  if(varycutIndex==2 || varycutIndex==3 || varycutIndex==6 || varycutIndex==7){
     manager.Add(&CJet2);
   }
   hDataMcMatching    DataMcMatching9(histFile+"_AnaZ_9.root");   
@@ -203,10 +232,10 @@ int main(int argc, char ** argv)
   //-------------	
   GenParPt           CGenZPt3(23 , 300); 
   CutJet1            CJet3(300 , 2.4,  0.02, 0.98); 
-  if(varycutIndex==1 || varycutIndex==3){
+  if(varycutIndex==1 || varycutIndex==3 || varycutIndex==5 || varycutIndex==7){
     manager.Add(&CGenZPt3);
   }
-  if(varycutIndex==2 || varycutIndex==3){
+  if(varycutIndex==2 || varycutIndex==3 || varycutIndex==6 || varycutIndex==7){
     manager.Add(&CJet3);
   }
   hDataMcMatching    DataMcMatching10(histFile+"_AnaZ_10.root");   
@@ -218,10 +247,10 @@ int main(int argc, char ** argv)
   //-------------	
   GenParPt           CGenZPt4(23 , 350); 
   CutJet1            CJet4(350 , 2.4,  0.02, 0.98); 
-  if(varycutIndex==1 || varycutIndex==3){
+  if(varycutIndex==1 || varycutIndex==3 || varycutIndex==5 || varycutIndex==7){
     manager.Add(&CGenZPt4);
   }
-  if(varycutIndex==2 || varycutIndex==3){
+  if(varycutIndex==2 || varycutIndex==3 || varycutIndex==6 || varycutIndex==7){
     manager.Add(&CJet4);
   }
   hDataMcMatching    DataMcMatching11(histFile+"_AnaZ_11.root");   
@@ -233,10 +262,10 @@ int main(int argc, char ** argv)
   //-------------	
   CutJet1            CJet5(400 , 2.4,  0.02, 0.98); 
   GenParPt           CGenZPt5(23 , 400); 
-  if(varycutIndex==1 || varycutIndex==3){
+  if(varycutIndex==1 || varycutIndex==3 || varycutIndex==5 || varycutIndex==7){
     manager.Add(&CGenZPt5);
   }
-  if(varycutIndex==2 || varycutIndex==3){
+  if(varycutIndex==2 || varycutIndex==3 || varycutIndex==6 || varycutIndex==7){
     manager.Add(&CJet5);
   }
   hDataMcMatching    DataMcMatching12(histFile+"_AnaZ_12.root");   
@@ -248,10 +277,10 @@ int main(int argc, char ** argv)
   //-------------
   CutJet1            CJet6(450 , 2.4,  0.02, 0.98); 
   GenParPt           CGenZPt6(23 , 450); 
-  if(varycutIndex==1 || varycutIndex==3){
+  if(varycutIndex==1 || varycutIndex==3 || varycutIndex==5 || varycutIndex==7){
     manager.Add(&CGenZPt6);
   }
-  if(varycutIndex==2 || varycutIndex==3){
+  if(varycutIndex==2 || varycutIndex==3 || varycutIndex==6 || varycutIndex==7){
     manager.Add(&CJet6);
   } 
   hDataMcMatching    DataMcMatching13(histFile+"_AnaZ_13.root");   
@@ -263,10 +292,10 @@ int main(int argc, char ** argv)
   //-------------		
   CutJet1            CJet7(500 , 2.4,  0.02, 0.98); 
   GenParPt           CGenZPt7(23 , 500); 
-  if(varycutIndex==1 || varycutIndex==3){
+  if(varycutIndex==1 || varycutIndex==3 || varycutIndex==5 || varycutIndex==7){
     manager.Add(&CGenZPt7);
   }
-  if(varycutIndex==2 || varycutIndex==3){
+  if(varycutIndex==2 || varycutIndex==3 || varycutIndex==6 || varycutIndex==7){
     manager.Add(&CJet7);
   } 
   hDataMcMatching    DataMcMatching14(histFile+"_AnaZ_14.root");   
@@ -278,10 +307,10 @@ int main(int argc, char ** argv)
   //-------------	
   CutJet1            CJet8(550 , 2.4,  0.02, 0.98);
   GenParPt           CGenZPt8(23 , 550); 
-  if(varycutIndex==1 || varycutIndex==3){
+  if(varycutIndex==1 || varycutIndex==3 || varycutIndex==5 || varycutIndex==7){
     manager.Add(&CGenZPt8);
   }
-  if(varycutIndex==2 || varycutIndex==3){
+  if(varycutIndex==2 || varycutIndex==3 || varycutIndex==6 || varycutIndex==7){
     manager.Add(&CJet8);
   } 
   hDataMcMatching    DataMcMatching15(histFile+"_AnaZ_15.root");   
@@ -292,8 +321,8 @@ int main(int argc, char ** argv)
   //-------------
   
   //-------------------------------------------------------------------------------------------------------------------------
-  cout << "Running over sample " << argv[1] << endl;
-  EventData eventData(argv[1], nev, isMC); 
+  cout << " - Running over sample " << argv[1] << endl;
+  EventData eventData(argv[1], nev, isMC, (float)secJetCut); 
   
   // Loop over events
   manager.Run(eventData); 

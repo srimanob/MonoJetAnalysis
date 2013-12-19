@@ -20,7 +20,8 @@ using namespace std;
 class EventData 
 {
  public:
-  EventData(const string & fileName, UInt_t maxEvents, int isMC);
+  //EventData(const string & fileName, UInt_t maxEvents, int isMC);
+  EventData(const string & fileName, UInt_t maxEvents, int isMC, float secJetCut = 30.);
   ~EventData();
   
  public:
