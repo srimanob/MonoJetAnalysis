@@ -1,3 +1,5 @@
+#!/bin/tcsh
+
 rm -rf ./AnaMonoJet/*.log
 rm -rf ./AnaMonoJet/*.root
 
