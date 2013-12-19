@@ -22,6 +22,9 @@ mv temp CMSSW_$1_$2_$3_$4_$5_$6_$7.job
 #$6
 sed s/INPUT6/$6/g CMSSW_$1_$2_$3_$4_$5_$6_$7.job > temp
 mv temp CMSSW_$1_$2_$3_$4_$5_$6_$7.job
+#$7
+sed s/INPUT7/$7/g CMSSW_$1_$2_$3_$4_$5_$6_$7.job > temp
+mv temp CMSSW_$1_$2_$3_$4_$5_$6_$7.job
 
 
 ##
