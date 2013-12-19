@@ -29,4 +29,5 @@ How to commit new version of code
 <pre><code>git add [ files that you edited ]
 git commit -m' a message'
 git push origin master
+git pull
 </code></pre>
