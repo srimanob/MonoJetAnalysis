@@ -23,7 +23,7 @@ How to run ntuple maker
 
 How to run analysis code
 --------------
-<pre><code>AnaMonoJet  [sample name]  -1  (0 for MC, 1 for MC)  (jet,met,jetmet,btagjet,btagmet,btagjetmet)  AnaMonoJet
+<pre><code>AnaMonoJet  [sample name]  -1  (0 for MC, 1 for MC)  (jet,met,jetmet,btagjet,btagmet,btagjetmet) jetThreshold AnaMonoJet
 </code></pre>
 
 How to commit new version of code
