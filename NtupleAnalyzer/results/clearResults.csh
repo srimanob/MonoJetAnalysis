@@ -1,4 +1,5 @@
 #!/bin/tcsh
+#Clear all existing results
 
 rm -rf ./AnaMonoJet/*.log
 rm -rf ./AnaMonoJet/*.root
