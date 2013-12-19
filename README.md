@@ -11,7 +11,7 @@ cmsenv
 git init
 git clone https://github.com/srimanob/MonoJetAnalysis
 cd MonoJetAnalysis
-git checkout tags/accbb9f
+git checkout tags/c8baed3
 cd ..
 cvs co -r V00-03-04 -d CMGTools/External UserCode/CMG/CMGTools/External
 cvs co -r V00-00-31_patch1 -d EGamma/EGammaAnalysisTools UserCode/EGamma/EGammaAnalysisTools
@@ -28,8 +28,9 @@ How to run analysis code
 
 How to commit new version of code
 --------------
-<pre><code>git add [ files that you edited ]
+<pre><code>After "git checkout"
+git checkout 53X
+git add [ files that you edited ]
 git commit -m' a message'
-git push origin master
-git pull
+git push origin 53X
 </code></pre>
