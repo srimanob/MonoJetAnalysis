@@ -9,7 +9,7 @@ How to checkout the package
 cd CMSSW_5_3_11_patch6/src
 cmsenv
 git init
-git clone https://github.com/srimanob/MonoJetAnalysis
+git clone -b 53X https://github.com/srimanob/MonoJetAnalysis
 cd MonoJetAnalysis
 git checkout tags/c8baed3
 cd ..
