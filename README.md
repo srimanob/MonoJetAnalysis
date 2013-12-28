@@ -3,22 +3,7 @@ Monojet Analysis Package
 
 This is 53X branch, for 8 TeV analysis.
 
-How to checkout the package
---------------
-<pre><code>cmsrel CMSSW_5_3_11_patch6
-cd CMSSW_5_3_11_patch6/src
-cmsenv
-git init
-git clone -b 53X https://github.com/srimanob/MonoJetAnalysis
-cd MonoJetAnalysis
-git checkout tags/V53X_V06D_05
-cd ..
-scp -r [your-cern-account]@lxplus.cern.ch:/afs/cern.ch/user/s/srimanob/public/ForMonoJet/Production/Ver06E/CMSSW_5_3_9_patch3/src/CMGTools ./
-scp -r [your-cern-account]@lxplus.cern.ch:/afs/cern.ch/user/s/srimanob/public/ForMonoJet/Production/Ver06E/CMSSW_5_3_9_patch3/src/EGamma ./
-scram b
-</code></pre>
-
-How to run ntuple maker
+How to checkout the packages for ntuple maker
 --------------
 <pre><code>cmsrel CMSSW_5_3_9_patch3
 cd  CMSSW_5_3_9_patch3
@@ -31,6 +16,23 @@ cd MonojetAnalysis/NtupleAnalyzer/test/config
 Edit the file monojet_ntuple_template_cfg.py
 <pre><code>python monojet_ntuple_template_cfg.py
 cmsRun [filename-you-get-from-previous-step]
+</code></pre>
+
+How to checkout the package for analysis
+--------------
+Please use the fresh CMSSW, not recycle from the ntuple maker.
+<pre><code>cmsrel CMSSW_5_3_11_patch6
+cd CMSSW_5_3_11_patch6/src
+cmsenv
+git init
+git clone -b 53X https://github.com/srimanob/MonoJetAnalysis
+cd MonoJetAnalysis
+git checkout tags/V53X_V06D_05
+cd ..
+scp -r [your-cern-account]@lxplus.cern.ch:/afs/cern.ch/user/s/srimanob/public/ForMonoJet/Production/Ver06E/CMSSW_5_3_9_patch3/src/CMGTools ./
+scp -r [your-cern-account]@lxplus.cern.ch:/afs/cern.ch/user/s/srimanob/public/ForMonoJet/Production/Ver06E/CMSSW_5_3_9_patch3/src/EGamma ./
+scram b
+cd MonojetAnalysis/NtupleAnalyzer
 </code></pre>
 
 How to run analysis code
