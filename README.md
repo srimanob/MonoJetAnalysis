@@ -29,8 +29,7 @@ scram b
 cd MonojetAnalysis/NtupleAnalyzer/test/config
 </code></pre>
 Edit the file monojet_ntuple_template_cfg.py
-<pre><code>
-python monojet_ntuple_template_cfg.py
+<pre><code>python monojet_ntuple_template_cfg.py
 cmsRun [filename-you-get-from-previous-step]
 </code></pre>
 
