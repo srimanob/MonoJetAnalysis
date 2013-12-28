@@ -13,13 +13,26 @@ git clone -b 53X https://github.com/srimanob/MonoJetAnalysis
 cd MonoJetAnalysis
 git checkout tags/V53X_V06D_05
 cd ..
-cvs co -r V00-03-04 -d CMGTools/External UserCode/CMG/CMGTools/External
-cvs co -r V00-00-31_patch1 -d EGamma/EGammaAnalysisTools UserCode/EGamma/EGammaAnalysisTools
+scp -r [your-cern-account]@lxplus.cern.ch:/afs/cern.ch/user/s/srimanob/public/ForMonoJet/Production/Ver06E/CMSSW_5_3_9_patch3/src/CMGTools ./
+scp -r [your-cern-account]@lxplus.cern.ch:/afs/cern.ch/user/s/srimanob/public/ForMonoJet/Production/Ver06E/CMSSW_5_3_9_patch3/src/EGamma ./
 scram b
 </code></pre>
 
 How to run ntuple maker
 --------------
+<pre><code>cmsrel CMSSW_5_3_9_patch3
+cd  CMSSW_5_3_9_patch3
+rm –r src
+scp -r [your-cern-account]@lxplus.cern.ch:/afs/cern.ch/user/s/srimanob/public/ForMonoJet/Production/Ver06E/CMSSW_5_3_9_patch3/src .
+cd src
+scram b
+cd MonojetAnalysis/NtupleAnalyzer/test/config
+</code></pre>
+Edit the file monojet_ntuple_template_cfg.py
+<pre><code>
+python monojet_ntuple_template_cfg.py
+cmsRun [filename-you-get-from-previous-step]
+</code></pre>
 
 How to run analysis code
 --------------
