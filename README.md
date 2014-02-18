@@ -37,7 +37,7 @@ cd MonojetAnalysis/NtupleAnalyzer
 
 How to run analysis code
 --------------
-<pre><code>AnaMonoJet  [sample name]  -1  (0 for MC, 1 for MC)  (jet,met,jetmet,btagjet,btagmet,btagjetmet) jetThreshold AnaMonoJet
+<pre><code>AnaMonoJet  [sample name]  -1  (0 for DATA, 1 for MC)  (jet,met,jetmet,btagjet,btagmet,btagjetmet) jetThreshold AnaMonoJet
 </code></pre>
 
 How to commit new version of code
